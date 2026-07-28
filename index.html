@@ -1255,7 +1255,7 @@
       // Configure your deployed backend URL (see 08-backend/) before shipping to Yandex Games,
       // and add both this origin and the CDN below to the Yandex Games trusted-domains list.
       // ---------------------------------------------------------------------------------------
-      const ONLINE_SERVER_URL = window.PYRAMIDE_ONLINE_URL || "";
+      const ONLINE_SERVER_URL = window.PYRAMIDE_ONLINE_URL || "https://pyramide-server-kodogames.amvera.io";
       // Vendored locally (assets/vendor/socket.io.min.js) rather than pulled from a CDN: platforms
       // like Yandex Games require every external domain to be explicitly whitelisted, so shipping
       // the library inside the game bundle avoids that dependency entirely.
