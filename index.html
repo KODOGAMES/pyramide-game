@@ -474,6 +474,73 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     /* Prominent match clocks above the board. The panel clocks are easy to miss on a phone,
        and in a timed game the clock is the second most important thing after the board. */
+    /* ---- Studio loader (KODO GAMES brand assets, supplied by the studio) -------------------- */
+    .splash {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: clamp(30px, 6vh, 58px);
+      background: radial-gradient(120% 90% at 50% 38%, #fbf7ef 0%, #f7f2e9 55%, #ece3d2 100%);
+      -webkit-font-smoothing: antialiased; user-select: none;
+      transition: opacity .6s ease, visibility .6s;
+    }
+    .splash::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .05;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    }
+    .splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    .splash .splash-inner { display: flex; flex-direction: column; align-items: center; gap: clamp(26px, 5vh, 48px); }
+    .splash .mark-wrap { position: relative; width: clamp(120px, 26vmin, 200px); aspect-ratio: 968/1024; animation: kodo-sway 5.5s ease-in-out infinite; transform-origin: 50% 28%; }
+    .splash .mark { width: 100%; height: 100%; display: block; color: #221a14; animation: kodo-breathe 3.2s ease-in-out infinite; }
+    .splash .halo { position: absolute; left: 50%; top: 42%; width: 150%; height: 150%; transform: translate(-50%,-50%); background: radial-gradient(closest-side, rgba(191,107,63,.18), transparent 70%); animation: kodo-halo 3.2s ease-in-out infinite; z-index: -1; }
+    .splash .brand-lockup { width: clamp(150px, 34vmin, 260px); color: #221a14; opacity: 0; animation: kodo-fade .9s ease .3s forwards; }
+    .splash .brand-lockup svg { width: 100%; height: auto; display: block; }
+    .splash .dots { display: flex; gap: 8px; }
+    .splash .dots i { width: 7px; height: 7px; border-radius: 50%; background: #bf6b3f; display: block; animation: kodo-blink 1.4s ease-in-out infinite; }
+    .splash .dots i:nth-child(2) { animation-delay: .2s; }
+    .splash .dots i:nth-child(3) { animation-delay: .4s; }
+    @keyframes kodo-sway { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+    @keyframes kodo-breathe { 0%,100% { opacity: 1; } 50% { opacity: .72; } }
+    @keyframes kodo-halo { 0%,100% { opacity: .5; transform: translate(-50%,-50%) scale(.92); } 50% { opacity: 1; transform: translate(-50%,-50%) scale(1.06); } }
+    @keyframes kodo-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes kodo-blink { 0%,100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-4px); } }
+
+    /* The `hidden` attribute must beat layout classes. Without this, a .mode-list marked hidden
+       still shows, because `display:flex` from the class outranks the UA stylesheet's [hidden]. */
+    [hidden] { display: none !important; }
+
+    /* ---- Scrollbars ------------------------------------------------------------------------ */
+    * { scrollbar-width: thin; scrollbar-color: rgba(233,189,109,.45) transparent; }
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,.18); border-radius: 8px; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(233,189,109,.6), rgba(184,132,64,.55)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(255,214,130,.8), rgba(210,155,80,.7)); background-clip: padding-box; }
+
+    /* ---- Rating chip (replaces the old "Эло" badge) ---------------------------------------- */
+    .rating-chip { display: none; align-items: baseline; gap: 6px; padding: 5px 12px; border: 1px solid rgba(233,189,109,.3); border-radius: 999px; background: rgba(233,189,109,.08); white-space: nowrap; }
+    .rating-chip.show { display: inline-flex; }
+    .rating-chip .lbl { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #8ba3a6; }
+    .rating-chip b { font-size: 14px; font-variant-numeric: tabular-nums; color: #ffe1a1; }
+    .rating-chip .elo-delta { font-size: 11px; font-variant-numeric: tabular-nums; }
+    .rating-chip .elo-delta.up { color: #8fe0a4; } .rating-chip .elo-delta.down { color: #ff9a8a; }
+    .name-rating { font-size: 11px; color: #9fb4b4; font-variant-numeric: tabular-nums; }
+
+    /* ---- Friends --------------------------------------------------------------------------- */
+    .code-box { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px dashed rgba(233,189,109,.4); border-radius: 13px; background: rgba(233,189,109,.06); margin-bottom: 14px; }
+    .code-box .code { font-family: Georgia, serif; font-size: 21px; letter-spacing: .22em; color: #ffe1a1; }
+    .code-box .hint { flex: 1; min-width: 0; font-size: 11.5px; color: #8ba3a6; }
+    .friend-dot { width: 8px; height: 8px; border-radius: 50%; background: #4d5f63; flex: 0 0 auto; }
+    .friend-dot.on { background: #7ed69a; box-shadow: 0 0 9px rgba(126,214,154,.7); }
+    .row-actions { display: flex; gap: 6px; }
+    .row-actions button { padding: 6px 11px; font-size: 12px; border-radius: 9px; border: 1px solid rgba(255,225,167,.22); background: rgba(255,255,255,.05); color: #f0e2c6; cursor: pointer; }
+    .row-actions button:hover { border-color: rgba(255,216,132,.5); background: rgba(255,211,121,.1); }
+    .row-actions button.accent { border-color: rgba(233,189,109,.5); background: rgba(233,189,109,.14); color: #ffe4ab; }
+    .section-head { margin: 14px 0 8px; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: #7d9498; }
+    .section-head:first-child { margin-top: 0; }
+
+    /* Opponent's legal cells: cold blue so it never reads as "your move" (which is warm gold). */
+    .cell.enemy-hint { border-color: rgba(122,178,214,.75); box-shadow: 0 0 0 2px rgba(110,170,215,.22), 0 0 14px rgba(96,160,210,.4); }
+    .cell.enemy-hint::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; background: radial-gradient(circle, rgba(120,180,220,.4), transparent 70%); opacity: .5; pointer-events: none; }
+
     .clock-bar { display: none; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; width: 100%; max-width: 680px; margin: 0 auto 8px; }
     .clock-bar.show { display: grid; }
     .clock-side { display: flex; align-items: center; gap: 9px; padding: 8px 13px; border: 1px solid rgba(255,225,167,.16); border-radius: 14px; background: rgba(0,0,0,.28); transition: border-color .2s, box-shadow .2s; }
@@ -562,6 +629,12 @@
 
     @media (max-width: 900px) {
       .profile-copy { display: none; }
+      /* The wordmark is the first thing to go: on a phone the rating chip and the icon buttons
+         must never be pushed into it (this is what caused the overlap on the reported screenshot). */
+      .brand-name { display: none; }
+      .topbar { gap: 10px; padding-left: 12px; padding-right: 12px; }
+      .rating-chip { padding: 4px 9px; }
+      .rating-chip .lbl { display: none; }
       .game-shell {
         min-height: calc(100dvh - 66px);
         grid-template-columns: 1fr 1fr;
@@ -622,6 +695,19 @@
   </style>
 </head>
 <body>
+  <div class="splash" id="splash" role="status" aria-label="Загрузка KODO GAMES">
+    <div class="splash-inner">
+      <div class="mark-wrap">
+        <div class="halo"></div>
+<svg class="mark" viewBox="0 0 968 1024" aria-hidden="true">
+        <path fill="currentColor" d="M480.3 4.5a7620 7620 0 0 1-136.1 138.7c-4 3.7-7.2 7.5-7.2 8.4 0 1.7 17.3 20.3 42.8 45.9 13.4 13.5 17.3 18.5 14.3 18.5-.4 0-9.8 8.8-20.7 19.6a1342 1342 0 0 1-30.4 29.2 126 126 0 0 0-11.3 10.9c-.9 1.4.7 3 34.9 36.2 15.4 15 36.1 35.3 94.5 92.8a259 259 0 0 0 21.8 20.3c2.8 0 24.9-19.9 45.9-41.5 20.3-20.8 37.9-38.2 91.8-90.7 6.1-5.9 11.8-11.6 12.8-12.7 1.8-2 1.5-2.4-19.5-24.2-11.8-12.2-26-26.9-31.6-32.5a89 89 0 0 1-10.3-11.2c0-.5 2.8-3.5 6.3-6.8a1149 1149 0 0 0 54.6-54.2c-.8-2-49.1-51.3-98.2-100.1L483.9.5zm38.9 83.1c26.1 26.6 38.2 38.7 51.1 51.2 6.4 6.3 11.7 11.5 11.7 11.7s-13.9 14.3-31 31.2c-17 16.9-31 31.1-31 31.5 0 .7 17.5 18.3 49.4 49.7 8 7.9 14.6 14.6 14.6 15 0 1.1-78 77.6-79.5 77.9q-1.2.1-2-1.5c-1.6-3.8-3.1-284.3-1.6-284.3.5 0 8.7 7.9 18.3 17.6M467 213.4c0 128.4-.2 141.4-1.6 142-1.1.4-5.7-3.3-15.2-12.5-26.3-25.3-66.2-66.3-66.2-67.9 0-.9.9-2.1 1.9-2.6a648 648 0 0 0 29.6-27.9 555 555 0 0 1 30.1-28.3c3.3-1.8 3-4.6-.8-7.4l-6.8-5.2c-6-5-51-51-50.8-51.7.2-.4 15.4-16 33.8-34.7 18.4-18.6 35.8-36.4 38.5-39.5 2.8-3 5.5-5.6 6.2-5.6 1-.1 1.2 31 1.3 141.3M709.5 30.8a1133 1133 0 0 1-36.9 38.9c-9.9 10-18.2 18.7-18.4 19.3-.3.7 4.2 5.6 10 11a60 60 0 0 1 13.2 15.4c2.9 5.7 2.9 5.7 2.2 19.4-.8 16.8-3.3 37.6-5.1 41.8a106 106 0 0 1-20.7 24.3c-3.8 3-6.8 6.1-6.8 6.7s2.6 3.6 5.7 6.6c8.2 7.6 13.9 13.5 19.4 20.1l4.9 5.8v41.2l.1 41.2-28.2 27.8a1356 1356 0 0 1-38.6 36.9 71 71 0 0 0-10.3 10.4c0 .7 1.5 2.1 3.3 3.1 3.2 2 29.9 25.4 32.6 28.6.7.9 1.8 1.7 2.3 1.7 2.7 0 32.2-27.4 62.1-57.7l11.7-12V196.2c0-90.8-.4-165.3-.8-165.6q-.8-.3-1.7.2m-454 4.3c-.9 2.8-.8 235.1.1 285.3l.7 40 4.6 4.9 7.6 8.4c1.6 1.9 6.6 6.9 10.9 11.2 13.7 13.2 37.3 36.9 41.9 42.1 2.5 2.8 5.3 5 6.2 5s3.6-1.9 5.9-4.3a750 750 0 0 1 17.9-17.1 69 69 0 0 0 13.5-14.5c-.2-.9-10.2-11.1-22.2-22.6-30.2-28.9-50.4-50.2-51.4-53.9-.5-1.7-1-13.9-1.1-27.1-.1-23.2-.7-36.5-1.7-43.3-.5-3 .4-4.1 14.6-18.8 12.1-12.6 15-16.2 15-18.5 0-1.5-.8-3.4-1.8-4.1a174 174 0 0 1-25.2-28.4c-3-6.8-4.3-22.3-3.7-42.7.7-20.4.3-19.3 16.9-36.3C310.7 93.8 316 88 316 87.7c0-1-4.8-5.6-18.5-17.6a807 807 0 0 1-26.2-24.2A145 145 0 0 0 257.2 33q-1 .1-1.7 2.1m693.1 9.1c-.3 1.8-.7 8.5-1 14.8a202 202 0 0 1-14.2 60.5 7 7 0 0 0-1.4 3.3 260 260 0 0 1-15.2 30.3c-8.9 15.5-26 35.3-41.3 47.8a204 204 0 0 1-103 43.3c-16.2 1.3-17.7 1.7-18.6 5.2-.4 1.5-.7 32.3-.6 68.4l.2 65.7 2.4.3c7.3 1.1 49.1-8.4 61.9-13.9 2.3-1.1 4.7-1.9 5.2-1.9 1.9 0 28.3-13.3 36.5-18.5 21.8-13.6 31-21.1 46.5-38 17.4-19.1 35-47.5 44-71l4.1-10.7c1.1-2.6 1.9-5.5 1.9-6.5 0-1.1.9-4.6 1.9-7.9a219 219 0 0 0 6.7-32.4c.3-3.6 1.2-8 2-9.9 2-4.8 2-54.8 0-60.6-.8-2.2-1.7-7.4-2.1-11.5a260 260 0 0 0-8.5-44.4c0-2.1-5.3-15.6-6.1-15.6-.4 0-1 1.5-1.3 3.2m-933.4.5a26 26 0 0 0-3.2 7.9l-2.5 9.9c-2.3 7.9-5.4 23.4-6 30.1-.4 3.4-1.3 7.4-2.1 8.9-2.1 4-2.1 73.3 0 77.3.8 1.5 1.7 5.4 2.1 8.7a211 211 0 0 0 14.7 52c14.1 35.6 39.2 70 68.8 94.5a222 222 0 0 0 85 42.6 398 398 0 0 0 26.7 5.5c15.5 2.7 15.5 2.7 14.9-8.5-.2-4.5-.5-35-.5-67.9-.1-46.9-.4-59.8-1.3-60.1-.7-.2-6.5-.8-12.8-1.4a210 210 0 0 1-71.1-21.5C81.3 198.8 44.1 153.1 27.8 100a192 192 0 0 1-8.4-45c-.8-12.9-1.4-14.3-4.2-10.3m204.4 351.8c-.3.8-.5 65.1-.6 142.9v141.4l-20 20.3a184 184 0 0 0-20 22c0 1 1.5 3.2 3.3 4.8a134 134 0 0 0 19.4 15.1c.7 0 5.2-3.9 10-8.8 9.8-9.7 20.8-19.2 22.5-19.2.6 0 7.5 6.3 15.3 14s14.9 14 15.5 14a45 45 0 0 0 8.8-7.1c4.4-4.1 8.7-7.3 10.4-7.6s3.2-1.2 3.5-2-3.5-5.7-9.4-12.1a409 409 0 0 1-18.1-21l-8.2-10.4.2-69.1c.4-115.7.7-136.7 2.2-136.7 1.2 0 58.3 57.1 65.8 65.8l3.7 4.3-.5 67.7c-.3 37.2-1 90-1.6 117.2-.5 27.2-1 51.7-.9 54.5 0 4.9 1.4 13.5 5.1 30.5 2.1 9.9 5.1 25.4 8 42.5l3.6 20.5c.8 4.7 1.9 12.5 2.5 17.5.5 4.9 1.4 10.6 1.9 12.5s1.2 6.2 1.5 9.5 1.3 8.7 2 12l2 11.5c1 8.4 2.5 13.2 3.8 12.7 1.9-.6 3.1-47.1 4.7-187.2 1.2-107.4 3-184.7 4.2-186 .6-.6 15.3 13.5 40.1 38.6 21.6 21.8 45.4 45.4 53 52.4l13.7 12.7v56.6l-10.7 10.9a848 848 0 0 0-24.5 25.8c-7.6 8.3-16 16.8-18.8 18.9-2.7 2.1-5 4.6-5 5.6s5 6.4 11.1 12.1l11.1 10.3 3.1-3.9c6.3-8.1 29.5-30.5 31.6-30.5 2 0 2.1.6 2.3 13.7.1 7.6.1 14.8 0 16.1 0 1.6-6.4 8.5-19.9 22C426 865 412 880.1 412 882c0 2.1 17.9 18 20.1 18 .8 0 8.6-7 17.4-15.5S466 869 466.6 869c.9 0 1.3 4.6 1.6 16.3l.3 16.2-17.1 17c-21.3 21.2-37.4 38.9-37.4 41.1 0 1.9 16.8 19.9 18.5 19.9a66 66 0 0 0 10.7-10.5c11.3-12.6 20.8-21 23.6-21 2.3 0 2.6.8 4.2 10a1024 1024 0 0 0 6.6 34.1c.8 3.6 1.9 10.5 2.4 15.3 1 8.8 2.2 12.6 4 12.6q2.5 0 4.1-12c.5-4.4 1.4-9.1 1.9-10.4s1.2-5.3 1.5-8.8c.4-3.4 1.5-11.3 2.5-17.3 1.1-6.1 2.2-13.8 2.6-17.3.5-4.5 1.1-6.2 2.1-6.2q3.3 0 23.1 19.5c6.2 6 12.2 11.4 13.3 11.9 1.6.8 2.8 0 7.2-5 2.9-3.2 6.6-7.4 8.4-9.2q3.1-3.4 2.6-5c-1.1-3-11.3-14.3-31.4-34.7a219 219 0 0 1-20.8-22.8c-.6-1.6-1.1-9.6-1.1-17.8 0-12 .3-14.9 1.4-14.9 1.6 0 10.8 8.1 23.5 20.7 7.6 7.5 9.9 9.3 11.5 8.8a91 91 0 0 0 18.6-20.9c0-.8-1.3-2.2-2.9-3-3-1.6-27.7-27.1-35.4-36.6-2.4-3-7.4-8.3-11.1-11.7l-6.6-6.1v-15.1c0-14.5.1-15.1 2-15.1 1.1 0 2.3.7 2.6 1.4.3.8 6.1 6.5 12.9 12.6s14.3 13 16.6 15.5 4.5 4.5 4.8 4.5c.9 0 20.1-20.9 20.1-21.9a548 548 0 0 1-55.7-56.3c-4-4.6-4.1-4.7-4.7-15-.4-5.6-.6-18.4-.4-28.2l.3-17.9 4-4.2c2.2-2.3 8.3-8.1 13.5-13l23.5-22.5c7.7-7.5 20.1-19.2 27.5-26s19.7-18.6 27.2-26 14.4-13.5 15.3-13.5c1.3 0 1.5 9.8 1.9 78.5.8 111.3 4.1 292.4 5.5 297.7.8 3.2 2.5 3 3.3-.4a645 645 0 0 0 4.9-34.3c.5-4.1 1.6-10.7 2.4-14.5s2.4-12.6 3.5-19.5l3.7-21 2.8-15.5 2.3-12.5c6.8-34.6 7.2-41.5 6.2-107.8-.5-32.3-.9-87.1-1-121.8v-63l34.6-34.2c19-18.8 35-34.2 35.5-34.2q.8.2.9 1.2c-.1.7 0 43.3.2 94.6.2 77.4.1 93.4-1 94.1-.8.5-8.2 1.1-16.5 1.4-15.9.6-19.3 1.1-20 3.1-.3.7 1.8 4.2 4.6 7.8 4.8 6.1 8.2 10.9 21.5 30.1l10.7 15.1 12 17c3.3 4.7 6.5 8.6 7.2 8.6s1.8-1 2.4-2.3a1591 1591 0 0 1 27.9-43.2c0-1.8 20.3-30.1 23.3-32.3 2.6-2 2.2-5-.9-5.8-1.5-.4-10-.4-18.9-.2s-16.7.3-17.3-.1c-.8-.5-1.1-38.7-1.3-132.6 0-72.5-.3-132.4-.6-133.2-.7-1.7-4-1.7-5 .1a82 82 0 0 1-8.6 7.6c-4.3 3.4-29.5 27.9-56.1 54.4-84.7 84.2-107.7 106.9-123.2 120.8a1823 1823 0 0 0-42.9 41.2 333 333 0 0 1-29.6 27.6c-1 0-2.2-.6-2.6-1.4s-4.8-4.8-9.6-9c-4.9-4.1-40.7-39.4-79.7-78.3-83.8-83.7-65.8-65.6-122.1-122.3-25.7-25.9-47.1-47-47.7-47q-.9.1-1.6 1.5M740 700.9c0 1.1-.4 2.2-.9 2.5-1.2.8-3.4-2.1-2.6-3.4 1.1-1.7 3.5-1.1 3.5.9M375.5 434.1l-19.3 19.4-4.2 4.3 2.2 3.6c1.3 1.9 3.1 3.5 4 3.6.9 0 4.4-2.2 7.8-4.9 9.3-7.5 34-31.4 34-33 0-1.5-6.8-8.1-8.5-8.1-.6 0-7.8 6.8-16 15.1m194.8-11.4c-1.8 2.1-3.3 4.4-3.3 5.3 0 2.4 37.9 39 40.4 39 1.9 0 6.8-5.6 6.4-7.4-.1-.9-7.7-9.3-16.8-18.7a306 306 0 0 1-17.8-19.5c-1.8-3.5-5.1-3-8.9 1.3m-166.8 29.5-16.7 17.4c-4.3 4.5-7.8 9-7.8 10 0 2 32.3 34.5 75.6 76.1 20.3 19.5 27.9 26.3 29.5 26.3 2.1 0 18.6-15.2 58.4-54 39.1-38.2 45.4-44.2 47.4-45.7 2.7-1.9 2.7-4.7-.2-6.6-1.2-.8-9.3-8.5-18-17.1a119 119 0 0 0-17.4-15.6c-.9 0-16.4 14.7-34.5 32.7-18 18.1-33.2 32.9-33.8 33.1s-1.9-.3-2.8-1.1c-1-.9-3.6-2.9-5.9-4.4a694 694 0 0 1-33.4-31.6 604 604 0 0 0-30.5-28.7c-.6 0-5 4.2-9.9 9.2"/>
+      </svg>
+      </div>
+      <div class="brand-lockup"><svg viewBox="0 0 12188 1000" fill="currentColor" aria-label="KODO GAMES" role="img"><path d="M69.6 1000V250H276v585l-55-43 424.6-542h219.2l-607.6 750Zm358.8-357.8 151.2-125.8L875.2 1000H639.6Zm1304 374.2q-133.4 0-233.7-49t-156.1-137.1-55.8-205.3 55.8-205.3 156.1-137.1 233.7-49 233.7 49 156.1 137.1T2178 625t-55.8 205.3-156.1 137.1-233.7 49m0-185.2q73 0 125.8-24.9t81.5-71.2 28.7-110.1-28.7-110.1-81.5-71.2-125.8-24.9q-72.6 0-125.6 24.9t-81.7 71.2-28.7 110.1 28.7 110.1 81.7 71.2 125.6 24.9M3039 250q133.4 0 233.5 46.7t155.9 130.9 55.8 197.4q0 112.6-55.8 197.1t-155.9 131.2T3039 1000h-374.4V250Zm-168 662.6-98.8-97h282.4q67.4 0 116.9-23.5t76.3-66.4 26.8-100.7q0-58.8-26.8-101.2t-76.3-65.9-116.9-23.5h-282.4l98.8-97Zm1512.4 103.8q-133.4 0-233.7-49t-156.1-137.1-55.8-205.3 55.8-205.3 156.1-137.1 233.7-49 233.7 49 156.1 137.1T4829 625t-55.8 205.3-156.1 137.1-233.7 49m0-185.2q73 0 125.8-24.9t81.5-71.2 28.7-110.1-28.7-110.1-81.5-71.2-125.8-24.9q-72.6 0-125.6 24.9t-81.7 71.2-28.7 110.1 28.7 110.1 81.7 71.2 125.6 24.9m2328.6-156q-2.8 67.6-27.3 129.1t-71 109.4-115.9 75.3-162.2 27.4q-87.8 0-164.7-25.8t-135.2-75.7-91.1-122.8-32.8-167.1 33-167.1 92.4-122.8 138.2-75.7 171.4-25.8q124 0 214.1 38.1T6706.1 376t70.7 152.6h-209q-9.8-38-40.3-65.3t-76.1-42-103.8-14.7q-70 0-121 24.7t-78.7 73.1-27.7 120.6q0 72.8 29.9 122.8t85.2 75.2 130.7 25.2q73 0 128.8-20.7t89.3-60.4 38.9-96.3ZM6386 758V611.8h397.6V1000H6637l-29.2-296.6 39.4 54.6Zm1048.4 97.6V689h516.2v166.6ZM7832.8 250l341.4 750h-221.4l-286.2-661.6h60L7440.4 1000H7219l341.4-750Zm1888.4 0v750h-197.4V324.2l44.6 4.4-290.8 671.4h-209.4l-290.8-669.2 44.6-5V1000h-197.4V250h320.2l268.8 643.8h-79.8L9401 250Zm1160.4 299.6v150.8H10333V549.6ZM10474 625l-48.8 301.4-84-94.4h574.2v168h-697.2l57-375-57-375h692.2v168h-569.2l84-94.4Zm907.2 129.2h210.8q4.8 31.2 28.8 54.1t64.6 35.4 95.4 12.5q76.4 0 120.1-19.8t43.7-57.6q0-28.4-25-44.7t-96-23.1l-139.2-13.2q-155.8-13.8-225.4-70.2t-69.6-152.8q0-78 45.4-131.8t127.7-81.6 192.7-27.8q108.2 0 191.9 30.9t133.2 86.5 54.1 130h-210.8q-3.8-26.8-25.1-46.2t-58.5-30.2-89-10.8q-69.8 0-110.7 18.6t-40.9 54.4q0 26.2 24.1 42t88.3 22.6l149.6 14.6q106.4 9.8 170.6 34.5t93.1 67.5 28.9 107.2q0 78.6-47 137.4t-131.9 91.3-198.1 32.5q-116.4 0-204.6-32.8t-138.3-92-52.9-137.4"/></svg></div>
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+  </div>
+
   <div class="app" id="app">
     <header class="topbar">
       <div class="brand" aria-label="Pyramide">
@@ -633,7 +719,7 @@
           <div class="level-ring" id="profileLevel">1</div>
           <div class="profile-copy"><strong id="profileRank">Носильщик</strong><span id="profileXp">0 / 120 опыта</span></div>
         </div>
-        <div class="elo-badge" id="eloBadge" title="Рейтинг в онлайн-матчах"><span data-i18n="elo.label">Эло</span> <b id="eloValue">1000</b><span class="elo-delta" id="eloDelta"></span></div>
+        <div class="rating-chip" id="ratingChip" title="Рейтинг в онлайн-матчах"><span class="lbl">Рейтинг</span><b id="eloValue">1000</b><span class="elo-delta" id="eloDelta"></span></div>
         <button class="icon-btn" id="soundQuick" aria-label="Выключить звук" title="Звук">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 9v6h4l5 4V5L9 9H5Z"/><path class="sound-wave" d="M17 8c1 1 1.5 2.3 1.5 4S18 15 17 16M19.5 5.5c2 1.8 3 3.9 3 6.5s-1 4.7-3 6.5"/></svg>
         </button>
@@ -701,39 +787,62 @@
           <div class="menu-stat"><b id="statBlitz">—</b><span>Блиц</span></div>
           <div class="menu-stat"><b id="statWins">0</b><span data-i18n="stat.wins">Побед</span></div>
         </div>
-        <div class="menu-section-label" data-i18n="menu.chooseMode">Выберите режим</div>
-        <div class="mode-list">
+        <div class="mode-list" id="menuRoot">
+          <button class="mode-btn" id="menuPlay"><span class="mode-icon">&#9654;</span><span><strong>Играть</strong><small>Онлайн, с ботом или вдвоём</small></span><span class="mode-chevron">&#9654;</span></button>
+          <button class="mode-btn" id="openHistory"><span class="mode-icon">&#8986;</span><span><strong>История партий онлайн</strong><small>Только рейтинговые матчи и их финальные позиции</small></span></button>
+          <button class="mode-btn" id="openLeaderboard"><span class="mode-icon">&#9733;</span><span><strong>Лидеры рейтинга</strong><small>Лучшие игроки Классики и Блица</small></span></button>
+          <button class="mode-btn" id="openFriends"><span class="mode-icon">&#128101;</span><span><strong>Друзья</strong><small>Добавляйте и вызывайте на партию</small></span></button>
+        </div>
+
+        <div class="mode-list" id="menuModes" hidden>
           <button class="mode-btn" id="onlineMode" aria-expanded="false"><span class="mode-icon">&#9733;</span><span><strong data-i18n="mode.online">Рейтинговый онлайн</strong><small data-i18n="mode.onlineSub">Соперники по силе, очки рейтинга</small></span><span class="mode-chevron">&#9654;</span></button>
           <div class="difficulty" id="onlineModes" data-cols="2">
             <button class="selected" data-online-mode="classic" data-i18n="tc.classic">Классика<small data-i18n="tc.classicSub">5 мин + 10 сек</small></button>
             <button data-online-mode="blitz" data-i18n="tc.blitz">Блиц<small data-i18n="tc.blitzSub">2 мин + 3 сек</small></button>
           </div>
           <button class="primary-btn" id="startOnline" hidden data-i18n="menu.findOpponent">Искать соперника</button>
+
           <button class="mode-btn" id="botMode" aria-expanded="false"><span class="mode-icon">AI</span><span><strong data-i18n="mode.bot">Игра с хранителем</strong><small data-i18n="mode.botSub">Три уровня сложности</small></span><span class="mode-chevron">&#9654;</span></button>
           <div class="difficulty" id="difficulty">
             <button data-level="easy" data-i18n="diff.easy">Ученик</button><button class="selected" data-level="medium" data-i18n="diff.medium">Зодчий</button><button data-level="hard" data-i18n="diff.hard">Визирь</button>
           </div>
+          <div class="difficulty" id="botClock" data-cols="3">
+            <button class="selected" data-offline-clock="off">Без часов</button>
+            <button data-offline-clock="classic">Классика<small>5+10</small></button>
+            <button data-offline-clock="blitz">Блиц<small>2+3</small></button>
+          </div>
           <button class="primary-btn" id="startBot" hidden data-i18n="menu.startMatch">Начать партию</button>
-          <button class="mode-btn" id="localMode"><span class="mode-icon">II</span><span><strong data-i18n="mode.local">Два игрока рядом</strong><small data-i18n="mode.localSub">Передавайте устройство после каждого хода</small></span></button>
+
+          <button class="mode-btn" id="localMode" aria-expanded="false"><span class="mode-icon">II</span><span><strong data-i18n="mode.local">Два игрока рядом</strong><small data-i18n="mode.localSub">Передавайте устройство после каждого хода</small></span><span class="mode-chevron">&#9654;</span></button>
+          <div class="difficulty" id="localClock" data-cols="3">
+            <button class="selected" data-offline-clock="off">Без часов</button>
+            <button data-offline-clock="classic">Классика<small>5+10</small></button>
+            <button data-offline-clock="blitz">Блиц<small>2+3</small></button>
+          </div>
+          <button class="primary-btn" id="startLocal" hidden>Начать партию</button>
+
+          <button class="secondary-btn" id="menuBack" style="margin-top:4px">Назад</button>
         </div>
-        <div class="menu-footer">
-          <button class="text-btn" id="openLeaderboard">Лидеры</button>
-          <button class="text-btn" id="openHistory">История</button>
-          <button class="text-btn" data-open="rulesModal" data-i18n="menu.howToPlay">Как играть</button>
-          <button class="text-btn" data-open="settingsModal" data-i18n="menu.settings">Настройки</button>
-        </div>
+        <div class="menu-footer"><button class="text-btn" data-open="rulesModal" data-i18n="menu.howToPlay">Как играть</button><button class="text-btn" data-open="settingsModal" data-i18n="menu.settings">Настройки</button></div>
       </div>
     </div>
   </div>
 
   <div class="modal-backdrop" id="rulesModal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
     <div class="modal">
-      <div class="modal-head"><div><h2 id="rulesTitle">Правила за минуту</h2><p>Четыре шага, которые легко запомнить</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
+      <div class="modal-head"><div><h2 id="rulesTitle">Как играть</h2><p>Пять правил — и вы готовы</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
       <div class="modal-body rule-steps">
-        <article class="rule-step"><div><h3>Бросьте кубик</h3><p>Число от 1 до 5 разрешает выбрать клетку в этом ряду или клетку с этим номером на вашей половине.</p></div><div class="rule-visual"><span class="demo-cell">3</span><span class="warning-line"></span><span class="demo-cell on">3</span><span class="demo-cell">2</span><span class="demo-cell on">3</span></div></article>
-        <article class="rule-step"><div><h3>Выберите цвет</h3><p>У каждого игрока 7 желтых, 7 зеленых и 2 фиолетовых камня. Цвет можно менять до постановки.</p></div><div class="rule-visual"><span class="mini-stone stone-yellow"></span><span>7</span><span class="mini-stone stone-green"></span><span>7</span><span class="mini-stone stone-purple"></span><span>2</span></div></article>
-        <article class="rule-step"><div><h3>Шестерка открывает вашу территорию</h3><p>При 6 можно занять любую свободную клетку своей половины и вашу атакующую ножку под половиной соперника. Чужие клетки недоступны.</p></div><div class="rule-visual rule-six"><span class="demo-cell on">1</span><span class="demo-cell on">2</span><span class="demo-cell attack">6</span></div></article>
-        <article class="rule-step"><div><h3>Не соберите три одинаковых</h3><p>Три камня одного цвета по горизонтали, вертикали или диагонали проигрывает сторона, где лежат два из трех. Сначала проверяется эта ловушка, затем заполнение 15 клеток.</p></div><div class="rule-visual"><span class="demo-cell"><i class="mini-stone stone-green"></i></span><span class="demo-cell"><i class="mini-stone stone-green"></i></span><span class="demo-cell"><i class="mini-stone stone-green"></i></span></div></article>
+        <article class="rule-step"><div><h3>1. Бросьте кубик</h3><p>Выпало от 1 до 5 — ставьте камень на клетку этого уровня <b>или</b> с этим номером на своей половине.</p></div><div class="rule-visual"><span class="demo-cell">3</span><span class="warning-line"></span><span class="demo-cell on">3</span><span class="demo-cell">2</span><span class="demo-cell on">3</span></div></article>
+
+        <article class="rule-step"><div><h3>2. Выберите цвет</h3><p>У каждого 7 жёлтых, 7 зелёных и 2 фиолетовых камня. Цвет можно поменять до того, как поставите.</p></div><div class="rule-visual"><span class="mini-stone stone-yellow"></span><span>7</span><span class="mini-stone stone-green"></span><span>7</span><span class="mini-stone stone-purple"></span><span>2</span></div></article>
+
+        <article class="rule-step"><div><h3>3. Шестёрка открывает территорию</h3><p>При 6 занимайте любую свободную клетку своей половины или свою атакующую ножку под половиной соперника. Чужие клетки по-прежнему недоступны.</p></div><div class="rule-visual rule-six"><span class="demo-cell on">1</span><span class="demo-cell on">2</span><span class="demo-cell attack">6</span></div></article>
+
+        <article class="rule-step"><div><h3>4. Не собирайте три одинаковых — это поражение</h3><p>Три камня одного цвета подряд по горизонтали, вертикали или диагонали. Проигрывает та сторона, на которой лежат <b>два из трёх</b>. Если линия делится поровну — проигрывает тот, кто поставил последний камень.</p></div><div class="rule-visual"><span class="demo-cell"><i class="mini-stone stone-green"></i></span><span class="demo-cell"><i class="mini-stone stone-green"></i></span><span class="demo-cell"><i class="mini-stone stone-green"></i></span></div></article>
+
+        <article class="rule-step"><div><h3>5. Как победить</h3><p><b>Заполните свою половину первым</b> — 15 клеток, не считая атакующей ножки. Она в счёт не идёт.<br><br>Также вы побеждаете, если соперник собрал три в ряд, сдался или у него закончилось время.</p></div><div class="rule-visual"><span class="demo-cell on">1</span><span class="demo-cell on">2</span><span class="demo-cell on">3</span></div></article>
+
+        <article class="rule-step"><div><h3>Ничья</h3><p>Бывает, когда один ход закрывает запретную линию сразу у обоих игроков. Тогда рейтинг почти не меняется.</p></div><div class="rule-visual"><span class="demo-cell"><i class="mini-stone stone-yellow"></i></span><span class="warning-line"></span><span class="demo-cell"><i class="mini-stone stone-purple"></i></span></div></article>
       </div>
     </div>
   </div>
@@ -779,9 +888,54 @@
     </div>
   </div>
 
+  <div class="modal-backdrop" id="friendsModal" role="dialog" aria-modal="true" aria-labelledby="friendsTitle">
+    <div class="modal" style="width:min(520px,100%)">
+      <div class="modal-head"><h2 id="friendsTitle">Друзья</h2><button class="icon-btn" data-close="friendsModal" aria-label="Закрыть">&#10005;</button></div>
+      <div class="modal-body">
+        <div class="code-box">
+          <div><div class="code" id="myFriendCode">------</div></div>
+          <div class="hint">Ваш код. Передайте его другу, чтобы он вас добавил.</div>
+          <button class="secondary-btn" id="copyCode" style="padding:7px 13px">Копировать</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:6px">
+          <input class="name-input" id="friendCodeInput" maxlength="10" placeholder="Код друга" autocomplete="off" style="text-transform:uppercase">
+          <button class="secondary-btn" id="addFriend" style="padding:0 16px;white-space:nowrap">Добавить</button>
+        </div>
+        <div class="data-list" id="friendsList" style="max-height:44vh"><div class="empty-note">Загрузка...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal" style="width:min(400px,100%)">
+      <div class="modal-body result-copy" style="padding-top:26px">
+        <h2 id="confirmTitle">Выйти в меню?</h2>
+        <p id="confirmText">Партия ещё идёт.</p>
+        <div class="result-actions">
+          <button class="secondary-btn" id="confirmNo">Остаться</button>
+          <button class="primary-btn" id="confirmYes">Выйти</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="inviteModal" role="dialog" aria-modal="true" aria-labelledby="inviteTitle">
+    <div class="modal" style="width:min(400px,100%)">
+      <div class="modal-body result-copy" style="padding-top:26px">
+        <div class="result-mark">&#9876;</div>
+        <h2 id="inviteTitle">Вызов на партию</h2>
+        <p id="inviteText">Друг приглашает вас сыграть.</p>
+        <div class="result-actions">
+          <button class="secondary-btn" id="inviteDecline">Отклонить</button>
+          <button class="primary-btn" id="inviteAccept">Принять</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="historyModal" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
     <div class="modal" style="width:min(520px,100%)">
-      <div class="modal-head"><h2 id="historyTitle">История матчей</h2><button class="icon-btn" data-close="historyModal" aria-label="Закрыть">&#10005;</button></div>
+      <div class="modal-head"><h2 id="historyTitle">История партий онлайн</h2><button class="icon-btn" data-close="historyModal" aria-label="Закрыть">&#10005;</button></div>
       <div class="modal-body">
         <div class="data-list" id="historyList"><div class="empty-note">Загрузка...</div></div>
       </div>
@@ -885,7 +1039,8 @@
         matchNumber: 0,
         result: null,
         timers: [],
-        online: null // { client, side, matchId, revision, clock, turnDeadline, timeOffset, opponentName, onlineMode }
+        online: null, // { client, side, matchId, revision, clock, turnDeadline, timeOffset, opponentName, onlineMode }
+        offlineClock: { mode: "off", L: 0, R: 0, increment: 0, turnStart: 0 }
       };
 
       const storedSettings = safeJson(storage.get("pyramide.settings"), {});
@@ -937,7 +1092,11 @@
           const el = cellEls.get(cell.id);
           const placed = state.board[cell.id];
           el.classList.toggle("occupied", Boolean(placed));
-          el.classList.toggle("valid", state.phase === "place" && state.legal.includes(cell.id) && canActLocally());
+          const isLegal = state.phase === "place" && state.legal.includes(cell.id);
+          el.classList.toggle("valid", isLegal && canActLocally());
+          // Item 5: while the opponent is choosing, their options are shown in cold blue so the
+          // player can follow the game instead of staring at a frozen board.
+          el.classList.toggle("enemy-hint", isLegal && !canActLocally() && state.phase !== "gameover");
           el.classList.toggle("last", state.lastCell === cell.id);
           if (placed) {
             if (!$(".piece", el)) el.insertAdjacentHTML("beforeend", `<span class="piece ${placed.color}"><i class="owner-notch ${placed.player}"></i></span>`);
@@ -950,7 +1109,7 @@
         dom.panelR.classList.toggle("active", state.active === "R" && state.phase !== "gameover");
         $("#turnL").textContent = turnLabel("L");
         $("#turnR").textContent = turnLabel("R");
-        renderReserve("L"); renderReserve("R"); renderPicker(); renderStatus(); renderClocks();
+        renderReserve("L"); renderReserve("R"); renderPicker(); renderStatus(); renderClocks(); updateProfile();
         dom.rollButton.disabled = state.phase !== "roll" || !canActLocally();
         dom.rollButton.setAttribute("aria-label", state.roll ? `На кубике ${state.roll}` : "Бросить кубик");
       }
@@ -964,13 +1123,28 @@
 
       function renderClocks() {
         const bar = $("#clockBar");
-        if (!isOnline()) { bar.classList.remove("show"); return; }
+        const timed = isOnline() || state.offlineClock.mode !== "off";
+        if (!timed || state.phase === "menu") { bar.classList.remove("show"); return; }
         bar.classList.add("show");
-        const you = state.online.side;
-        $("#clockWhoL").textContent = you === "L" ? "Вы" : state.online.opponentName;
-        $("#clockWhoR").textContent = you === "R" ? "Вы" : state.online.opponentName;
+
+        let names, clocks;
+        if (isOnline()) {
+          const you = state.online.side;
+          names = { L: you === "L" ? "Вы" : state.online.opponentName, R: you === "R" ? "Вы" : state.online.opponentName };
+          clocks = state.online.clock;
+        } else {
+          names = { L: $("#nameL").textContent, R: $("#nameR").textContent };
+          // The side on the clock is shown counting down live; the idle side shows its stored bank.
+          const spent = Date.now() - state.offlineClock.turnStart;
+          clocks = {
+            L: state.active === "L" && state.phase !== "gameover" ? Math.max(0, state.offlineClock.L - spent) : state.offlineClock.L,
+            R: state.active === "R" && state.phase !== "gameover" ? Math.max(0, state.offlineClock.R - spent) : state.offlineClock.R
+          };
+        }
+        $("#clockWhoL").textContent = names.L;
+        $("#clockWhoR").textContent = names.R;
         for (const side of ["L", "R"]) {
-          const ms = state.online.clock[side] ?? 0;
+          const ms = clocks[side] ?? 0;
           const running = state.active === side && state.phase !== "gameover";
           (side === "L" ? dom.clockL : dom.clockR).textContent = formatClock(ms);
           const box = $(side === "L" ? "#clockSideL" : "#clockSideR");
@@ -1041,6 +1215,7 @@
         $$(".danger", dom.cells).forEach(el => el.classList.remove("danger"));
         dom.die.dataset.face = "1";
         render(); audio.startAmbience(); audio.turn();
+        startOfflineClock();
         Promise.resolve(window.PlatformBridge?.onMatchStart?.()).catch(() => undefined);
       }
 
@@ -1141,6 +1316,7 @@
       }
 
       function nextTurn() {
+        chargeOfflineTurn();
         if (state.phase === "gameover") return;
         state.active = other(state.active); state.phase = "roll"; state.roll = null; state.legal = [];
         const available = COLORS.find(color => state.inventory[state.active][color] > 0);
@@ -1235,6 +1411,7 @@
         rewardButton.disabled = false;
         rewardButton.dataset.gain = String(gain);
         rewardButton.dataset.claimed = "false";
+        stopOfflineClock();
         Promise.resolve(window.PlatformBridge?.onMatchEnd?.(result)).catch(() => undefined);
         audio.finish(Boolean(result.winner === "L"));
         playVfx(result.draw ? "draw" : (state.mode === "bot" || state.mode === "local") && result.winner === "L" ? "win" : state.mode === "bot" ? "loss" : "win");
@@ -1301,7 +1478,7 @@
             if (!this.socket) return reject(new Error("NOT_CONNECTED"));
             this.socket.timeout(8000).emit(event, payload, (err, res) => {
               if (err) return reject(err instanceof Error ? err : new Error("TIMEOUT"));
-              if (res && res.ok === false) return reject(Object.assign(new Error(res.error || "SERVER_ERROR"), { code: res.error }));
+              if (res && res.ok === false) return reject(Object.assign(new Error(res.message || res.error || "SERVER_ERROR"), { code: res.error }));
               resolve(res);
             });
           });
@@ -1312,6 +1489,13 @@
           this.socket.on("game:state", payload => applyServerState(payload));
           this.socket.on("game:complete", payload => applyServerState(payload, { complete: true, rating: payload.rating }));
           this.socket.on("opponent:disconnected", () => showToast("Соперник потерял связь. Ждем возвращения..."));
+          this.socket.on("friends:update", payload => { friendsCache = payload; if ($("#friendsModal").classList.contains("open")) renderFriends(); });
+          this.socket.on("friends:invited", payload => {
+            pendingInvite = payload;
+            $("#inviteText").textContent = `${payload.from} зовёт вас на партию (${ONLINE_MODE_LABELS[payload.mode] || payload.mode}). Дружеские партии не влияют на рейтинг.`;
+            audio.turn(); openModal("inviteModal");
+          });
+          this.socket.on("friends:inviteDeclined", payload => showToast(`${payload.by} отклонил вызов`));
           this.socket.on("opponent:reconnected", () => showToast("Соперник вернулся в игру"));
           this.socket.on("disconnect", () => { if (state.mode === "online" && state.phase !== "gameover") showToast("Связь потеряна, переподключаемся..."); });
           this.socket.on("connect", () => {
@@ -1351,10 +1535,12 @@
           await onlineClient.joinQueue(mode);
         } catch (error) {
           clearInterval(queueTimerId); closeModal("queueModal");
-          const message = error?.message === "SERVER_NOT_CONFIGURED"
-            ? "Онлайн-сервер еще не настроен для этой сборки"
-            : "Не удалось подключиться к серверу. Проверьте соединение";
-          showToast(message);
+          const messages = {
+            SERVER_NOT_CONFIGURED: "Онлайн-сервер ещё не настроен для этой сборки",
+            SDK_LOAD_FAILED: "Не удалось загрузить сетевой модуль",
+            TIMEOUT: "Сервер не отвечает. Попробуйте ещё раз"
+          };
+          showToast(messages[error?.message] || messages[error?.code] || "Нет связи с сервером. Проверьте интернет");
         }
       }
 
@@ -1376,10 +1562,12 @@
         const youLabel = "Вы", opponentLabel = payload.opponent || "Соперник";
         $("#nameL").textContent = payload.side === "L" ? youLabel : opponentLabel;
         $("#nameR").textContent = payload.side === "R" ? youLabel : opponentLabel;
+        renderNameRatings(payload.mode, payload.opponentRating);
         $("#roleR").textContent = "Алый дом";
         $("#matchLabel").textContent = `Рейтинговый матч · ${ONLINE_MODE_LABELS[payload.mode] || payload.mode}`;
         $$(".danger", dom.cells).forEach(el => el.classList.remove("danger"));
         dom.die.dataset.face = "1";
+        stopOfflineClock();
         render(); audio.startAmbience(); audio.turn();
         showToast(`Соперник найден: ${opponentLabel}`);
         Promise.resolve(window.PlatformBridge?.onMatchStart?.()).catch(() => undefined);
@@ -1405,6 +1593,17 @@
         state.online.clock = serverState.clock;
         state.online.timeOffset = Date.now() - serverState.serverTime;
         state.online.turnDeadline = serverState.turnDeadline;
+
+        // Item 5: mirror the die face from the authoritative state so the waiting player actually
+        // sees what the opponent rolled, instead of a stale face from their own last turn.
+        if (Number.isFinite(serverState.roll)) {
+          if (dom.die.dataset.face !== String(serverState.roll)) {
+            dom.die.dataset.face = String(serverState.roll);
+            if (state.active !== state.online.side) audio.reveal(serverState.roll);
+          }
+        } else if (serverState.phase === "roll") {
+          dom.die.dataset.face = "1";
+        }
 
         if (newlyPlaced) audio.place(state.board[newlyPlaced].color);
         else if (skipped) showToast("Нет доступных клеток — ход передан");
@@ -1462,20 +1661,79 @@
         updateProfile();
       }
 
+      // The server is the authority on names, but it is not always reachable (offline play, a file
+      // opened directly, a paused backend). Without a local check a banned name would sit in the
+      // field looking accepted, so the same rules run here too.
+      const NAME_MIN = 2, NAME_MAX = 18;
+      const NAME_LEET = new Map(Object.entries({ "0": "o", "1": "i", "3": "e", "4": "a", "5": "s", "7": "t", "8": "b", "@": "a", "$": "s", "!": "i" }));
+      const NAME_LAT2CYR = new Map(Object.entries({ a: "а", c: "с", e: "е", o: "о", p: "р", x: "х", y: "у", k: "к", m: "м", t: "т", h: "н", b: "в", u: "у", i: "и" }));
+      const NAME_CYR2LAT = new Map(Object.entries({ "а": "a", "с": "c", "е": "e", "о": "o", "р": "p", "х": "x", "у": "y", "к": "k", "м": "m", "т": "t", "н": "h", "в": "b", "и": "i" }));
+      const NAME_CYR2LAT_ALT = new Map(Object.entries({ "а": "a", "с": "c", "е": "e", "о": "o", "р": "p", "х": "x", "у": "u", "к": "k", "м": "m", "т": "t", "н": "h", "в": "b", "и": "u" }));
+      const NAME_PHONETIC = new Map(Object.entries({ a: "а", b: "б", c: "с", d: "д", e: "е", f: "ф", g: "г", h: "х", i: "и", j: "ж", k: "к", l: "л", m: "м", n: "н", o: "о", p: "п", q: "к", r: "р", s: "с", t: "т", u: "у", v: "в", w: "в", x: "х", y: "у", z: "з" }));
+      const NAME_BANNED = ["хуй","хуе","хуя","пизд","ебат","ебан","ебал","ебуч","заеб","уеб","выеб","наеб","бляд","блят","сука","сучар","муда","мудак","пидор","пидар","гандон","гнида","долбаеб","далбаеб","чмо","шлюх","шалав","ублюд","залуп","дрочи","манда","fuck","shit","cunt","bitch","dick","pussy","asshole","nigger","nigga","faggot","whore","rape","гитлер","hitler","nazi","нацист","swastik","свастик","heil","зиг","huy","hui","xyu","xyi","pizd","blyad","blyat","mudak","pidor","ebat","ebal","zaeb","nahuy","suka"];
+      const NAME_RESERVED = ["admin","админ","moderator","модератор","support","поддержка","pyramide","пирамида","system","система","kodogames","kodo"];
+
+      function nameBase(value) {
+        const lower = String(value).toLowerCase().replace(/ё/g, "е");
+        let out = "";
+        for (const char of lower) out += NAME_LEET.has(char) ? NAME_LEET.get(char) : char;
+        return out.replace(/[^\p{L}]/gu, "").replace(/(.)\1+/gu, "$1");
+      }
+      const nameTranslate = (value, table) => [...value].map(char => table.has(char) ? table.get(char) : char).join("");
+      // Roots go through the same collapsing, otherwise doubles like "nigger" could never match.
+      const NAME_BANNED_N = NAME_BANNED.map(nameBase).filter(Boolean);
+      const NAME_RESERVED_N = NAME_RESERVED.map(nameBase);
+
+      function checkNickname(raw) {
+        const name = String(raw ?? "").trim().replace(/\s+/g, " ");
+        if (name.length < NAME_MIN) return { ok: false, message: `Имя должно быть не короче ${NAME_MIN} символов` };
+        if (name.length > NAME_MAX) return { ok: false, message: `Имя должно быть не длиннее ${NAME_MAX} символов` };
+        if (!/^[\p{L}\p{N} _.\-]+$/u.test(name)) return { ok: false, message: "Только буквы, цифры, пробел, точка, дефис и подчёркивание" };
+        if (!/\p{L}/u.test(name)) return { ok: false, message: "Имя должно содержать хотя бы одну букву" };
+        const base = nameBase(name);
+        if (!base) return { ok: false, message: "Недопустимое имя" };
+        const forms = [base, nameTranslate(base, NAME_LAT2CYR), nameTranslate(base, NAME_CYR2LAT), nameTranslate(base, NAME_CYR2LAT_ALT), nameTranslate(base, NAME_PHONETIC)];
+        if (NAME_BANNED_N.some(root => forms.some(form => form.includes(root)))) return { ok: false, message: "Такое имя недопустимо" };
+        if (NAME_RESERVED_N.some(word => forms.includes(word))) return { ok: false, message: "Это имя зарезервировано" };
+        return { ok: true, name };
+      }
+
       function storedNickname() { return storage.get("pyramide.online.name") || ""; }
 
       async function saveNickname(raw) {
-        const name = String(raw || "").trim().slice(0, 24);
-        if (name.length < 2) { showToast("Имя должно быть от 2 символов"); return; }
+        const verdict = checkNickname(raw);
+        if (!verdict.ok) { audio.blocked(); showToast(verdict.message); return; }
+        const name = verdict.name;
+        const previous = storedNickname();
         storage.set("pyramide.online.name", name);
-        showToast(`Имя сохранено: ${name}`);
+        $("#nickInput").value = name;
         // If we are already connected, push it to the server so opponents and the leaderboard
         // see the new name immediately instead of only after the next reconnect.
-        if (onlineClient?.socket?.connected) {
-          try {
-            const response = await onlineClient.emit("profile:rename", { displayName: name });
-            if (response?.token) storage.set("pyramide.online.token", response.token);
-          } catch { showToast("Имя сохранено локально, сервер обновит позже"); }
+        // Confirm straight away: the name is already valid and stored locally. Waiting on the
+        // network first meant that with an unreachable server the player saw no response at all
+        // for several seconds, which reads as "the button does nothing".
+        audio.turn();
+        showToast(`Имя сохранено: ${name}`);
+
+        // Then sync in the background. Only an explicit server rejection rolls the name back.
+        try {
+          await ensureConnected();
+          const response = await onlineClient.emit("profile:rename", { displayName: name });
+          if (response?.token) storage.set("pyramide.online.token", response.token);
+          if (response?.displayName && response.displayName !== name) {
+            storage.set("pyramide.online.name", response.displayName);
+            $("#nickInput").value = response.displayName;
+          }
+        } catch (error) {
+          const rejected = error?.code && !["SERVER_ERROR", "TIMEOUT", "NOT_CONNECTED"].includes(error.code);
+          if (rejected) {
+            storage.set("pyramide.online.name", previous);
+            $("#nickInput").value = previous;
+            audio.blocked();
+            showToast(error.message);
+          }
+          // Otherwise the server is simply unreachable - the local name stands and will be sent
+          // on the next successful connection.
         }
       }
 
@@ -1522,7 +1780,7 @@
           if (!onlineClient?.socket?.connected) { if (!onlineClient) onlineClient = new OnlineClient(); await onlineClient.connect(); }
           const response = await onlineClient.emit("history:list", { limit: 20 });
           const matches = response?.matches || [];
-          if (!matches.length) { list.innerHTML = '<div class="empty-note">Вы ещё не сыграли ни одного рейтингового матча.</div>'; return; }
+          if (!matches.length) { list.innerHTML = '<div class="empty-note">Здесь появятся ваши рейтинговые онлайн-партии. Игры с ботом и вдвоём на одном устройстве не сохраняются.</div>'; return; }
           list.innerHTML = "";
           matches.forEach((match, index) => {
             const button = document.createElement("button");
@@ -1600,6 +1858,223 @@
         return many;
       }
 
+      // ---------------------------------------------------------------------------------------
+      // Menu navigation, dropdowns, offline clocks, UI sound and feedback.
+      // ---------------------------------------------------------------------------------------
+      function showMenuPage(page) {
+        $("#menuRoot").hidden = page !== "root";
+        $("#menuModes").hidden = page !== "modes";
+        if (page === "root") expandMode(null);
+      }
+
+      // Item 10: clicking an already-open section closes it again.
+      function expandMode(which) {
+        const sections = { bot: ["#difficulty", "#botClock", "#startBot"], online: ["#onlineModes", "#startOnline"], local: ["#localClock", "#startLocal"] };
+        for (const [key, selectors] of Object.entries(sections)) {
+          const open = key === which;
+          for (const selector of selectors) {
+            const node = $(selector);
+            if (!node) continue;
+            if (node.classList.contains("difficulty")) node.classList.toggle("show", open);
+            else node.hidden = !open;
+          }
+        }
+        $("#botMode").setAttribute("aria-expanded", String(which === "bot"));
+        $("#onlineMode").setAttribute("aria-expanded", String(which === "online"));
+        $("#localMode").setAttribute("aria-expanded", String(which === "local"));
+        openSection = which;
+      }
+      let openSection = null;
+      const toggleSection = which => expandMode(openSection === which ? null : which);
+
+      // ---- Offline clocks (item 9): bot and hot-seat games can now be timed too ----------------
+      let offlineClockId = null;
+      function startOfflineClock() {
+        stopOfflineClock();
+        if (state.mode === "online" || state.offlineClock.mode === "off") return;
+        state.offlineClock.turnStart = Date.now();
+        offlineClockId = setInterval(() => {
+          const clock = state.offlineClock;
+          if (state.phase === "gameover" || state.phase === "menu" || clock.mode === "off") return;
+          const spent = Date.now() - clock.turnStart;
+          const left = Math.max(0, clock[state.active] - spent);
+          if (left <= 0) {
+            clock[state.active] = 0;
+            stopOfflineClock();
+            finishGame({ reason: "timeout", winner: other(state.active), loser: state.active, draw: false, lines: [] });
+            return;
+          }
+          renderClocks();
+        }, 250);
+      }
+      function stopOfflineClock() { if (offlineClockId) { clearInterval(offlineClockId); offlineClockId = null; } }
+
+      // Charge the time actually used and hand out the increment, mirroring the server's rules.
+      function chargeOfflineTurn() {
+        const clock = state.offlineClock;
+        if (clock.mode === "off" || state.mode === "online") return;
+        const spent = Date.now() - clock.turnStart;
+        clock[state.active] = Math.max(0, clock[state.active] - spent) + clock.increment;
+        clock.turnStart = Date.now();
+      }
+
+      const OFFLINE_TIME_CONTROLS = { classic: { initialMs: 300000, incrementMs: 10000 }, blitz: { initialMs: 120000, incrementMs: 3000 } };
+      function resetOfflineClock(mode) {
+        const preset = OFFLINE_TIME_CONTROLS[mode];
+        state.offlineClock = preset
+          ? { mode, L: preset.initialMs, R: preset.initialMs, increment: preset.incrementMs, turnStart: Date.now() }
+          : { mode: "off", L: 0, R: 0, increment: 0, turnStart: 0 };
+      }
+
+      // ---- UI sound (item 8) --------------------------------------------------------------------
+      // One delegated listener rather than a handler per button: new buttons get sound for free,
+      // and there is nothing to keep in sync when the markup changes.
+      document.addEventListener("pointerdown", event => {
+        const target = event.target.closest("button, .cell, input");
+        if (!target || target.disabled) return;
+        if (target.classList.contains("cell")) return; // cells have their own placement sound
+        audio.click();
+      }, { passive: true });
+
+      function renderNameRatings(mode, opponentRating) {
+        const mine = mode === "blitz" ? progression.ratingBlitz : progression.ratingClassic;
+        const side = state.online?.side;
+        for (const which of ["L", "R"]) {
+          const host = $(`#name${which}`).parentElement;
+          host.querySelector(".name-rating")?.remove();
+          const value = which === side ? mine : opponentRating;
+          if (!Number.isFinite(value)) continue;
+          const tag = document.createElement("div");
+          tag.className = "name-rating";
+          tag.textContent = `${value}`;
+          host.append(tag);
+        }
+      }
+
+      // ---- Confirm before abandoning a live game (item 14) --------------------------------------
+      let confirmAction = null;
+      function askConfirm(text, onYes) {
+        $("#confirmText").textContent = text;
+        confirmAction = onYes;
+        openModal("confirmModal");
+      }
+
+      // ---- Friends (item 16) ---------------------------------------------------------------------
+      let friendsCache = { friends: [], incoming: [], outgoing: [] };
+      let pendingInvite = null;
+
+      async function ensureConnected() {
+        if (!onlineClient) onlineClient = new OnlineClient();
+        if (!onlineClient.socket?.connected) await onlineClient.connect();
+      }
+
+      async function openFriends() {
+        openModal("friendsModal");
+        const list = $("#friendsList");
+        list.innerHTML = '<div class="empty-note">Загрузка...</div>';
+        try {
+          await ensureConnected();
+          const response = await onlineClient.emit("friends:list", {});
+          $("#myFriendCode").textContent = response.myCode || "нет кода";
+          friendsCache = { friends: response.friends || [], incoming: response.incoming || [], outgoing: response.outgoing || [] };
+          renderFriends();
+        } catch {
+          list.innerHTML = '<div class="empty-note">Не удалось загрузить список. Проверьте соединение.</div>';
+        }
+      }
+
+      function renderFriends() {
+        const list = $("#friendsList");
+        list.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+        const addHead = text => { const head = document.createElement("div"); head.className = "section-head"; head.textContent = text; fragment.append(head); };
+
+        if (friendsCache.incoming.length) {
+          addHead("Входящие заявки");
+          for (const person of friendsCache.incoming) fragment.append(friendRow(person, "incoming"));
+        }
+        addHead(`Друзья (${friendsCache.friends.length})`);
+        if (!friendsCache.friends.length) {
+          const note = document.createElement("div");
+          note.className = "empty-note";
+          note.textContent = "Пока никого. Обменяйтесь кодами с друзьями.";
+          fragment.append(note);
+        } else {
+          // Online friends first: those are the ones you can actually challenge right now.
+          [...friendsCache.friends].sort((a, b) => Number(b.online) - Number(a.online))
+            .forEach(person => fragment.append(friendRow(person, "friend")));
+        }
+        if (friendsCache.outgoing.length) {
+          addHead("Отправленные заявки");
+          for (const person of friendsCache.outgoing) fragment.append(friendRow(person, "outgoing"));
+        }
+        list.append(fragment);
+      }
+
+      function friendRow(person, kind) {
+        const row = document.createElement("div");
+        row.className = "data-row";
+        const rating = Number.isFinite(person.ratingClassic) ? `Классика ${person.ratingClassic} · Блиц ${person.ratingBlitz}` : "новый игрок";
+        row.innerHTML = `<span class="friend-dot ${person.online ? "on" : ""}"></span>
+          <span class="main"><b>${escapeHtml(person.displayName)}</b><span>${person.online ? "в сети" : "не в сети"} · ${rating}</span></span>`;
+
+        const actions = document.createElement("span");
+        actions.className = "row-actions";
+        if (kind === "incoming") {
+          actions.append(makeButton("Принять", "accent", () => respondFriendRequest(person.otherId, true)));
+          actions.append(makeButton("Нет", "", () => respondFriendRequest(person.otherId, false)));
+        } else if (kind === "friend") {
+          if (person.online) actions.append(makeButton("Позвать", "accent", () => inviteFriend(person)));
+          actions.append(makeButton("Удалить", "", () => askConfirm(`Удалить ${person.displayName} из друзей?`, () => removeFriendById(person.otherId))));
+        } else {
+          actions.append(makeButton("Отменить", "", () => respondFriendRequest(person.otherId, false)));
+        }
+        row.append(actions);
+        return row;
+      }
+
+      function makeButton(label, extraClass, onClick) {
+        const button = document.createElement("button");
+        button.type = "button";
+        if (extraClass) button.className = extraClass;
+        button.textContent = label;
+        button.addEventListener("click", onClick);
+        return button;
+      }
+
+      async function addFriendByCode() {
+        const code = $("#friendCodeInput").value.trim().toUpperCase();
+        if (code.length < 4) { showToast("Введите код друга"); return; }
+        try {
+          await ensureConnected();
+          const response = await onlineClient.emit("friends:add", { code });
+          $("#friendCodeInput").value = "";
+          showToast(response.status === "accepted" ? `${response.displayName} теперь ваш друг` : `Заявка отправлена: ${response.displayName}`);
+        } catch (error) {
+          const messages = { CODE_NOT_FOUND: "Игрок с таким кодом не найден", SELF_ADD: "Это ваш собственный код", BAD_CODE: "Код выглядит неверно" };
+          showToast(messages[error?.code] || "Не удалось добавить друга");
+        }
+      }
+
+      async function respondFriendRequest(otherId, accept) {
+        try { await onlineClient.emit("friends:respond", { otherId, accept }); showToast(accept ? "Заявка принята" : "Заявка отклонена"); }
+        catch { showToast("Не удалось выполнить действие"); }
+      }
+      async function removeFriendById(otherId) {
+        try { await onlineClient.emit("friends:remove", { otherId }); showToast("Друг удалён"); }
+        catch { showToast("Не удалось удалить"); }
+      }
+
+      async function inviteFriend(person) {
+        const mode = selectedOnlineMode || "classic";
+        try {
+          await onlineClient.emit("friends:invite", { otherId: person.otherId, mode });
+          showToast(`Вызов отправлен: ${person.displayName}`);
+        } catch (error) {
+          showToast(error?.code === "FRIEND_OFFLINE" ? "Друг не в сети" : "Не удалось отправить вызов");
+        }
+      }
+
       let clockTickerId = null;
       function startClockTicker() {
         clearInterval(clockTickerId);
@@ -1619,15 +2094,21 @@
         $("#profileLevel").textContent = level;
         $("#profileRank").textContent = RANKS[Math.min(RANKS.length - 1, Math.floor((level - 1) / 3))];
         $("#profileXp").textContent = `${progression.xp % 120} / 120 опыта`;
-        const rated = Number.isFinite(progression.rating);
         $("#statClassic").textContent = Number.isFinite(progression.ratingClassic) ? progression.ratingClassic : "—";
         $("#statBlitz").textContent = Number.isFinite(progression.ratingBlitz) ? progression.ratingBlitz : "—";
         $("#statWins").textContent = progression.wins;
-        const badge = $("#eloBadge");
-        badge.classList.toggle("show", rated);
-        if (rated) {
-          $("#eloValue").textContent = progression.rating;
-          badge.title = `${eloTierFor(progression.rating)} · рейтинг онлайн-матчей`;
+
+        // The chip belongs to ranked online play only: in a bot or hot-seat game there is no
+        // rating at stake, and showing one there was both noise and a source of disagreement with
+        // the menu (which shows the per-mode value, not the combined legacy one).
+        const mode = state.online?.onlineMode || "classic";
+        const modeRating = mode === "blitz" ? progression.ratingBlitz : progression.ratingClassic;
+        const showChip = isOnline() && Number.isFinite(modeRating);
+        const badge = $("#ratingChip");
+        badge.classList.toggle("show", showChip);
+        if (showChip) {
+          $("#eloValue").textContent = modeRating;
+          badge.title = `${eloTierFor(modeRating)} · ${mode === "blitz" ? "Блиц" : "Классика"}`;
         }
       }
 
@@ -1699,15 +2180,56 @@
           source.buffer = buffer; filter.type = "lowpass"; filter.frequency.value = filterFreq; gain.gain.value = volume;
           source.connect(filter); filter.connect(gain); gain.connect(this.master); source.start();
         }
+        // The previous ambience was filtered noise at .028 gain - effectively silent on any device.
+        // This is a real drone: two detuned low tones plus a soft wind bed, with a slow fade-in so
+        // it never starts abruptly.
         startAmbience() {
           if (!settings.music || !this.ensure() || this.ambience) return;
+          const now = this.ctx.currentTime;
+          const bus = this.ctx.createGain();
+          bus.gain.setValueAtTime(0.0001, now);
+          bus.gain.exponentialRampToValueAtTime(0.5, now + 2.5);
+          bus.connect(this.master);
+
+          const voices = [];
+          for (const [freq, detune, level, type] of [[110, -5, .16, "sine"], [164.81, 6, .11, "sine"], [220, -9, .06, "triangle"]]) {
+            const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
+            osc.type = type; osc.frequency.value = freq; osc.detune.value = detune;
+            gain.gain.value = level;
+            // Slow amplitude drift keeps the pad from sounding like a stuck test tone.
+            const lfo = this.ctx.createOscillator(), lfoGain = this.ctx.createGain();
+            lfo.frequency.value = 0.05 + Math.random() * 0.06; lfoGain.gain.value = level * .5;
+            lfo.connect(lfoGain); lfoGain.connect(gain.gain); lfo.start();
+            osc.connect(gain); gain.connect(bus); osc.start();
+            voices.push(osc, lfo);
+          }
+
           const buffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 4, this.ctx.sampleRate), data = buffer.getChannelData(0);
-          for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * .18;
-          const source = this.ctx.createBufferSource(), filter = this.ctx.createBiquadFilter(), gain = this.ctx.createGain();
-          source.buffer = buffer; source.loop = true; filter.type = "lowpass"; filter.frequency.value = 430; gain.gain.value = .028;
-          source.connect(filter); filter.connect(gain); gain.connect(this.master); source.start(); this.ambience = { source, gain };
+          for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * .5;
+          const wind = this.ctx.createBufferSource(), windFilter = this.ctx.createBiquadFilter(), windGain = this.ctx.createGain();
+          wind.buffer = buffer; wind.loop = true;
+          windFilter.type = "bandpass"; windFilter.frequency.value = 620; windFilter.Q.value = .7;
+          windGain.gain.value = .05;
+          wind.connect(windFilter); windFilter.connect(windGain); windGain.connect(bus); wind.start();
+          voices.push(wind);
+
+          this.ambience = { bus, voices };
         }
-        stopAmbience() { if (this.ambience) { this.ambience.source.stop(); this.ambience = null; } }
+        stopAmbience() {
+          if (!this.ambience) return;
+          const { bus, voices } = this.ambience;
+          this.ambience = null;
+          const now = this.ctx.currentTime;
+          try {
+            bus.gain.cancelScheduledValues(now);
+            bus.gain.setValueAtTime(Math.max(bus.gain.value, 0.0001), now);
+            bus.gain.exponentialRampToValueAtTime(0.0001, now + .6);
+          } catch { /* context may already be closed */ }
+          setTimeout(() => voices.forEach(node => { try { node.stop(); } catch { /* already stopped */ } }), 700);
+        }
+        // Distinct, short click for UI. Kept quieter than gameplay sounds so it never dominates.
+        click() { this.tone(680, .05, "sine", .028); }
+        clickSoft() { this.tone(430, .05, "sine", .02); }
         tick() { this.tone(520, .08, "sine", .035); }
         turn() { this.tone(294, .22, "triangle", .05); this.tone(440, .28, "sine", .025, .07); }
         dice() { this.noise(.5, .13, 1200); this.tone(120, .18, "triangle", .05); }
@@ -1730,19 +2252,47 @@
       }
 
       $("#rollButton").addEventListener("click", rollDice);
-      $("#localMode").addEventListener("click", () => { expandMode(null); startGame("local"); });
-      function expandMode(which) {
-        const bot = which === "bot", online = which === "online";
-        $("#difficulty").classList.toggle("show", bot); $("#startBot").hidden = !bot;
-        $("#onlineModes").classList.toggle("show", online); $("#startOnline").hidden = !online;
-        $("#botMode").setAttribute("aria-expanded", String(bot));
-        $("#onlineMode").setAttribute("aria-expanded", String(online));
-      }
-      $("#botMode").addEventListener("click", () => expandMode("bot"));
+      $("#localMode").addEventListener("click", () => toggleSection("local"));
+      $("#menuPlay").addEventListener("click", () => showMenuPage("modes"));
+      $("#menuBack").addEventListener("click", () => showMenuPage("root"));
+      $("#openFriends").addEventListener("click", () => openFriends());
+      $("#addFriend").addEventListener("click", addFriendByCode);
+      $("#friendCodeInput").addEventListener("keydown", event => { if (event.key === "Enter") addFriendByCode(); });
+      $("#copyCode").addEventListener("click", async () => {
+        const code = $("#myFriendCode").textContent.trim();
+        try { await navigator.clipboard.writeText(code); showToast("Код скопирован"); }
+        catch { showToast(`Ваш код: ${code}`); }
+      });
+      let offlineClockChoice = { bot: "off", local: "off" };
+      $$("#botClock button").forEach(button => button.addEventListener("click", () => {
+        offlineClockChoice.bot = button.dataset.offlineClock;
+        $$("#botClock button").forEach(item => item.classList.toggle("selected", item === button));
+      }));
+      $$("#localClock button").forEach(button => button.addEventListener("click", () => {
+        offlineClockChoice.local = button.dataset.offlineClock;
+        $$("#localClock button").forEach(item => item.classList.toggle("selected", item === button));
+      }));
+      $("#startLocal").addEventListener("click", () => { resetOfflineClock(offlineClockChoice.local); startGame("local"); });
+      $("#confirmNo").addEventListener("click", () => { closeModal("confirmModal"); confirmAction = null; });
+      $("#confirmYes").addEventListener("click", () => { closeModal("confirmModal"); const action = confirmAction; confirmAction = null; action?.(); });
+      $("#inviteAccept").addEventListener("click", async () => {
+        closeModal("inviteModal");
+        if (!pendingInvite) return;
+        try { await onlineClient.emit("friends:inviteRespond", { inviteId: pendingInvite.inviteId, accept: true }); }
+        catch { showToast("Вызов уже неактуален"); }
+        pendingInvite = null;
+      });
+      $("#inviteDecline").addEventListener("click", async () => {
+        closeModal("inviteModal");
+        if (!pendingInvite) return;
+        try { await onlineClient.emit("friends:inviteRespond", { inviteId: pendingInvite.inviteId, accept: false }); } catch { /* expired */ }
+        pendingInvite = null;
+      });
+      $("#botMode").addEventListener("click", () => toggleSection("bot"));
       $$("#difficulty button").forEach(button => button.addEventListener("click", () => { state.difficulty = button.dataset.level; $$("#difficulty button").forEach(item => item.classList.toggle("selected", item === button)); audio.tick(); }));
-      $("#startBot").addEventListener("click", () => startGame("bot", state.difficulty));
+      $("#startBot").addEventListener("click", () => { resetOfflineClock(offlineClockChoice.bot); startGame("bot", state.difficulty); });
       let selectedOnlineMode = "classic";
-      $("#onlineMode").addEventListener("click", () => expandMode("online"));
+      $("#onlineMode").addEventListener("click", () => toggleSection("online"));
       $$("#onlineModes button").forEach(button => button.addEventListener("click", () => { selectedOnlineMode = button.dataset.onlineMode; $$("#onlineModes button").forEach(item => item.classList.toggle("selected", item === button)); audio.tick(); }));
       $("#startOnline").addEventListener("click", () => startOnlineQueue(selectedOnlineMode));
       $("#queueCancel").addEventListener("click", cancelOnlineQueue);
@@ -1767,8 +2317,12 @@
       });
       function leaveToMenu() {
         if (isOnline() && state.phase !== "gameover") onlineClient?.forfeit().catch(() => undefined);
-        clearTimers(); hideReview();
-        closeModal("resultModal"); closeModal("settingsModal"); openModal("menuModal"); state.phase = "menu"; audio.stopAmbience(); render();
+        clearTimers(); hideReview(); stopOfflineClock();
+        closeModal("resultModal"); closeModal("settingsModal"); openModal("menuModal");
+        // Always return to the top level of the menu, otherwise the player lands back on the
+        // mode list they left from and the main entries are nowhere to be seen.
+        showMenuPage("root");
+        state.phase = "menu"; audio.stopAmbience(); render();
       }
       $("#reviewContinue").addEventListener("click", () => { hideReview(); openModal("resultModal"); });
       $("#openLeaderboard").addEventListener("click", () => openLeaderboard());
@@ -1780,8 +2334,15 @@
         const target = event.currentTarget.dataset.close;
         closeModal(target || event.currentTarget.closest(".modal-backdrop")?.id);
       }));
+      function requestLeave() {
+        const live = state.phase !== "menu" && state.phase !== "gameover";
+        if (!live) return leaveToMenu();
+        askConfirm(isOnline()
+          ? "Партия ещё идёт. Выход засчитается как поражение и повлияет на рейтинг."
+          : "Партия ещё идёт. Текущий прогресс будет потерян.", leaveToMenu);
+      }
       $("#resultMenu").addEventListener("click", leaveToMenu);
-      $("#newGameButton").addEventListener("click", leaveToMenu);
+      $("#newGameButton").addEventListener("click", () => { closeModal("settingsModal"); requestLeave(); });
       $$('[data-open]').forEach(button => button.addEventListener("click", () => openModal(button.dataset.open)));
       $$('[data-close]').forEach(button => button.addEventListener("click", () => closeModal(button.closest(".modal-backdrop").id)));
       $$(".modal-backdrop").forEach(backdrop => backdrop.addEventListener("pointerdown", event => { if (event.target === backdrop && !["menuModal", "resultModal", "queueModal"].includes(backdrop.id)) closeModal(backdrop.id); }));
@@ -1901,6 +2462,16 @@
       document.addEventListener("dblclick", event => event.preventDefault());
 
       renderBoardBase(); applySettings(); updateProfile(); render();
+      // Splash stays for a beat so the studio mark is actually readable, then fades out.
+      // Hold the studio splash for a readable beat rather than flashing past it.
+      const splashShownAt = Date.now();
+      const hideSplash = () => {
+        const elapsed = Date.now() - splashShownAt;
+        setTimeout(() => $("#splash").classList.add("hide"), Math.max(0, 2600 - elapsed));
+      };
+      if (document.readyState === "complete") hideSplash();
+      else window.addEventListener("load", hideSplash, { once: true });
+      showMenuPage("root");
       tryAutoResumeOnline();
     })();
   </script>
