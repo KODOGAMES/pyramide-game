@@ -521,6 +521,44 @@
     .rating-chip .elo-delta.up { color: #8fe0a4; } .rating-chip .elo-delta.down { color: #ff9a8a; }
     .name-rating { font-size: 11px; color: #9fb4b4; font-variant-numeric: tabular-nums; }
 
+    /* ---- Shared diagram board (tutorial, review, puzzles) ------------------------------------ */
+    /* One component instead of three near-identical ones, so a fix to spacing or colour lands
+       everywhere at once. */
+    .dgm { position: relative; width: 100%; max-width: 340px; margin: 0 auto 12px; padding: 0 16px; box-sizing: content-box; }
+    .dgm-inner { position: relative; width: 100%; aspect-ratio: 10/7; border-radius: 14px;
+      background: linear-gradient(170deg, #efd9ac, #e2c48d); box-shadow: inset 0 0 30px rgba(120,80,40,.18); overflow: visible; }
+    body[data-board="granite"] .dgm-inner { background: linear-gradient(170deg,#b9b3ab,#9a948c); }
+    body[data-board="papyrus"] .dgm-inner { background: linear-gradient(170deg,#f2e3c0,#e0cda2); }
+    body[data-board="nightsand"] .dgm-inner { background: linear-gradient(170deg,#4a4335,#322d24); }
+    body[data-board="marble"] .dgm-inner { background: linear-gradient(170deg,#eceae6,#d5d2cc); }
+    .dgm-mid { position: absolute; left: 50%; top: 4%; bottom: 4%; width: 0; border-left: 1px dashed rgba(90,60,30,.55); }
+    .dgm-row { position: absolute; font-size: 9px; font-weight: 700; opacity: .75; }
+    .dgm-row.l { left: -13px; color: #3f7fa8; } .dgm-row.r { right: -13px; color: #a8503f; }
+    .dgm-cell { position: absolute; width: 9.1%; aspect-ratio: 1; border-radius: 4px;
+      border: 1px solid rgba(120,80,40,.42); background: rgba(255,250,238,.72);
+      display: flex; align-items: center; justify-content: center; }
+    /* Numbers carry the side colour, so a glance tells you whose half a cell belongs to. */
+    .dgm-cell .n { font-size: 9px; font-weight: 700; line-height: 1; }
+    .dgm-cell.side-L .n { color: #3f7fa8; } .dgm-cell.side-R .n { color: #a8503f; }
+    .dgm-cell.foot-cell { border-style: dashed; }
+    /* Centring via flex on the cell itself - the old absolute inset drifted on narrow screens. */
+    .dgm-cell .st { position: absolute; width: 70%; height: 70%; left: 15%; top: 15%; border-radius: 50%; }
+    .dgm-cell.mark-ok { border-color: #43d6c4; background: rgba(70,214,196,.2); box-shadow: inset 0 0 0 2px rgba(67,214,196,.8); }
+    .dgm-cell.mark-bad { border-color: #ff5a44; background: rgba(255,90,68,.2); box-shadow: inset 0 0 0 2px rgba(255,90,68,.85); }
+    .dgm-cell.mark-foot { border-color: #c98adf; background: rgba(201,138,223,.22); box-shadow: inset 0 0 0 2px rgba(201,138,223,.85); }
+    .dgm-cell.mark-dim { opacity: .32; }
+    .dgm-cell.mark-played { box-shadow: 0 0 0 2px #43d6c4, 0 0 10px rgba(67,214,196,.45); }
+    .dgm-cell.pickable { cursor: pointer; }
+    .dgm-cell.pickable:hover { box-shadow: inset 0 0 0 2px #43d6c4; }
+    /* Context strip: die value and both reserves, so a diagram is self-explanatory. */
+    .dgm-ctx { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; font-size: 12px; }
+    .dgm-die { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px; border: 1px solid rgba(233,189,109,.4); background: rgba(233,189,109,.1); color: #ffe1a1; }
+    .dgm-res { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 10px; background: rgba(0,0,0,.2); }
+    .dgm-res b { font-size: 11px; letter-spacing: .06em; }
+    .dgm-res.l b { color: #6fb0d8; } .dgm-res.r b { color: #e0836f; }
+    .dgm-res i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+    .dgm-res span { font-variant-numeric: tabular-nums; color: #d8cbb0; font-size: 11.5px; }
+
     /* ---- Cosmetics -------------------------------------------------------------------------- */
     /* Themes are pure CSS variables, so a skin costs nothing to download and re-themes every
        stone and board surface at once, including the review and puzzle diagrams. */
@@ -943,7 +981,8 @@
     <div class="modal">
       <div class="modal-head"><div><h2 id="rulesTitle">Как играть</h2><p id="tutStep">Шаг 1 из 6</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
       <div class="modal-body">
-        <div class="tut-board" id="tutBoard" aria-hidden="true"></div>
+        <div class="dgm-ctx" id="tutCtx"></div>
+        <div id="tutBoard" aria-hidden="true"></div>
         <h3 class="tut-title" id="tutTitle">Поле</h3>
         <p class="tut-text" id="tutText">Текст</p>
         <div class="tut-nav">
@@ -1002,7 +1041,8 @@
       <div class="modal-head"><h2 id="reviewTitle">Разбор партии</h2><button class="icon-btn" data-close="reviewModal" aria-label="Закрыть">&#10005;</button></div>
       <div class="modal-body">
         <div class="summary-row" id="revSummary"></div>
-        <div class="rev-board" id="revBoard"></div>
+        <div class="dgm-ctx" id="revCtx"></div>
+        <div id="revBoard"></div>
         <div class="rev-nav">
           <button id="revStart" title="В начало">&#124;&#9664;</button>
           <button id="revPrev" title="Назад">&#9664;</button>
@@ -1021,8 +1061,12 @@
       <div class="modal-head"><h2 id="puzzleTitle">Задача</h2><button class="icon-btn" data-close="puzzleModal" aria-label="Закрыть">&#10005;</button></div>
       <div class="modal-body">
         <p class="rev-note" id="puzPrompt" style="margin-top:0"></p>
-        <div style="text-align:center;margin-bottom:8px"><span class="verdict neutral" id="puzRoll">Кубик: —</span></div>
-        <div class="rev-board" id="puzBoard"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span id="puzLives" style="font-size:15px;color:#ff8f7d;letter-spacing:2px"></span>
+          <span id="puzSolved" style="font-size:12px;color:#8ba3a6"></span>
+        </div>
+        <div class="dgm-ctx" id="puzCtx"></div>
+        <div id="puzBoard"></div>
         <div class="puz-colors" id="puzColors"></div>
         <p class="rev-note" id="puzResult"></p>
         <div class="result-actions"><button class="secondary-btn" id="puzSkip">Пропустить</button><button class="primary-btn" id="puzNext">Следующая</button></div>
@@ -1914,7 +1958,11 @@
 
         const myRating = rating?.[mySide];
         const coins = rating?.coins?.[mySide] ?? 0;
-        if (coins) { progression.coins = (Number(progression.coins) || 0) + coins; storage.set("pyramide.progress", JSON.stringify(progression)); }
+        if (coins) {
+          progression.coins = (Number(progression.coins) || 0) + coins;
+          storage.set("pyramide.progress", JSON.stringify(progression));
+          updateProfile(); schedule(() => showCoinGain(coins), 600);
+        }
         $("#xpGain").textContent = [
           myRating ? `Рейтинг: ${myRating.ratingBefore + myRating.delta} (${myRating.delta >= 0 ? "+" : ""}${myRating.delta})` : null,
           `+${gain} опыта`, coins ? `+${coins} монет` : null
@@ -2230,8 +2278,13 @@
 
       // ---- Confirm before abandoning a live game (item 14) --------------------------------------
       let confirmAction = null;
-      function askConfirm(text, onYes) {
+      // Buttons are labelled for the specific action. Fixed "Остаться / Выйти" made prompts like
+      // "Delete this friend?" answerable only with nonsense.
+      function askConfirm(text, onYes, labels = {}) {
         $("#confirmText").textContent = text;
+        $("#confirmTitle").textContent = labels.title || "Подтвердите";
+        $("#confirmNo").textContent = labels.no || "Отмена";
+        $("#confirmYes").textContent = labels.yes || "Подтвердить";
         confirmAction = onYes;
         openModal("confirmModal");
       }
@@ -2302,7 +2355,7 @@
           actions.append(makeButton("Нет", "", () => respondFriendRequest(person.otherId, false)));
         } else if (kind === "friend") {
           if (person.online) actions.append(makeButton("Позвать", "accent", () => inviteFriend(person)));
-          actions.append(makeButton("Удалить", "", () => askConfirm(`Удалить ${person.displayName} из друзей?`, () => removeFriendById(person.otherId))));
+          actions.append(makeButton("Удалить", "", () => askConfirm(`Удалить ${person.displayName} из друзей?`, () => removeFriendById(person.otherId), { title: "Удалить друга", no: "Оставить", yes: "Удалить" })));
         } else {
           actions.append(makeButton("Отменить", "", () => respondFriendRequest(person.otherId, false)));
         }
@@ -2473,8 +2526,7 @@
         $("#myStats").innerHTML = [
           ["Классика", source.ratingClassic ?? "—"], ["Блиц", source.ratingBlitz ?? "—"],
           ["Побед", source.wins ?? 0], ["Поражений", source.losses ?? 0],
-          ["Лига", Number.isFinite(source.ratingClassic) ? eloTierFor(source.ratingClassic) : "—"],
-          ["Монеты", Number(progression.coins) || 0]
+          ["Лига", Number.isFinite(source.ratingClassic) ? eloTierFor(source.ratingClassic) : "—"]
         ].map(([label, value]) => `<div class="stat-box"><b>${value}</b><span>${label}</span></div>`).join("");
       }
 
@@ -2501,7 +2553,7 @@
       async function redeemLinkCode() {
         const code = $("#redeemInput").value.trim().toUpperCase();
         if (code.length < 4) { showToast("Введите код"); return; }
-        askConfirm("Войти в другой аккаунт? Текущий локальный прогресс на этом устройстве будет заменён.", async () => {
+        askConfirm("Войти в другой аккаунт? Текущий прогресс на этом устройстве будет заменён.", async () => {
           try {
             await ensureConnected();
             const response = await onlineClient.emit("account:linkRedeem", { code });
@@ -2516,7 +2568,7 @@
             const messages = { CODE_INVALID: "Код неверен или истёк", BAD_CODE: "Код выглядит неверно" };
             showToast(messages[error?.code] || "Не удалось войти");
           }
-        });
+        }, { title: "Покупка", no: "Отмена", yes: "Купить" });
       }
 
       // ---- Viewing another player's profile -------------------------------------------------------
@@ -2576,17 +2628,19 @@
         {
           title: "Поле и две половины",
           text: "Пирамида разделена пополам: <b>Лазурная</b> сторона слева, <b>Алая</b> справа. Свои камни вы ставите только на свою половину. Числа в клетках — <b>позиция</b> в ряду, числа по бокам — <b>номер ряда</b>.",
-          paint: () => cells.map(cell => ({ id: cell.id, cls: cell.foot ? "dim" : cell.visualSide === "L" ? "hl" : "dim" }))
+          paint: () => cells.map(cell => ({ id: cell.id, cls: cell.foot ? "dim" : cell.visualSide === "L" ? "ok" : "dim" }))
         },
         {
           title: "Бросок 1-5: ряд или позиция",
+          roll: 3,
           text: "Выпало <b>3</b> — можно занять любую свободную клетку <b>ряда 3</b> или клетку с <b>позицией 3</b> на своей половине. Подсвечены все такие клетки.",
-          paint: () => { const legal = legalCells("L", 3, EMPTY); return cells.map(cell => ({ id: cell.id, cls: legal.includes(cell.id) ? "hl" : "dim" })); }
+          paint: () => { const legal = legalCells("L", 3, EMPTY); return cells.map(cell => ({ id: cell.id, cls: legal.includes(cell.id) ? "ok" : "dim" })); }
         },
         {
           title: "Бросок 6: любая своя клетка",
+          roll: 6,
           text: "При <b>6</b> занимайте любую свободную клетку своей половины. Сюда же входит ваша <b>атакующая ножка</b> — она находится <b>под половиной соперника</b> (отмечена отдельно). Ножка соперника, что стоит под вашей половиной, вам недоступна.",
-          paint: () => { const legal = legalCells("L", 6, EMPTY); return cells.map(cell => ({ id: cell.id, cls: legal.includes(cell.id) ? (cell.foot ? "foot" : "hl") : "dim" })); }
+          paint: () => { const legal = legalCells("L", 6, EMPTY); return cells.map(cell => ({ id: cell.id, cls: legal.includes(cell.id) ? (cell.foot ? "foot" : "ok") : "dim" })); }
         },
         {
           title: "Запретная линия: горизонталь",
@@ -2604,71 +2658,37 @@
           title: "Кто именно проигрывает",
           text: "Линия может пересекать середину. Проигрывает та сторона, где лежит <b>большинство камней линии</b>. Здесь два зелёных на Лазурной половине и один на Алой — проигрывает <b>Лазурная</b>.",
           stones: { "L3-2": "green", "L3-1": "green", "R3-1": "green" },
-          paint: () => [{ id: "L3-2", cls: "bad" }, { id: "L3-1", cls: "bad" }, { id: "R3-1", cls: "hl" }]
+          paint: () => [{ id: "L3-2", cls: "bad" }, { id: "L3-1", cls: "bad" }, { id: "R3-1", cls: "ok" }]
         },
         {
           title: "Атакующая ножка бьёт соперника",
           text: "Ножка стоит на половине соперника и <b>считается его клеткой</b> при подсчёте линии. Здесь линия из жёлтых: один камень на Лазурной половине, два на Алой (включая вашу ножку) — проигрывает <b>Алая</b>. Так ножка становится оружием.",
           stones: { "L4-1": "yellow", "R5-1": "yellow", "foot-L": "yellow" },
-          paint: () => [{ id: "L4-1", cls: "hl" }, { id: "R5-1", cls: "bad" }, { id: "foot-L", cls: "bad" }]
+          paint: () => [{ id: "L4-1", cls: "ok" }, { id: "R5-1", cls: "bad" }, { id: "foot-L", cls: "bad" }]
         },
         {
           title: "Как победить",
           text: "Заполните свою половину первой — <b>15 клеток</b>, атакующая ножка в счёт не идёт. Также вы побеждаете, если соперник собрал три в ряд, сдался или у него закончилось время.",
-          paint: () => cells.map(cell => ({ id: cell.id, cls: cell.visualSide === "L" && !cell.foot ? "hl" : "dim" }))
+          paint: () => cells.map(cell => ({ id: cell.id, cls: cell.visualSide === "L" && !cell.foot ? "ok" : "dim" }))
         }
       ];
 
       let tutorialIndex = 0;
       let tutorialCells = null;
 
-      function buildTutorialBoard() {
-        const host = $("#tutBoard");
-        host.innerHTML = '<div class="tut-mid"></div>';
-        // Row numbers on both flanks, matching the printed rules sheet.
-        for (let row = 1; row <= 6; row++) {
-          for (const side of ["l", "r"]) {
-            const tag = document.createElement("span");
-            tag.className = `tut-rownum ${side}`;
-            tag.style.top = ROW_TOPS[row];
-            tag.textContent = row;
-            host.append(tag);
-          }
-        }
-        tutorialCells = new Map();
-        const fragment = document.createDocumentFragment();
-        for (const cell of cells) {
-          const node = document.createElement("div");
-          node.className = "tut-cell";
-          node.style.left = `calc(${cell.col} * 10% + .45%)`;
-          node.style.top = ROW_TOPS[cell.row];
-          node.innerHTML = `<span class="n">${cell.foot ? 6 : cell.pos}</span>`;
-          tutorialCells.set(cell.id, node);
-          fragment.append(node);
-        }
-        host.append(fragment);
-      }
-
       function renderTutorial() {
-        if (!tutorialCells) buildTutorialBoard();
         const step = TUTORIAL[tutorialIndex];
+        if (!tutorialCells) tutorialCells = createDiagram($("#tutBoard"));
         $("#tutTitle").textContent = step.title;
         $("#tutText").innerHTML = step.text;
         $("#tutStep").textContent = `Шаг ${tutorialIndex + 1} из ${TUTORIAL.length}`;
         $("#tutDots").innerHTML = TUTORIAL.map((_, i) => `<i class="${i === tutorialIndex ? "on" : ""}"></i>`).join("");
         $("#tutPrev").disabled = tutorialIndex === 0;
         $("#tutNext").textContent = tutorialIndex === TUTORIAL.length - 1 ? "Понятно" : "Далее";
-
-        const marks = new Map((step.paint?.() || []).map(item => [item.id, item.cls]));
-        for (const [id, node] of tutorialCells) {
-          node.className = `tut-cell ${marks.get(id) || ""}`.trim();
-          const stone = step.stones?.[id];
-          const existing = node.querySelector(".st");
-          if (stone) {
-            if (existing) existing.className = `st mini-stone stone-${stone}`;
-            else node.insertAdjacentHTML("beforeend", `<span class="st mini-stone stone-${stone}"></span>`);
-          } else if (existing) existing.remove();
-        }
+        diagramContext($("#tutCtx"), { roll: step.roll ?? null });
+        const marks = {};
+        for (const item of step.paint?.() || []) marks[item.id] = item.cls;
+        paintDiagram(tutorialCells, step.stones || {}, marks);
       }
 
       function openTutorial() {
@@ -2680,37 +2700,6 @@
       // ---------------------------------------------------------------------------------------
       // Match review and puzzles. Both draw the same static board, so one builder serves them.
       // ---------------------------------------------------------------------------------------
-      function buildStaticBoard(host, onPick) {
-        host.innerHTML = "";
-        const map = new Map();
-        const fragment = document.createDocumentFragment();
-        for (const cell of cells) {
-          const node = document.createElement("div");
-          node.className = "rev-cell" + (onPick ? " pick" : "");
-          node.style.left = `calc(${cell.col} * 10% + .45%)`;
-          node.style.top = ROW_TOPS[cell.row];
-          node.innerHTML = `<span class="n">${cell.foot ? 6 : cell.pos}</span>`;
-          if (onPick) node.addEventListener("click", () => onPick(cell.id));
-          map.set(cell.id, node);
-          fragment.append(node);
-        }
-        host.append(fragment);
-        return map;
-      }
-
-      function paintStones(map, board, marks = {}) {
-        for (const [id, node] of map) {
-          const placed = board[id];
-          const existing = node.querySelector(".st");
-          if (placed) {
-            if (existing) existing.className = `st mini-stone stone-${placed.color}`;
-            else node.insertAdjacentHTML("beforeend", `<span class="st mini-stone stone-${placed.color}"></span>`);
-          } else if (existing) existing.remove();
-          node.classList.toggle("played", marks.played === id);
-          node.classList.toggle("suggest", marks.suggest === id);
-        }
-      }
-
       // ---- Review ---------------------------------------------------------------------------
       let review = null;
       async function openReview(matchId) {
@@ -2720,7 +2709,7 @@
         try {
           await ensureConnected();
           const data = await onlineClient.emit("match:analyse", { matchId });
-          review = { ...data, index: 0, cells: buildStaticBoard($("#revBoard")) };
+          review = { ...data, index: data.report.length, cells: createDiagram($("#revBoard")) };
           const mine = data.report.filter(entry => entry.side === data.viewerSide);
           const counts = mine.reduce((acc, entry) => { acc[entry.verdict] = (acc[entry.verdict] || 0) + 1; return acc; }, {});
           $("#revSummary").innerHTML = Object.entries(VERDICTS)
@@ -2749,92 +2738,106 @@
         $("#revNext").disabled = $("#revEnd").disabled = index >= total;
 
         if (index === 0) {
-          paintStones(review.cells, {});
+          paintDiagram(review.cells, {});
+          diagramContext($("#revCtx"), { inventory: START_RESERVES, note: "Начало партии" });
           $("#revVerdict").className = "verdict neutral";
           $("#revVerdict").textContent = "Начало партии";
-          $("#revNote").textContent = "Листайте вперёд, чтобы пройти партию ход за ходом.";
+          $("#revNote").textContent = "Листайте, чтобы пройти партию ход за ходом.";
           return;
         }
         const entry = review.report[index - 1];
-        // `entry.board` is the position *before* the move, so the move itself is layered on top.
         const shown = { ...entry.board, [entry.cellId]: { color: entry.color, player: entry.side } };
-        paintStones(review.cells, shown, { played: entry.cellId, suggest: entry.best?.cellId });
+        // Only the played cell is highlighted. The suggested alternative is described in words -
+        // highlighting it turned the board into a puzzle answer key and drowned out the position.
+        paintDiagram(review.cells, shown, { [entry.cellId]: "played" });
+        diagramContext($("#revCtx"), { roll: entry.roll, inventory: entry.reserves || START_RESERVES });
 
         const meta = VERDICTS[entry.verdict] || VERDICTS.good;
-        $("#revVerdict").className = `verdict ${meta.tone}`;
-        $("#revVerdict").textContent = meta.label;
-        const who = entry.side === review.viewerSide ? "Ваш ход" : "Ход соперника";
+        const theirs = entry.side !== review.viewerSide;
+        $("#revVerdict").className = `verdict ${theirs ? "neutral" : meta.tone}`;
+        $("#revVerdict").textContent = theirs ? `${meta.label} · соперник` : meta.label;
         const better = entry.best
           ? (entry.best.sameCell
               ? ` Сильнее было поставить ${COLOR_NAMES[entry.best.color]} на ту же клетку.`
               : ` Сильнее было ${COLOR_NAMES[entry.best.color]} на ${cellLabel(entry.best.cellId)}.`)
           : "";
+        const who = theirs ? "Ход соперника" : "Ваш ход";
         $("#revNote").textContent = `${who} №${entry.ply}: выпало ${entry.roll ?? "6"}, поставлен ${COLOR_NAMES[entry.color]} на ${cellLabel(entry.cellId)}.${better}`;
       }
 
+      const START_RESERVES = { L: { ...STARTING_INVENTORY }, R: { ...STARTING_INVENTORY } };
+
       // ---- Puzzles ---------------------------------------------------------------------------
-      let puzzle = null;
-      async function openPuzzle() {
-        openModal("puzzleModal");
-        $("#puzResult").textContent = "";
-        $("#puzPrompt").textContent = "Загрузка задачи...";
-        try {
-          await ensureConnected();
-          const data = await onlineClient.emit("puzzle:next", {});
-          puzzle = { ...data, color: "yellow", done: false };
-          puzzle.cells = buildStaticBoard($("#puzBoard"), cellId => submitPuzzle(cellId));
-          paintStones(puzzle.cells, data.board);
-          $("#puzPrompt").textContent = data.prompt;
-          $("#puzRoll").textContent = `Кубик: ${data.roll} · ходят ${data.side === "L" ? "Лазурные" : "Алые"}`;
-          renderPuzzleColors();
-        } catch (error) {
-          $("#puzPrompt").textContent = error?.code === "PUZZLE_UNAVAILABLE"
-            ? "Не удалось составить задачу, попробуйте ещё раз."
-            : "Нужно подключение к серверу.";
-        }
-      }
-
-      function renderPuzzleColors() {
-        $("#puzColors").innerHTML = "";
-        for (const color of COLORS) {
-          if ((puzzle.inventory?.[puzzle.side]?.[color] ?? 0) <= 0) continue;
-          const button = document.createElement("button");
-          button.className = puzzle.color === color ? "selected" : "";
-          button.innerHTML = `<span class="mini-stone stone-${color}"></span>${COLOR_NAMES[color]}`;
-          button.addEventListener("click", () => { puzzle.color = color; renderPuzzleColors(); audio.tick(); });
-          $("#puzColors").append(button);
-        }
-      }
-
-      async function submitPuzzle(cellId) {
-        if (!puzzle || puzzle.done) return;
-        try {
-          const result = await onlineClient.emit("puzzle:solve", { id: puzzle.id, cellId, color: puzzle.color });
-          if (result.correct) {
-            puzzle.done = true;
-            audio.finish(true);
-            paintStones(puzzle.cells, { ...puzzle.board, [cellId]: { color: puzzle.color, player: puzzle.side } }, { played: cellId });
-            $("#puzResult").textContent = result.reward ? `Верно! +${result.reward} монет` : "Верно!";
-            if (result.reward) { progression.coins = (Number(progression.coins) || 0) + result.reward; storage.set("pyramide.progress", JSON.stringify(progression)); updateProfile(); }
-          } else {
-            audio.blocked();
-            $("#puzResult").textContent = result.why || "Не тот ход";
+      // Puzzles. Lives make a wrong answer cost something - without a penalty the optimal strategy
+      // was to click every cell until one worked, which teaches nothing. They refill daily.
+      // ---------------------------------------------------------------------------------------
+      // Shared diagram board. Tutorial, review and puzzles all render through this, so the board
+      // looks and behaves identically everywhere.
+      // ---------------------------------------------------------------------------------------
+      function createDiagram(host, { onPick = null } = {}) {
+        host.innerHTML = "";
+        host.className = "dgm";
+        const inner = document.createElement("div");
+        inner.className = "dgm-inner";
+        inner.innerHTML = '<div class="dgm-mid"></div>';
+        for (let row = 1; row <= 6; row++) {
+          for (const side of ["l", "r"]) {
+            const tag = document.createElement("span");
+            tag.className = `dgm-row ${side}`;
+            tag.style.top = `calc(${ROW_TOPS[row]} + 1.2%)`;
+            tag.textContent = row;
+            inner.append(tag);
           }
-        } catch { showToast("Задача устарела, возьмите следующую"); }
+        }
+        const map = new Map();
+        for (const cell of cells) {
+          const node = document.createElement("div");
+          node.className = `dgm-cell side-${cell.visualSide}${cell.foot ? " foot-cell" : ""}${onPick ? " pickable" : ""}`;
+          node.style.left = `calc(${cell.col} * 10% + .45%)`;
+          node.style.top = ROW_TOPS[cell.row];
+          node.innerHTML = `<span class="n">${cell.foot ? 6 : cell.pos}</span>`;
+          if (onPick) node.addEventListener("click", () => onPick(cell.id));
+          map.set(cell.id, node);
+          inner.append(node);
+        }
+        host.append(inner);
+        return map;
+      }
+
+      function paintDiagram(map, board, marks = {}) {
+        for (const [id, node] of map) {
+          const placed = board?.[id];
+          const stone = node.querySelector(".st");
+          if (placed) {
+            if (stone) stone.className = `st mini-stone stone-${placed.color}`;
+            else node.insertAdjacentHTML("beforeend", `<span class="st mini-stone stone-${placed.color}"></span>`);
+          } else if (stone) stone.remove();
+          node.classList.remove("mark-ok", "mark-bad", "mark-foot", "mark-dim", "mark-played");
+          const mark = marks[id];
+          if (mark) node.classList.add(`mark-${mark}`);
+        }
+      }
+
+      function diagramContext(host, { roll = null, inventory = null, note = "" } = {}) {
+        const parts = [];
+        if (roll != null) parts.push(`<span class="dgm-die">&#9856; Выпало: <b>${roll}</b></span>`);
+        if (inventory) {
+          for (const [side, cls, label] of [["L", "l", "Лазурь"], ["R", "r", "Алый"]]) {
+            const stones = COLORS.map(color =>
+              `<i style="background:var(--${color === "yellow" ? "yellow-stone" : color === "green" ? "green-stone" : "purple-stone"})"></i><span>${inventory[side]?.[color] ?? 0}</span>`).join("");
+            parts.push(`<span class="dgm-res ${cls}"><b>${label}</b>${stones}</span>`);
+          }
+        }
+        if (note) parts.push(`<span style="color:#9fb4b4">${note}</span>`);
+        host.innerHTML = parts.join("");
       }
 
       // ---------------------------------------------------------------------------------------
       // Cosmetics. Purchases are decided by the server; this only renders and applies the result.
       // ---------------------------------------------------------------------------------------
       const SHOP_META = {
-        stones: {
-          classic: "Классические", polished: "Полированные", clay: "Глиняные",
-          lapis: "Лазурит", obsidian: "Обсидиан", gold: "Золотые"
-        },
-        board: {
-          sand: "Песок", granite: "Гранит", papyrus: "Папирус",
-          nightsand: "Ночной песок", marble: "Мрамор"
-        },
+        stones: { classic: "Классические", polished: "Полированные", clay: "Глиняные", lapis: "Лазурит", obsidian: "Обсидиан", gold: "Золотые" },
+        board: { sand: "Песок", granite: "Гранит", papyrus: "Папирус", nightsand: "Ночной песок", marble: "Мрамор" },
         avatar: Object.fromEntries(AVATARS.map(a => [a.id, a.char]))
       };
       const BOARD_SWATCH = {
@@ -2845,13 +2848,11 @@
       const STONE_SWATCH = {
         classic: ["#f2c14e", "#5fbf8f", "#9b7bd4"], polished: ["#ffd977", "#6fd6a4", "#b48ce0"],
         clay: ["#d9a55c", "#7fa87a", "#a08bb5"], lapis: ["#f0c96a", "#4fb7b0", "#5b6fd6"],
-        obsidian: ["#b8a06a", "#4f8f7a", "#6b4f8f"], gold: ["#ffd24a", "#d9b45c", "#b08a3c"]
+        obsidian: ["#b8a06a", "#4f8f7a", "#6b4f8f"], gold: ["#ffd24a", "#8fbf6a", "#c47ad0"]
       };
 
       let shop = { slot: "stones", catalogue: null, owned: [], equipped: {} };
 
-      // Applied from local storage first so the look survives a reload even before the socket
-      // connects; the server's answer overwrites it once available.
       function applyCosmetics(equipped) {
         const stones = equipped?.stones || storage.get("pyramide.skin.stones") || "classic";
         const board = equipped?.board || storage.get("pyramide.skin.board") || "sand";
@@ -2922,7 +2923,110 @@
           }
         };
         if (owned) act();
-        else askConfirm(`Купить за ${item.price} монет?`, act);
+        else askConfirm(`Купить за ${item.price} монет?`, act, { title: "Покупка", no: "Отмена", yes: "Купить" });
+      }
+
+      const PUZZLE_LIVES = 5;
+      function puzzleLives() {
+        const raw = safeJson(storage.get("pyramide.puzzleLives"), null);
+        const today = new Date().toISOString().slice(0, 10);
+        if (!raw || raw.day !== today) return { day: today, left: PUZZLE_LIVES, solved: 0 };
+        return raw;
+      }
+      function savePuzzleLives(state) { storage.set("pyramide.puzzleLives", JSON.stringify(state)); }
+      function renderLives() {
+        const state = puzzleLives();
+        $("#puzLives").innerHTML = Array.from({ length: PUZZLE_LIVES }, (_, i) =>
+          `<span style="opacity:${i < state.left ? 1 : .25}">&#10084;</span>`).join("");
+        $("#puzSolved").textContent = `Решено сегодня: ${state.solved}`;
+      }
+
+      let puzzle = null;
+      async function openPuzzle() {
+        openModal("puzzleModal");
+        renderLives();
+        const lives = puzzleLives();
+        if (lives.left <= 0) {
+          $("#puzPrompt").textContent = "Жизни закончились. Новые появятся завтра — возвращайтесь!";
+          $("#puzBoard").innerHTML = ""; $("#puzColors").innerHTML = ""; $("#puzCtx").innerHTML = "";
+          $("#puzResult").textContent = "";
+          return;
+        }
+        $("#puzResult").textContent = "";
+        $("#puzPrompt").textContent = "Загрузка задачи...";
+        try {
+          await ensureConnected();
+          const data = await onlineClient.emit("puzzle:next", {});
+          puzzle = { ...data, color: null, done: false, tried: false };
+          // Only cells that are actually legal for this roll accept a click.
+          puzzle.cells = createDiagram($("#puzBoard"), {
+            onPick: cellId => { if (puzzle.legal.includes(cellId)) submitPuzzle(cellId); }
+          });
+          repaintPuzzle();
+          $("#puzPrompt").textContent = data.prompt
+            + (data.solutions > 1 ? ` Верных ответов: ${data.solutions}.` : "");
+          renderPuzzleColors();
+        } catch (error) {
+          $("#puzPrompt").textContent = error?.code === "PUZZLE_UNAVAILABLE"
+            ? "Не удалось составить задачу, попробуйте ещё раз."
+            : "Задачи доступны при подключении к серверу.";
+        }
+      }
+
+      function repaintPuzzle() {
+        const marks = {};
+        for (const cell of cells) if (!puzzle.legal.includes(cell.id)) marks[cell.id] = "dim";
+        paintDiagram(puzzle.cells, puzzle.board, marks);
+        diagramContext($("#puzCtx"), {
+          roll: puzzle.roll, inventory: puzzle.inventory,
+          note: `ходят ${puzzle.side === "L" ? "Лазурные" : "Алые"}`
+        });
+      }
+
+      function renderPuzzleColors() {
+        const host = $("#puzColors");
+        host.innerHTML = "";
+        const available = COLORS.filter(color => (puzzle.inventory?.[puzzle.side]?.[color] ?? 0) > 0);
+        if (!puzzle.color) puzzle.color = available[0] || "yellow";
+        for (const color of available) {
+          const button = document.createElement("button");
+          button.className = puzzle.color === color ? "selected" : "";
+          button.innerHTML = `<span class="mini-stone stone-${color}"></span><span>${COLOR_NAMES[color]}</span>`;
+          button.addEventListener("click", () => { puzzle.color = color; renderPuzzleColors(); audio.tick(); });
+          host.append(button);
+        }
+      }
+
+      async function submitPuzzle(cellId) {
+        if (!puzzle || puzzle.done) return;
+        try {
+          const result = await onlineClient.emit("puzzle:solve", { id: puzzle.id, cellId, color: puzzle.color });
+          const lives = puzzleLives();
+          if (result.correct) {
+            puzzle.done = true;
+            audio.finish(true);
+            paintDiagram(puzzle.cells, { ...puzzle.board, [cellId]: { color: puzzle.color, player: puzzle.side } }, { [cellId]: "played" });
+            lives.solved++; savePuzzleLives(lives); renderLives();
+            $("#puzResult").textContent = result.reward ? `Верно! +${result.reward} монет` : "Верно!";
+            if (result.reward) {
+              progression.coins = (Number(progression.coins) || 0) + result.reward;
+              storage.set("pyramide.progress", JSON.stringify(progression));
+              updateProfile(); showCoinGain(result.reward);
+            }
+          } else {
+            audio.blocked();
+            lives.left = Math.max(0, lives.left - 1); savePuzzleLives(lives); renderLives();
+            $("#puzResult").textContent = `${result.why || "Не тот ход"}. Осталось жизней: ${lives.left}`;
+            if (lives.left <= 0) puzzle.done = true;
+          }
+        } catch { showToast("Задача устарела, возьмите следующую"); }
+      }
+
+      // Skipping also costs a life, otherwise the answer can be found by cycling puzzles for free.
+      function skipPuzzle() {
+        const lives = puzzleLives();
+        if (!puzzle?.done) { lives.left = Math.max(0, lives.left - 1); savePuzzleLives(lives); }
+        openPuzzle();
       }
 
       let clockTickerId = null;
@@ -2982,6 +3086,19 @@
         } else deltaEl.textContent = "";
       }
 
+      // Coins were being credited with no visible signal, so players could not tell what earned
+      // them or whether a purchase went through.
+      function showCoinGain(amount) {
+        const node = document.createElement("div");
+        node.textContent = `+${amount} \u25CF`;
+        node.style.cssText = "position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:120;"
+          + "font-family:Georgia,serif;font-size:26px;color:#ffe1a1;text-shadow:0 0 24px rgba(255,206,120,.7);"
+          + "pointer-events:none;transition:opacity .9s ease,transform .9s ease";
+        document.body.append(node);
+        requestAnimationFrame(() => { node.style.opacity = "0"; node.style.transform = "translateX(-50%) translateY(-40px)"; });
+        setTimeout(() => node.remove(), 1000);
+      }
+
       function showToast(text) {
         dom.toast.textContent = text; dom.toast.classList.add("show");
         clearTimeout(showToast.timer); showToast.timer = setTimeout(() => dom.toast.classList.remove("show"), 1900);
@@ -2998,7 +3115,10 @@
         const modal = document.getElementById(id); if (!modal) return;
         if (!modal.classList.contains("open")) { modal.classList.add("open"); openModalCount++; document.body.classList.add("has-modal"); }
         syncMenuBackdrop();
-        const focusable = $("button", modal); if (focusable) schedule(() => focusable.focus(), 40);
+        // Focusing the first button made the close "x" look pressed every time a modal opened.
+        // Focus the dialog itself instead: screen readers still announce it, nothing looks active.
+        modal.setAttribute("tabindex", "-1");
+        schedule(() => modal.focus({ preventScroll: true }), 40);
       }
       function closeModal(id) {
         const modal = document.getElementById(id); if (!modal || !modal.classList.contains("open")) return;
@@ -3188,7 +3308,7 @@
       $$("[data-shop]").forEach(button => button.addEventListener("click", () => openShop(button.dataset.shop)));
       $("#openPuzzles").addEventListener("click", () => openPuzzle());
       $("#puzNext").addEventListener("click", () => openPuzzle());
-      $("#puzSkip").addEventListener("click", () => openPuzzle());
+      $("#puzSkip").addEventListener("click", skipPuzzle);
       $("#revStart").addEventListener("click", () => { review.index = 0; renderReview(); });
       $("#revPrev").addEventListener("click", () => { review.index = Math.max(0, review.index - 1); renderReview(); });
       $("#revNext").addEventListener("click", () => { review.index = Math.min(review.report.length, review.index + 1); renderReview(); });
@@ -3212,7 +3332,8 @@
         if (!live) return leaveToMenu();
         askConfirm(isOnline()
           ? "Партия ещё идёт. Выход засчитается как поражение и повлияет на рейтинг."
-          : "Партия ещё идёт. Текущий прогресс будет потерян.", leaveToMenu);
+          : "Партия ещё идёт. Текущий прогресс будет потерян.", leaveToMenu,
+          { title: "Выйти в меню?", no: "Остаться", yes: "Выйти" });
       }
       $("#resultMenu").addEventListener("click", leaveToMenu);
       $("#newGameButton").addEventListener("click", () => { closeModal("settingsModal"); requestLeave(); });
