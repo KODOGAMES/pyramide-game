@@ -127,12 +127,6 @@
       font-size: 12px;
     }
     .level-ring { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid #e4b96c; border-radius: 50%; color: #ffd987; font-weight: 800; }
-    .elo-badge { display: none; align-items: center; gap: 6px; margin-left: 10px; padding: 5px 11px; border: 1px solid rgba(233,189,109,.35); border-radius: 999px; background: rgba(233,189,109,.09); font-size: 12.5px; color: #ffe1a1; white-space: nowrap; }
-    .elo-badge.show { display: inline-flex; }
-    .elo-badge b { font-variant-numeric: tabular-nums; font-weight: 700; }
-    .elo-badge .elo-delta { font-size: 11px; font-variant-numeric: tabular-nums; }
-    .elo-badge .elo-delta.up { color: #8fe0a4; }
-    .elo-badge .elo-delta.down { color: #ff9a8a; }
     .profile strong { display: block; color: #fff3d6; font-size: 13px; }
 
     .game-shell {
@@ -240,8 +234,12 @@
     .cell.is-foot::before { content: ""; position: absolute; inset: -5px; border: 1px dashed currentColor; border-radius: 10px; opacity: .35; }
     .cell-number { font-family: Georgia, serif; font-size: clamp(11px, 2.2vw, 20px); font-weight: 700; opacity: .72; text-shadow: 0 1px rgba(255,255,255,.35); pointer-events: none; }
     .cell.occupied .cell-number { opacity: 0; }
-    .cell.valid { cursor: pointer; border-color: #fff0b0; background: rgba(255, 238, 177, .7); box-shadow: 0 0 0 2px rgba(255,223,132,.28), 0 0 20px rgba(255,218,114,.68), inset 0 0 12px rgba(255,255,255,.5); }
-    .cell.valid::after { content: ""; position: absolute; inset: -6px; border-radius: inherit; background: radial-gradient(circle, rgba(255,222,117,.55), transparent 70%); opacity: .35; animation: validBreathe 1.65s ease-in-out infinite; pointer-events: none; }
+    /* Your legal cells: a solid teal ring instead of a warm bloom. The board is sand-coloured, so
+       any yellow highlight sits on top of a near-identical hue and washes out; a cool colour
+       separates cleanly and the flat ring stops the glare that made the board hard to read. */
+    .cell.valid { cursor: pointer; border-color: #43d6c4; background: rgba(70, 214, 196, .16); box-shadow: inset 0 0 0 2px rgba(67,214,196,.85), 0 2px 0 rgba(79,43,21,.22); }
+    .cell.valid::after { content: ""; position: absolute; inset: -3px; border-radius: inherit; border: 1px solid rgba(67,214,196,.5); opacity: .5; animation: validBreathe 2s ease-in-out infinite; pointer-events: none; }
+    .cell.valid .cell-number { color: #0d6d63; }
     .cell.valid:hover { z-index: 3; transform: translateY(-3px) scale(1.06); background: rgba(255,246,203,.9); }
     .cell.last { box-shadow: 0 0 0 3px rgba(255,250,218,.9), 0 0 26px rgba(255,222,117,.7); z-index: 2; }
     .cell.danger { animation: dangerFlash .72s ease-in-out 3; border-color: #ffdf6c; z-index: 4; }
@@ -398,7 +396,6 @@
     .menu-stat { padding: 9px 6px; border: 1px solid rgba(255,225,167,.14); border-radius: 13px; background: rgba(255,255,255,.03); }
     .menu-stat b { display: block; font-family: Georgia, serif; font-size: 19px; color: #ffe1a1; line-height: 1.2; font-weight: 500; }
     .menu-stat span { display: block; margin-top: 2px; font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; color: #8ba3a6; }
-    .menu-section-label { margin: 16px 0 9px; font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: #7d9498; text-align: left; }
     .menu-hero h1 { margin: 12px 0 4px; font-family: Georgia, serif; font-size: clamp(37px, 9vw, 58px); font-weight: 500; letter-spacing: .09em; color: #ffe1a1; text-transform: uppercase; }
     .menu-hero p { max-width: 370px; margin: 0 auto; color: #b7c7c5; font-size: 14px; line-height: 1.55; }
     .mode-list { display: grid; gap: 10px; margin-top: 25px; }
@@ -524,6 +521,106 @@
     .rating-chip .elo-delta.up { color: #8fe0a4; } .rating-chip .elo-delta.down { color: #ff9a8a; }
     .name-rating { font-size: 11px; color: #9fb4b4; font-variant-numeric: tabular-nums; }
 
+    /* ---- Cosmetics -------------------------------------------------------------------------- */
+    /* Themes are pure CSS variables, so a skin costs nothing to download and re-themes every
+       stone and board surface at once, including the review and puzzle diagrams. */
+    body[data-stones="polished"] { --yellow-stone: #ffd977; --green-stone: #6fd6a4; --purple-stone: #b48ce0; }
+    body[data-stones="clay"] { --yellow-stone: #d9a55c; --green-stone: #7fa87a; --purple-stone: #a08bb5; }
+    body[data-stones="lapis"] { --yellow-stone: #f0c96a; --green-stone: #4fb7b0; --purple-stone: #5b6fd6; }
+    body[data-stones="obsidian"] { --yellow-stone: #b8a06a; --green-stone: #4f8f7a; --purple-stone: #6b4f8f; }
+    body[data-stones="gold"] { --yellow-stone: #ffd24a; --green-stone: #d9b45c; --purple-stone: #b08a3c; }
+    body[data-board="granite"] .board, body[data-board="granite"] .rev-board, body[data-board="granite"] .tut-board { background: linear-gradient(170deg, #b9b3ab, #9a948c); }
+    body[data-board="papyrus"] .board, body[data-board="papyrus"] .rev-board, body[data-board="papyrus"] .tut-board { background: linear-gradient(170deg, #f2e3c0, #e0cda2); }
+    body[data-board="nightsand"] .board, body[data-board="nightsand"] .rev-board, body[data-board="nightsand"] .tut-board { background: linear-gradient(170deg, #4a4335, #322d24); }
+    body[data-board="nightsand"] .cell { background: rgba(238,226,200,.82); }
+    body[data-board="marble"] .board, body[data-board="marble"] .rev-board, body[data-board="marble"] .tut-board { background: linear-gradient(170deg, #eceae6, #d5d2cc); }
+    .shop-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 9px; max-height: 44vh; overflow-y: auto; padding: 2px; }
+    .shop-item { padding: 10px 6px; border-radius: 13px; border: 1px solid rgba(255,225,167,.16); background: rgba(255,255,255,.03); cursor: pointer; text-align: center; }
+    .shop-item:hover { border-color: rgba(255,216,132,.5); }
+    .shop-item.equipped { border-color: #e3b568; background: rgba(233,189,109,.16); }
+    .shop-item.locked { opacity: .55; }
+    .shop-item .sw { display: flex; justify-content: center; gap: 3px; margin-bottom: 6px; }
+    .shop-item .sw i { width: 15px; height: 15px; border-radius: 50%; display: block; }
+    .shop-item .bar { height: 20px; border-radius: 6px; margin-bottom: 6px; }
+    .shop-item .nm { display: block; font-size: 11.5px; color: #e8dcc2; }
+    .shop-item .pr { display: block; font-size: 10.5px; color: #e9bd6d; margin-top: 2px; }
+
+    /* ---- Match review & puzzles ------------------------------------------------------------- */
+    .rev-board { position: relative; width: 100%; max-width: 360px; aspect-ratio: 10/7; margin: 0 auto 12px;
+      border-radius: 14px; background: linear-gradient(170deg, #efd9ac, #e2c48d); box-shadow: inset 0 0 30px rgba(120,80,40,.18); }
+    .rev-cell { position: absolute; width: 9.1%; aspect-ratio: 1; border-radius: 4px; border: 1px solid rgba(120,80,40,.4);
+      background: rgba(255,250,238,.7); display: grid; place-items: center; transition: box-shadow .2s; }
+    .rev-cell .n { font-size: 8.5px; color: #a5804f; font-weight: 700; }
+    .rev-cell .st { position: absolute; inset: 16%; border-radius: 50%; }
+    .rev-cell.played { box-shadow: 0 0 0 2px #43d6c4, 0 0 12px rgba(67,214,196,.5); }
+    .rev-cell.suggest { box-shadow: 0 0 0 2px #8fe0a4; }
+    .rev-cell.pick { cursor: pointer; }
+    .rev-cell.pick:hover { box-shadow: 0 0 0 2px #43d6c4; }
+    .rev-nav { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
+    .rev-nav button { padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(255,225,167,.22); background: rgba(255,255,255,.05); color: #f0e2c6; cursor: pointer; font-size: 15px; }
+    .rev-nav button:disabled { opacity: .35; cursor: default; }
+    .rev-ply { font-variant-numeric: tabular-nums; font-size: 13px; color: #9fb4b4; min-width: 74px; text-align: center; }
+    .verdict { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-size: 13px; border: 1px solid; }
+    .verdict.great { color: #8fe0a4; border-color: rgba(143,224,164,.5); background: rgba(143,224,164,.1); }
+    .verdict.good { color: #cfe0a4; border-color: rgba(207,224,164,.45); background: rgba(207,224,164,.08); }
+    .verdict.neutral { color: #9fb4b4; border-color: rgba(159,180,180,.35); background: rgba(159,180,180,.08); }
+    .verdict.warn { color: #ffd28a; border-color: rgba(255,210,138,.5); background: rgba(255,210,138,.1); }
+    .verdict.bad { color: #ff9a8a; border-color: rgba(255,154,138,.5); background: rgba(255,154,138,.1); }
+    .rev-note { margin: 8px 0 0; font-size: 13px; color: #cfdcd8; line-height: 1.5; min-height: 40px; }
+    .puz-colors { display: flex; justify-content: center; gap: 8px; margin: 10px 0; }
+    .puz-colors button { display: flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 11px; border: 1px solid rgba(255,225,167,.2); background: rgba(255,255,255,.04); color: #f0e2c6; cursor: pointer; }
+    .puz-colors button.selected { border-color: #e3b568; background: rgba(233,189,109,.16); }
+    .summary-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+
+    /* ---- Interactive tutorial ---------------------------------------------------------------- */
+    .tut-board { position: relative; width: 100%; max-width: 340px; aspect-ratio: 10/7; margin: 0 auto 16px;
+      border-radius: 14px; background: linear-gradient(170deg, #efd9ac, #e2c48d); box-shadow: inset 0 0 30px rgba(120,80,40,.18); }
+    .tut-cell { position: absolute; width: 9.1%; aspect-ratio: 1; border-radius: 4px; border: 1px solid rgba(120,80,40,.4);
+      background: rgba(255,250,238,.7); display: grid; place-items: center; font-size: 9px; color: #a5804f; transition: all .3s ease; }
+    .tut-cell .n { font-size: 9px; color: #a5804f; font-weight: 700; }
+    .tut-cell .st { position: absolute; inset: 16%; border-radius: 50%; }
+    .tut-cell.hl { border-color: #43d6c4; background: rgba(70,214,196,.22); box-shadow: inset 0 0 0 2px rgba(67,214,196,.8); }
+    .tut-cell.bad { border-color: #ff5a44; background: rgba(255,90,68,.22); box-shadow: inset 0 0 0 2px rgba(255,90,68,.8); animation: pulseLow 1s ease-in-out infinite; }
+    .tut-cell.dim { opacity: .35; }
+    .tut-mid { position: absolute; left: 50%; top: 6%; bottom: 6%; width: 1px; background: rgba(120,80,40,.35); }
+    .tut-rownum { position: absolute; font-size: 9px; color: #8a6a42; font-weight: 700; margin-top: 1.2%; }
+    .tut-rownum.l { left: -14px; } .tut-rownum.r { right: -14px; }
+    .tut-board { overflow: visible; }
+    .tut-cell.foot { border-color: #c98adf; background: rgba(201,138,223,.25); box-shadow: inset 0 0 0 2px rgba(201,138,223,.85); }
+    .tut-title { margin: 0 0 6px; font-family: Georgia, serif; font-size: 19px; color: #ffe1a1; font-weight: 500; }
+    .tut-text { margin: 0 0 16px; font-size: 14px; line-height: 1.55; color: #cfdcd8; min-height: 68px; }
+    .tut-text b { color: #ffe1a1; }
+    .tut-nav { display: flex; align-items: center; gap: 12px; }
+    .tut-nav button { flex: 0 0 auto; padding: 10px 20px; }
+    .tut-dots { flex: 1; display: flex; justify-content: center; gap: 6px; }
+    .tut-dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,225,167,.22); }
+    .tut-dots i.on { background: #e9bd6d; }
+
+    /* ---- Account, avatars, profile ---------------------------------------------------------- */
+    .avatar { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; font-size: 22px; background: linear-gradient(160deg, rgba(233,189,109,.22), rgba(233,189,109,.08)); border: 1px solid rgba(233,189,109,.32); flex: 0 0 auto; }
+    .avatar.sm { width: 34px; height: 34px; border-radius: 10px; font-size: 17px; }
+    .avatar.lg { width: 78px; height: 78px; border-radius: 20px; font-size: 38px; }
+    .avatar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 8px; max-height: 34vh; overflow-y: auto; padding: 2px; }
+    .avatar-pick { aspect-ratio: 1; display: grid; place-items: center; font-size: 25px; border-radius: 13px; border: 1px solid rgba(255,225,167,.16); background: rgba(255,255,255,.03); cursor: pointer; position: relative; }
+    .avatar-pick:hover { border-color: rgba(255,216,132,.5); }
+    .avatar-pick.selected { border-color: #e3b568; background: rgba(233,189,109,.16); box-shadow: inset 0 0 0 1px rgba(255,222,150,.4); }
+    .avatar-pick.locked { opacity: .4; cursor: not-allowed; }
+    .avatar-pick .price { position: absolute; bottom: 2px; font-size: 9px; color: #e9bd6d; }
+    .profile-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .profile-head .who { min-width: 0; }
+    .profile-head .who b { display: block; font-size: 18px; color: #f6e7c4; }
+    .profile-head .who span { font-size: 12px; color: #90a6a8; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; margin-bottom: 12px; }
+    .stat-box { padding: 9px 7px; border: 1px solid rgba(255,225,167,.13); border-radius: 12px; background: rgba(255,255,255,.03); text-align: center; }
+    .stat-box b { display: block; font-family: Georgia, serif; font-size: 17px; color: #ffe1a1; font-weight: 500; }
+    .stat-box span { font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: #8ba3a6; }
+    .heat { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+    .heat i { width: 10px; height: 10px; border-radius: 3px; background: rgba(255,255,255,.06); }
+    .heat i.l1 { background: rgba(233,189,109,.35); } .heat i.l2 { background: rgba(233,189,109,.6); } .heat i.l3 { background: #e9bd6d; }
+    .coin-chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(233,189,109,.3); background: rgba(233,189,109,.09); font-size: 13px; color: #ffe1a1; }
+    .link-code { font-family: Georgia, serif; font-size: 27px; letter-spacing: .3em; color: #ffe1a1; text-align: center; padding: 12px 0; }
+
     /* ---- Friends --------------------------------------------------------------------------- */
     .code-box { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px dashed rgba(233,189,109,.4); border-radius: 13px; background: rgba(233,189,109,.06); margin-bottom: 14px; }
     .code-box .code { font-family: Georgia, serif; font-size: 21px; letter-spacing: .22em; color: #ffe1a1; }
@@ -538,8 +635,10 @@
     .section-head:first-child { margin-top: 0; }
 
     /* Opponent's legal cells: cold blue so it never reads as "your move" (which is warm gold). */
-    .cell.enemy-hint { border-color: rgba(122,178,214,.75); box-shadow: 0 0 0 2px rgba(110,170,215,.22), 0 0 14px rgba(96,160,210,.4); }
-    .cell.enemy-hint::after { content: ""; position: absolute; inset: -4px; border-radius: inherit; background: radial-gradient(circle, rgba(120,180,220,.4), transparent 70%); opacity: .5; pointer-events: none; }
+    /* Opponent's options: violet, dimmer than yours. Different hue *and* different intensity, so
+       the two are distinguishable even for red-green colour blindness. */
+    .cell.enemy-hint { border-color: rgba(150,120,214,.8); background: rgba(140,110,210,.12); box-shadow: inset 0 0 0 2px rgba(150,120,214,.5); }
+    .cell.enemy-hint .cell-number { color: #4a3a7a; }
 
     .clock-bar { display: none; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; width: 100%; max-width: 680px; margin: 0 auto 8px; }
     .clock-bar.show { display: grid; }
@@ -586,6 +685,17 @@
     .val small.up { color: #8fe0a4; } .val small.down { color: #ff9a8a; } .val small.even { color: #90a6a8; }
     .res-dot { width: 9px; height: 9px; border-radius: 50%; }
     .res-win { background: #7ed69a; } .res-loss { background: #ff7d68; } .res-draw { background: #c9b184; }
+    /* The selected tab had no styling at all, so there was no way to tell which list you were
+       looking at. */
+    .secondary-btn.selected, .difficulty button.selected {
+      border-color: #e3b568; background: linear-gradient(180deg, rgba(233,189,109,.24), rgba(233,189,109,.12));
+      color: #ffe9c0; box-shadow: inset 0 0 0 1px rgba(255,222,150,.35);
+    }
+    .difficulty button.selected::after {
+      content: ""; position: absolute; left: 50%; bottom: 5px; transform: translateX(-50%);
+      width: 16px; height: 2px; border-radius: 2px; background: #e9bd6d;
+    }
+    .difficulty button { position: relative; }
     .tab-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
     .empty-note { padding: 26px 12px; text-align: center; color: #8ba3a6; font-size: 13.5px; }
     .mini-board { position: relative; width: 100%; max-width: 320px; aspect-ratio: 10 / 7; margin: 4px auto 0; }
@@ -594,9 +704,6 @@
     .name-input { width: 100%; padding: 11px 13px; border: 1px solid rgba(255,225,167,.2); border-radius: 12px; background: rgba(0,0,0,.25); color: #fff3d9; font-size: 15px; }
     .name-input:focus { outline: none; border-color: #e3b568; }
 
-    .player-clock { margin-top: 8px; padding: 6px 10px; border-radius: 10px; background: rgba(0,0,0,.25); border: 1px solid rgba(235,186,98,.2); font-variant-numeric: tabular-nums; font-size: 15px; text-align: center; letter-spacing: .04em; color: #e9d3a3; display: none; }
-    .player-clock.active { border-color: #e3b568; box-shadow: 0 0 16px rgba(235,186,98,.25); }
-    .player-clock.low { color: #ff8a7a; border-color: #ff5a44; animation: pulseLow 1s ease-in-out infinite; }
     @keyframes pulseLow { 50% { opacity: .55; } }
     .result-copy { text-align: center; }
     .result-copy h2 { margin: 0; color: #ffe5ad; font-family: Georgia, serif; font-size: 31px; font-weight: 500; }
@@ -622,7 +729,7 @@
     body.in-menu .game-shell { visibility: hidden; }
     body.in-menu .topbar { opacity: .35; }
     @keyframes boardRise { from { opacity: 0; transform: translateY(18px) scale(.985); } }
-    @keyframes validBreathe { 50% { opacity: .85; } }
+    @keyframes validBreathe { 50% { opacity: .12; } }
     @keyframes pieceDrop { 0% { opacity: 0; transform: translateY(-25px) scale(.6); } 62% { opacity: 1; transform: translateY(2px) scale(1.08,.93); } 100% { transform: none; } }
     @keyframes dieRoll { 0% { transform: rotate(-3deg); } 25% { transform: translateY(-18px) rotate(95deg) scale(.92); } 54% { transform: translateY(-6px) rotate(190deg) scale(1.05); } 78% { transform: translateY(2px) rotate(278deg) scale(.96); } 100% { transform: rotate(357deg); } }
     @keyframes dangerFlash { 50% { transform: scale(1.08); box-shadow: 0 0 0 4px rgba(255,91,57,.36), 0 0 25px rgba(255,78,46,.7); } }
@@ -716,6 +823,7 @@
       </div>
       <div class="top-actions">
         <div class="profile" title="Локальная прогрессия">
+          <div class="avatar sm" id="topAvatar">&#128034;</div>
           <div class="level-ring" id="profileLevel">1</div>
           <div class="profile-copy"><strong id="profileRank">Носильщик</strong><span id="profileXp">0 / 120 опыта</span></div>
         </div>
@@ -791,6 +899,9 @@
           <button class="mode-btn" id="menuPlay"><span class="mode-icon">&#9654;</span><span><strong>Играть</strong><small>Онлайн, с ботом или вдвоём</small></span><span class="mode-chevron">&#9654;</span></button>
           <button class="mode-btn" id="openHistory"><span class="mode-icon">&#8986;</span><span><strong>История партий онлайн</strong><small>Только рейтинговые матчи и их финальные позиции</small></span></button>
           <button class="mode-btn" id="openLeaderboard"><span class="mode-icon">&#9733;</span><span><strong>Лидеры рейтинга</strong><small>Лучшие игроки Классики и Блица</small></span></button>
+          <button class="mode-btn" id="openShop"><span class="mode-icon">&#9670;</span><span><strong>Мастерская</strong><small>Камни, поле и аватары за монеты</small></span></button>
+          <button class="mode-btn" id="openPuzzles"><span class="mode-icon">&#9819;</span><span><strong>Задачи</strong><small>Найдите единственный верный ход</small></span></button>
+          <button class="mode-btn" id="openAccount"><span class="mode-icon">&#128100;</span><span><strong>Мой профиль</strong><small>Аватар, имя, вход с других устройств</small></span></button>
           <button class="mode-btn" id="openFriends"><span class="mode-icon">&#128101;</span><span><strong>Друзья</strong><small>Добавляйте и вызывайте на партию</small></span></button>
         </div>
 
@@ -830,19 +941,17 @@
 
   <div class="modal-backdrop" id="rulesModal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
     <div class="modal">
-      <div class="modal-head"><div><h2 id="rulesTitle">Как играть</h2><p>Пять правил — и вы готовы</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
-      <div class="modal-body rule-steps">
-        <article class="rule-step"><div><h3>1. Бросьте кубик</h3><p>Выпало от 1 до 5 — ставьте камень на клетку этого уровня <b>или</b> с этим номером на своей половине.</p></div><div class="rule-visual"><span class="demo-cell">3</span><span class="warning-line"></span><span class="demo-cell on">3</span><span class="demo-cell">2</span><span class="demo-cell on">3</span></div></article>
-
-        <article class="rule-step"><div><h3>2. Выберите цвет</h3><p>У каждого 7 жёлтых, 7 зелёных и 2 фиолетовых камня. Цвет можно поменять до того, как поставите.</p></div><div class="rule-visual"><span class="mini-stone stone-yellow"></span><span>7</span><span class="mini-stone stone-green"></span><span>7</span><span class="mini-stone stone-purple"></span><span>2</span></div></article>
-
-        <article class="rule-step"><div><h3>3. Шестёрка открывает территорию</h3><p>При 6 занимайте любую свободную клетку своей половины или свою атакующую ножку под половиной соперника. Чужие клетки по-прежнему недоступны.</p></div><div class="rule-visual rule-six"><span class="demo-cell on">1</span><span class="demo-cell on">2</span><span class="demo-cell attack">6</span></div></article>
-
-        <article class="rule-step"><div><h3>4. Не собирайте три одинаковых — это поражение</h3><p>Три камня одного цвета подряд по горизонтали, вертикали или диагонали. Проигрывает та сторона, на которой лежат <b>два из трёх</b>. Если линия делится поровну — проигрывает тот, кто поставил последний камень.</p></div><div class="rule-visual"><span class="demo-cell"><i class="mini-stone stone-green"></i></span><span class="demo-cell"><i class="mini-stone stone-green"></i></span><span class="demo-cell"><i class="mini-stone stone-green"></i></span></div></article>
-
-        <article class="rule-step"><div><h3>5. Как победить</h3><p><b>Заполните свою половину первым</b> — 15 клеток, не считая атакующей ножки. Она в счёт не идёт.<br><br>Также вы побеждаете, если соперник собрал три в ряд, сдался или у него закончилось время.</p></div><div class="rule-visual"><span class="demo-cell on">1</span><span class="demo-cell on">2</span><span class="demo-cell on">3</span></div></article>
-
-        <article class="rule-step"><div><h3>Ничья</h3><p>Бывает, когда один ход закрывает запретную линию сразу у обоих игроков. Тогда рейтинг почти не меняется.</p></div><div class="rule-visual"><span class="demo-cell"><i class="mini-stone stone-yellow"></i></span><span class="warning-line"></span><span class="demo-cell"><i class="mini-stone stone-purple"></i></span></div></article>
+      <div class="modal-head"><div><h2 id="rulesTitle">Как играть</h2><p id="tutStep">Шаг 1 из 6</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
+      <div class="modal-body">
+        <div class="tut-board" id="tutBoard" aria-hidden="true"></div>
+        <h3 class="tut-title" id="tutTitle">Поле</h3>
+        <p class="tut-text" id="tutText">Текст</p>
+        <div class="tut-nav">
+          <button class="secondary-btn" id="tutPrev">Назад</button>
+          <div class="tut-dots" id="tutDots"></div>
+          <button class="primary-btn" id="tutNext">Далее</button>
+        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -885,6 +994,99 @@
         <div class="xp-gain" id="queueTimer">0:00</div>
         <div class="result-actions"><button class="secondary-btn" id="queueCancel" style="grid-column:1/-1">Отменить поиск</button></div>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
+    <div class="modal" style="width:min(480px,100%)">
+      <div class="modal-head"><h2 id="reviewTitle">Разбор партии</h2><button class="icon-btn" data-close="reviewModal" aria-label="Закрыть">&#10005;</button></div>
+      <div class="modal-body">
+        <div class="summary-row" id="revSummary"></div>
+        <div class="rev-board" id="revBoard"></div>
+        <div class="rev-nav">
+          <button id="revStart" title="В начало">&#124;&#9664;</button>
+          <button id="revPrev" title="Назад">&#9664;</button>
+          <span class="rev-ply" id="revPly">0 / 0</span>
+          <button id="revNext" title="Вперёд">&#9654;</button>
+          <button id="revEnd" title="В конец">&#9654;&#124;</button>
+        </div>
+        <div style="text-align:center"><span class="verdict neutral" id="revVerdict">—</span></div>
+        <p class="rev-note" id="revNote"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="puzzleModal" role="dialog" aria-modal="true" aria-labelledby="puzzleTitle">
+    <div class="modal" style="width:min(460px,100%)">
+      <div class="modal-head"><h2 id="puzzleTitle">Задача</h2><button class="icon-btn" data-close="puzzleModal" aria-label="Закрыть">&#10005;</button></div>
+      <div class="modal-body">
+        <p class="rev-note" id="puzPrompt" style="margin-top:0"></p>
+        <div style="text-align:center;margin-bottom:8px"><span class="verdict neutral" id="puzRoll">Кубик: —</span></div>
+        <div class="rev-board" id="puzBoard"></div>
+        <div class="puz-colors" id="puzColors"></div>
+        <p class="rev-note" id="puzResult"></p>
+        <div class="result-actions"><button class="secondary-btn" id="puzSkip">Пропустить</button><button class="primary-btn" id="puzNext">Следующая</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="shopModal" role="dialog" aria-modal="true" aria-labelledby="shopTitle">
+    <div class="modal" style="width:min(520px,100%)">
+      <div class="modal-head"><h2 id="shopTitle">Мастерская</h2><button class="icon-btn" data-close="shopModal" aria-label="Закрыть">&#10005;</button></div>
+      <div class="modal-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-size:12.5px;color:#8ba3a6">Монеты за победы и решённые задачи</span>
+          <span class="coin-chip">&#9679; <b id="shopCoins">0</b></span>
+        </div>
+        <div class="shop-tabs">
+          <button class="secondary-btn selected" data-shop="stones">Камни</button>
+          <button class="secondary-btn" data-shop="board">Поле</button>
+          <button class="secondary-btn" data-shop="avatar">Аватары</button>
+        </div>
+        <div class="shop-grid" id="shopGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+    <div class="modal" style="width:min(520px,100%)">
+      <div class="modal-head"><h2 id="accountTitle">Мой профиль</h2><button class="icon-btn" data-close="accountModal" aria-label="Закрыть">&#10005;</button></div>
+      <div class="modal-body">
+        <div class="profile-head">
+          <div class="avatar lg" id="myAvatar">&#128034;</div>
+          <div class="who"><b id="myName">Странник</b><span id="myMeta">—</span></div>
+          <span class="coin-chip" style="margin-left:auto">&#9679; <b id="myCoins">0</b></span>
+        </div>
+        <div class="stat-grid" id="myStats"></div>
+
+        <div class="section-head">Имя</div>
+        <div style="display:flex;gap:8px;margin-bottom:4px">
+          <input class="name-input" id="nickInput2" maxlength="18" placeholder="Странник" autocomplete="off">
+          <button class="secondary-btn" id="nickSave2" style="padding:0 16px;white-space:nowrap">Сохранить</button>
+        </div>
+
+        <div class="section-head">Аватар</div>
+        <div class="avatar-grid" id="avatarGrid"></div>
+
+        <div class="section-head">Вход с другого устройства</div>
+        <p style="margin:0 0 8px;font-size:12.5px;color:#8ba3a6">Чтобы играть с телефона и компьютера под одним аккаунтом: получите код здесь и введите его на втором устройстве.</p>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <button class="secondary-btn" id="getLinkCode" style="flex:1">Получить код</button>
+          <button class="secondary-btn" id="showRedeem" style="flex:1">Ввести код</button>
+        </div>
+        <div id="linkCodeBox" hidden><div class="link-code" id="linkCodeValue">------</div><p style="margin:0;text-align:center;font-size:12px;color:#8ba3a6" id="linkCodeHint">Код действует 5 минут</p></div>
+        <div id="redeemBox" hidden style="display:flex;gap:8px">
+          <input class="name-input" id="redeemInput" maxlength="12" placeholder="Код с другого устройства" style="text-transform:uppercase">
+          <button class="secondary-btn" id="redeemGo" style="padding:0 16px;white-space:nowrap">Войти</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="playerModal" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
+    <div class="modal" style="width:min(500px,100%)">
+      <div class="modal-head"><h2 id="playerTitle">Профиль игрока</h2><button class="icon-btn" data-close="playerModal" aria-label="Закрыть">&#10005;</button></div>
+      <div class="modal-body" id="playerBody"><div class="empty-note">Загрузка...</div></div>
     </div>
   </div>
 
@@ -942,16 +1144,6 @@
     </div>
   </div>
 
-  <div class="modal-backdrop" id="matchViewModal" role="dialog" aria-modal="true" aria-labelledby="matchViewTitle">
-    <div class="modal" style="width:min(430px,100%)">
-      <div class="modal-head"><h2 id="matchViewTitle">Итог партии</h2><button class="icon-btn" data-close="matchViewModal" aria-label="Закрыть">&#10005;</button></div>
-      <div class="modal-body">
-        <p id="matchViewMeta" style="margin:0 0 10px;color:#9fb4b4;font-size:13px"></p>
-        <div class="mini-board" id="matchViewBoard"></div>
-      </div>
-    </div>
-  </div>
-
   <div class="modal-backdrop" id="leaderboardModal" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
     <div class="modal" style="width:min(520px,100%)">
       <div class="modal-head"><h2 id="leaderboardTitle">Таблица лидеров</h2><button class="icon-btn" data-close="leaderboardModal" aria-label="Закрыть">&#10005;</button></div>
@@ -983,7 +1175,8 @@
 
       const COLORS = ["yellow", "green", "purple"];
       const COLOR_NAMES = { yellow: "желтый", green: "зеленый", purple: "фиолетовый" };
-      const SIDE_NAMES = { L: "Лазурь", R: "Закат" };
+      const SIDE_NAMES = { L: "Лазурь", R: "Алый" }; // kept short for turn labels
+      const SIDE_FULL = { L: "Лазурная сторона", R: "Алая сторона" };
       const RANKS = ["Носильщик", "Каменщик", "Зодчий", "Хранитель врат", "Жрец Ра", "Визирь", "Фараон"];
       // Online rating tiers, shown next to the raw Elo number so the ladder reads as progress.
       const ELO_TIERS = [
@@ -1046,7 +1239,7 @@
       const storedSettings = safeJson(storage.get("pyramide.settings"), {});
       const settings = { theme: storedSettings.theme || "egypt", sound: storedSettings.sound !== false, music: storedSettings.music !== false };
       const storedProgress = safeJson(storage.get("pyramide.progress"), {});
-      const progression = { xp: Number(storedProgress.xp) || 0, wins: Number(storedProgress.wins) || 0, games: Number(storedProgress.games) || 0, rating: numOrUndef(storedProgress.rating), ratingClassic: numOrUndef(storedProgress.ratingClassic), ratingBlitz: numOrUndef(storedProgress.ratingBlitz) };
+      const progression = { xp: Number(storedProgress.xp) || 0, wins: Number(storedProgress.wins) || 0, games: Number(storedProgress.games) || 0, coins: Number(storedProgress.coins) || 0, rating: numOrUndef(storedProgress.rating), ratingClassic: numOrUndef(storedProgress.ratingClassic), ratingBlitz: numOrUndef(storedProgress.ratingBlitz) };
       function numOrUndef(value) { const n = Number(value); return Number.isFinite(n) ? n : undefined; }
 
       const dom = {
@@ -1159,16 +1352,79 @@
         return `${m}:${String(s).padStart(2, "0")}`;
       }
 
-      function renderReserve(side) {
+      // Reserve panels and the colour picker are rebuilt from scratch on every render in the naive
+      // version, which throws away and recreates a dozen nodes per frame, restarts their CSS
+      // transitions and re-binds listeners. They are built once here and only their values and
+      // states are patched afterwards.
+      const stoneVar = { yellow: "yellow-stone", green: "green-stone", purple: "purple-stone" };
+      const reserveCells = { L: null, R: null };
+
+      function buildReserve(side) {
         const target = side === "L" ? dom.reserveL : dom.reserveR;
-        target.innerHTML = COLORS.map(color => `<div class="reserve-row"><span class="mini-stone stone-${color}"></span><b>${state.inventory[side][color]}</b><span class="reserve-track" style="color:var(--${color === "yellow" ? "yellow-stone" : color === "green" ? "green-stone" : "purple-stone"})"><i style="--value:${state.inventory[side][color] / STARTING_INVENTORY[color] * 100}%"></i></span></div>`).join("");
+        target.innerHTML = "";
+        const rows = {};
+        const fragment = document.createDocumentFragment();
+        for (const color of COLORS) {
+          const row = document.createElement("div");
+          row.className = "reserve-row";
+          row.innerHTML = `<span class="mini-stone stone-${color}"></span><b>0</b>`
+            + `<span class="reserve-track" style="color:var(--${stoneVar[color]})"><i style="--value:100%"></i></span>`;
+          rows[color] = { count: row.querySelector("b"), bar: row.querySelector("i") };
+          fragment.append(row);
+        }
+        target.append(fragment);
+        reserveCells[side] = rows;
+      }
+
+      function renderReserve(side) {
+        if (!reserveCells[side]) buildReserve(side);
+        const rows = reserveCells[side];
+        for (const color of COLORS) {
+          const left = state.inventory[side][color];
+          const row = rows[color];
+          const text = String(left);
+          // Guarding the write keeps the browser from invalidating layout when nothing changed.
+          if (row.count.textContent !== text) row.count.textContent = text;
+          const pct = `${left / STARTING_INVENTORY[color] * 100}%`;
+          if (row.bar.style.getPropertyValue("--value") !== pct) row.bar.style.setProperty("--value", pct);
+        }
+      }
+
+      let pickerButtons = null;
+      function buildPicker() {
+        dom.picker.innerHTML = "";
+        pickerButtons = {};
+        const fragment = document.createDocumentFragment();
+        for (const color of COLORS) {
+          const button = document.createElement("button");
+          button.className = "color-choice";
+          button.dataset.color = color;
+          button.innerHTML = `<span class="mini-stone stone-${color}"></span><b>0</b>`;
+          // Bound once, so repeated renders cannot pile up listeners.
+          button.addEventListener("click", () => {
+            if (button.disabled) return;
+            state.selectedColor = color; audio.tick(); renderPicker();
+          });
+          pickerButtons[color] = { button, count: button.querySelector("b") };
+          fragment.append(button);
+        }
+        dom.picker.append(fragment);
       }
 
       function renderPicker() {
+        if (!pickerButtons) buildPicker();
         const inv = state.inventory[state.active];
         if (inv[state.selectedColor] <= 0) state.selectedColor = COLORS.find(color => inv[color] > 0) || "yellow";
-        dom.picker.innerHTML = COLORS.map(color => `<button class="color-choice ${state.selectedColor === color ? "selected" : ""}" data-color="${color}" ${inv[color] <= 0 || !canActLocally() || state.phase === "gameover" ? "disabled" : ""} aria-label="${COLOR_NAMES[color]}, осталось ${inv[color]}"><span class="mini-stone stone-${color}"></span><b>${inv[color]}</b></button>`).join("");
-        $$('[data-color]', dom.picker).forEach(button => button.addEventListener("click", () => { state.selectedColor = button.dataset.color; audio.tick(); renderPicker(); }));
+        const locked = !canActLocally() || state.phase === "gameover";
+        for (const color of COLORS) {
+          const { button, count } = pickerButtons[color];
+          const left = inv[color];
+          const text = String(left);
+          if (count.textContent !== text) count.textContent = text;
+          button.classList.toggle("selected", state.selectedColor === color);
+          button.disabled = left <= 0 || locked;
+          button.setAttribute("aria-label", `${COLOR_NAMES[color]}, осталось ${left}`);
+        }
       }
 
       function renderStatus() {
@@ -1557,13 +1813,18 @@
           board: {}, inventory: { L: { ...STARTING_INVENTORY }, R: { ...STARTING_INVENTORY } }, active: "L",
           selectedColor: "yellow", phase: "roll", roll: null, legal: [], lastCell: null,
           mode: "online", result: null, matchNumber: state.matchNumber + 1,
-          online: { client: onlineClient, side: payload.side, matchId: payload.matchId, revision: 0, clock: { L: 0, R: 0 }, opponentName: payload.opponent, onlineMode: payload.mode }
+          online: { client: onlineClient, side: payload.side, matchId: payload.matchId, revision: 0, clock: { L: 0, R: 0 }, opponentName: payload.opponent, opponentId: payload.opponentId, opponentRating: payload.opponentRating, myRating: payload.myRating, onlineMode: payload.mode, friendly: Boolean(payload.friendly) }
         });
         const youLabel = "Вы", opponentLabel = payload.opponent || "Соперник";
         $("#nameL").textContent = payload.side === "L" ? youLabel : opponentLabel;
         $("#nameR").textContent = payload.side === "R" ? youLabel : opponentLabel;
         renderNameRatings(payload.mode, payload.opponentRating);
         $("#roleR").textContent = "Алый дом";
+        // The opponent's name is a live link to their profile, as on chess.com.
+        const oppNameEl = payload.side === "L" ? $("#nameR") : $("#nameL");
+        oppNameEl.style.cursor = "pointer";
+        oppNameEl.title = "Открыть профиль";
+        oppNameEl.onclick = () => viewPlayer(payload.opponentId, payload.opponent);
         $("#matchLabel").textContent = `Рейтинговый матч · ${ONLINE_MODE_LABELS[payload.mode] || payload.mode}`;
         $$(".danger", dom.cells).forEach(el => el.classList.remove("danger"));
         dom.die.dataset.face = "1";
@@ -1594,14 +1855,17 @@
         state.online.timeOffset = Date.now() - serverState.serverTime;
         state.online.turnDeadline = serverState.turnDeadline;
 
-        // Item 5: mirror the die face from the authoritative state so the waiting player actually
-        // sees what the opponent rolled, instead of a stale face from their own last turn.
+        // Mirror the opponent's roll, but *animate* it. Snapping straight to the final value gave
+        // no sense that they had acted - the number simply changed. The tumble makes their turn
+        // legible and matches what the rolling player sees.
         if (Number.isFinite(serverState.roll)) {
           if (dom.die.dataset.face !== String(serverState.roll)) {
-            dom.die.dataset.face = String(serverState.roll);
-            if (state.active !== state.online.side) audio.reveal(serverState.roll);
+            const theirs = state.active !== state.online.side;
+            if (theirs) animateOpponentRoll(serverState.roll);
+            else dom.die.dataset.face = String(serverState.roll);
           }
         } else if (serverState.phase === "roll") {
+          stopOpponentRoll();
           dom.die.dataset.face = "1";
         }
 
@@ -1634,10 +1898,27 @@
             || (result.reason === "forfeit" && !won ? "Вы сдали партию." : "Партия завершена.");
           $("#resultText").textContent = reasonText;
         }
+        // Spell out which side each player held and exactly where the game was decided - the old
+        // one-line summary left players unsure what had just happened.
+        const sideNames = SIDE_FULL;
+        const lines = result.lines || [];
+        const whereText = lines.length
+          ? `Решающая линия: ${lines[0].map(id => cellLabel(id)).join(" - ")}`
+          : result.reason === "filled" ? "Половина заполнена полностью"
+          : result.reason === "timeout" ? "Закончилось время на часах"
+          : result.reason === "forfeit" ? "Партия завершена досрочно" : "";
+        $("#resultText").textContent = [
+          `Вы играли за ${sideNames[mySide]}, соперник (${state.online.opponentName}) — за ${sideNames[other(mySide)]}.`,
+          whereText
+        ].filter(Boolean).join(" ");
+
         const myRating = rating?.[mySide];
-        $("#xpGain").textContent = myRating
-          ? `Рейтинг: ${myRating.ratingBefore + myRating.delta} (${myRating.delta >= 0 ? "+" : ""}${myRating.delta}) · +${gain} опыта`
-          : `+${gain} опыта`;
+        const coins = rating?.coins?.[mySide] ?? 0;
+        if (coins) { progression.coins = (Number(progression.coins) || 0) + coins; storage.set("pyramide.progress", JSON.stringify(progression)); }
+        $("#xpGain").textContent = [
+          myRating ? `Рейтинг: ${myRating.ratingBefore + myRating.delta} (${myRating.delta >= 0 ? "+" : ""}${myRating.delta})` : null,
+          `+${gain} опыта`, coins ? `+${coins} монет` : null
+        ].filter(Boolean).join(" · ");
         const rewardButton = $("#resultReward");
         rewardButton.hidden = !window.PlatformBridge?.showRewarded;
         rewardButton.disabled = false; rewardButton.dataset.gain = String(gain); rewardButton.dataset.claimed = "false";
@@ -1657,6 +1938,8 @@
         if (Number.isFinite(profile.ratingBlitz)) progression.ratingBlitz = profile.ratingBlitz;
         if (Number.isFinite(profile.rating)) progression.rating = profile.rating;
         if (Number.isFinite(profile.wins)) progression.wins = profile.wins;
+        if (Number.isFinite(profile.losses)) progression.losses = profile.losses;
+        if (Number.isFinite(profile.coins)) progression.coins = profile.coins;
         storage.set("pyramide.progress", JSON.stringify(progression));
         updateProfile();
       }
@@ -1792,7 +2075,7 @@
             button.innerHTML = `<span class="res-dot res-${match.result}"></span>
               <span class="main"><b>${escapeHtml(match.opponentName)}</b><span>${RESULT_TITLES[match.result]} · ${MODE_TITLES[match.mode] || match.mode} · ${REASON_TITLES[match.reason] || ""} ${when}</span></span>
               <span class="val">${Number.isFinite(delta) ? `<small class="${deltaClass}">${delta > 0 ? "+" : ""}${delta}</small>` : ""}</span>`;
-            button.addEventListener("click", () => showMatchBoard(match));
+            button.addEventListener("click", () => openReview(match.id));
             list.append(button);
             if (index === 0) applyServerProfile(null);
           });
@@ -1801,26 +2084,16 @@
         }
       }
 
-      function escapeHtml(value) {
-        return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+      // "L3-2" is meaningless to a player; describe the cell the way the board reads.
+      function cellLabel(id) {
+        const cell = cells.find(item => item.id === id);
+        if (!cell) return id;
+        if (cell.foot) return `ножка ${SIDE_NAMES[cell.owner]}`;
+        return `${cell.visualSide === "L" ? "Лазурь" : "Алый"} ${cell.level}-${cell.pos}`;
       }
 
-      function showMatchBoard(match) {
-        $("#matchViewMeta").textContent = `${RESULT_TITLES[match.result]} против ${match.opponentName} · ${MODE_TITLES[match.mode] || match.mode} · ${REASON_TITLES[match.reason] || ""}`;
-        const host = $("#matchViewBoard");
-        host.innerHTML = "";
-        const fragment = document.createDocumentFragment();
-        for (const cell of cells) {
-          const node = document.createElement("div");
-          node.className = "mini-cell";
-          node.style.left = `calc(${cell.col} * 10% + .45%)`;
-          node.style.top = ROW_TOPS[cell.row];
-          const placed = match.board?.[cell.id];
-          if (placed) node.innerHTML = `<span class="mini-piece stone-${placed.color}"></span>`;
-          fragment.append(node);
-        }
-        host.append(fragment);
-        openModal("matchViewModal");
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
       }
 
       let leaderboardMode = "classic";
@@ -1937,7 +2210,11 @@
       }, { passive: true });
 
       function renderNameRatings(mode, opponentRating) {
-        const mine = mode === "blitz" ? progression.ratingBlitz : progression.ratingClassic;
+        // Prefer the rating the server sent for this match: the locally cached one can be stale
+        // (it only updates when a match of that mode finishes on this device).
+        const mine = Number.isFinite(state.online?.myRating)
+          ? state.online.myRating
+          : (mode === "blitz" ? progression.ratingBlitz : progression.ratingClassic);
         const side = state.online?.side;
         for (const which of ["L", "R"]) {
           const host = $(`#name${which}`).parentElement;
@@ -2075,6 +2352,579 @@
         }
       }
 
+      // A short tumble for the opponent's die. Guarded so overlapping state pushes cannot leave
+      // two flickers running at once.
+      let opponentRollTimer = null;
+      function stopOpponentRoll() {
+        if (opponentRollTimer) { clearInterval(opponentRollTimer); opponentRollTimer = null; }
+        dom.die.classList.remove("rolling");
+      }
+      function animateOpponentRoll(finalValue) {
+        stopOpponentRoll();
+        dom.die.classList.add("rolling");
+        audio.dice();
+        let ticks = 0;
+        opponentRollTimer = setInterval(() => {
+          dom.die.dataset.face = String(1 + randomInt(6));
+          if (++ticks >= 8) {
+            stopOpponentRoll();
+            dom.die.dataset.face = String(finalValue);
+            audio.reveal(finalValue);
+          }
+        }, 70);
+      }
+
+      // ---------------------------------------------------------------------------------------
+      // Account: avatars, cross-device linking, own and foreign profiles.
+      // ---------------------------------------------------------------------------------------
+      // Cosmetic avatars. The free set is deliberately generous so a new player is never stuck
+      // with a placeholder; paid ones are the first sink for the soft currency.
+      const AVATARS = [
+        { id: "scarab", char: "\u{1F422}", price: 0 }, { id: "cat", char: "\u{1F408}", price: 0 },
+        { id: "bird", char: "\u{1F426}", price: 0 }, { id: "snake", char: "\u{1F40D}", price: 0 },
+        { id: "eye", char: "\u{1F441}", price: 0 }, { id: "sun", char: "\u2600", price: 0 },
+        { id: "moon", char: "\u{1F319}", price: 0 }, { id: "star", char: "\u2B50", price: 0 },
+        { id: "lion", char: "\u{1F981}", price: 150 }, { id: "croc", char: "\u{1F40A}", price: 150 },
+        { id: "falcon", char: "\u{1F985}", price: 250 }, { id: "gem", char: "\u{1F48E}", price: 300 },
+        { id: "crown", char: "\u{1F451}", price: 500 }, { id: "fire", char: "\u{1F525}", price: 400 },
+        { id: "scroll", char: "\u{1F4DC}", price: 200 }, { id: "key", char: "\u{1F5DD}", price: 350 }
+      ];
+      const avatarChar = id => AVATARS.find(a => a.id === id)?.char || AVATARS[0].char;
+
+      function currentAvatar() { return storage.get("pyramide.avatar") || "scarab"; }
+      function paintAvatars() {
+        const me = currentAvatar();
+        $("#topAvatar").textContent = avatarChar(me);
+        $("#myAvatar").textContent = avatarChar(me);
+      }
+
+      function renderAvatarGrid() {
+        const grid = $("#avatarGrid");
+        const owned = shop.owned || [];
+        const me = currentAvatar();
+        grid.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+        for (const avatar of AVATARS) {
+          const unlocked = avatar.price === 0 || owned.includes(`avatar:${avatar.id}`);
+          const cell = document.createElement("button");
+          cell.type = "button";
+          cell.className = `avatar-pick${avatar.id === me ? " selected" : ""}${unlocked ? "" : " locked"}`;
+          cell.innerHTML = `<span>${avatar.char}</span>${unlocked ? "" : `<span class="price">${avatar.price}</span>`}`;
+          cell.addEventListener("click", () => unlocked ? chooseAvatar(avatar.id) : buyAvatar(avatar));
+          fragment.append(cell);
+        }
+        grid.append(fragment);
+      }
+
+      async function chooseAvatar(id) {
+        storage.set("pyramide.avatar", id);
+        paintAvatars(); renderAvatarGrid(); audio.tick();
+        try { await ensureConnected(); await onlineClient.emit("account:setAvatar", { avatar: id }); }
+        catch { /* stored locally; syncs on next connection */ }
+      }
+
+      // Buying used to deduct coins in localStorage, which any player could edit - every paid
+      // avatar was effectively free. The server now owns the balance and the ownership record.
+      function buyAvatar(avatar) {
+        askConfirm(`Купить аватар за ${avatar.price} монет?`, async () => {
+          try {
+            await ensureConnected();
+            const result = await onlineClient.emit("shop:buy", { slot: "avatar", itemId: avatar.id });
+            progression.coins = result.coins;
+            storage.set("pyramide.progress", JSON.stringify(progression));
+            storage.set("pyramide.avatar", avatar.id);
+            paintAvatars(); renderAvatarGrid(); updateProfile();
+            $("#myCoins").textContent = result.coins;
+            audio.turn(); showToast(result.spent ? `Куплено за ${result.spent} монет` : "Применено");
+          } catch (error) {
+            audio.blocked();
+            showToast(error?.code === "NOT_ENOUGH_COINS" ? "Не хватает монет" : "Нужно подключение к серверу");
+          }
+        });
+      }
+
+      async function openAccount() {
+        openModal("accountModal");
+        paintAvatars(); renderAvatarGrid();
+        $("#nickInput2").value = storedNickname();
+        $("#linkCodeBox").hidden = true; $("#redeemBox").hidden = true;
+        $("#myName").textContent = storedNickname() || "Странник";
+        $("#myCoins").textContent = Number(progression.coins) || 0;
+        renderMyStats(null);
+        try {
+          await ensureConnected();
+          const response = await onlineClient.emit("profile:get", {});
+          applyServerProfile(response?.profile);
+          try {
+            const inventory = await onlineClient.emit("shop:list", {});
+            shop = { ...shop, catalogue: inventory.catalogue, owned: inventory.owned || [], equipped: inventory.equipped || {} };
+            applyCosmetics(shop.equipped); renderAvatarGrid();
+          } catch { /* cosmetics stay as cached */ }
+          $("#myCoins").textContent = response?.profile?.coins ?? progression.coins ?? 0;
+          $("#myName").textContent = response?.player?.displayName || storedNickname() || "Странник";
+          renderMyStats(response?.profile);
+        } catch { $("#myMeta").textContent = "Офлайн — данные могут быть неполными"; }
+      }
+
+      function renderMyStats(profile) {
+        const source = profile || progression;
+        const games = (source.gamesClassic || 0) + (source.gamesBlitz || 0);
+        $("#myMeta").textContent = games ? `${games} ${plural(games, "партия", "партии", "партий")} онлайн` : "Ещё не играли онлайн";
+        $("#myStats").innerHTML = [
+          ["Классика", source.ratingClassic ?? "—"], ["Блиц", source.ratingBlitz ?? "—"],
+          ["Побед", source.wins ?? 0], ["Поражений", source.losses ?? 0],
+          ["Лига", Number.isFinite(source.ratingClassic) ? eloTierFor(source.ratingClassic) : "—"],
+          ["Монеты", Number(progression.coins) || 0]
+        ].map(([label, value]) => `<div class="stat-box"><b>${value}</b><span>${label}</span></div>`).join("");
+      }
+
+      // ---- Cross-device linking ------------------------------------------------------------------
+      async function issueLinkCode() {
+        try {
+          await ensureConnected();
+          const response = await onlineClient.emit("account:linkCode", {});
+          $("#redeemBox").hidden = true;
+          $("#linkCodeBox").hidden = false;
+          $("#linkCodeValue").textContent = response.code;
+          let left = Math.round((response.expiresInMs || 300000) / 1000);
+          const hint = $("#linkCodeHint");
+          clearInterval(linkTimer);
+          linkTimer = setInterval(() => {
+            left--;
+            hint.textContent = left > 0 ? `Код действует ещё ${formatClock(left * 1000)}` : "Код истёк — получите новый";
+            if (left <= 0) clearInterval(linkTimer);
+          }, 1000);
+        } catch { showToast("Нужно подключение к серверу"); }
+      }
+      let linkTimer = null;
+
+      async function redeemLinkCode() {
+        const code = $("#redeemInput").value.trim().toUpperCase();
+        if (code.length < 4) { showToast("Введите код"); return; }
+        askConfirm("Войти в другой аккаунт? Текущий локальный прогресс на этом устройстве будет заменён.", async () => {
+          try {
+            await ensureConnected();
+            const response = await onlineClient.emit("account:linkRedeem", { code });
+            storage.set("pyramide.online.token", response.token);
+            storage.set("pyramide.online.name", response.player.displayName);
+            if (response.avatar) storage.set("pyramide.avatar", response.avatar);
+            applyServerProfile(response.profile);
+            paintAvatars();
+            showToast(`Вы вошли как ${response.player.displayName}`);
+            closeModal("accountModal");
+          } catch (error) {
+            const messages = { CODE_INVALID: "Код неверен или истёк", BAD_CODE: "Код выглядит неверно" };
+            showToast(messages[error?.code] || "Не удалось войти");
+          }
+        });
+      }
+
+      // ---- Viewing another player's profile -------------------------------------------------------
+      async function viewPlayer(playerId, fallbackName) {
+        if (!playerId) { showToast("Профиль недоступен"); return; }
+        openModal("playerModal");
+        const body = $("#playerBody");
+        body.innerHTML = '<div class="empty-note">Загрузка...</div>';
+        try {
+          await ensureConnected();
+          const response = await onlineClient.emit("profile:view", { playerId });
+          const profile = response.profile;
+          const games = (profile.gamesClassic || 0) + (profile.gamesBlitz || 0);
+          const since = profile.createdAt ? new Date(profile.createdAt).toLocaleDateString("ru-RU", { month: "long", year: "numeric" }) : "";
+          body.innerHTML = `
+            <div class="profile-head">
+              <div class="avatar lg">${avatarChar(profile.avatar)}</div>
+              <div class="who"><b>${escapeHtml(profile.displayName)}</b>
+                <span>${profile.online ? "в сети" : "не в сети"}${since ? ` · с ${since}` : ""}</span></div>
+            </div>
+            <div class="stat-grid">
+              <div class="stat-box"><b>${profile.ratingClassic ?? "—"}</b><span>Классика</span></div>
+              <div class="stat-box"><b>${profile.ratingBlitz ?? "—"}</b><span>Блиц</span></div>
+              <div class="stat-box"><b>${profile.wins ?? 0}</b><span>Побед</span></div>
+              <div class="stat-box"><b>${profile.losses ?? 0}</b><span>Поражений</span></div>
+              <div class="stat-box"><b>${games}</b><span>Партий</span></div>
+              <div class="stat-box"><b>${profile.bestClassic ?? "—"}</b><span>Пик рейтинга</span></div>
+            </div>
+            <div class="section-head">Активность за 90 дней</div>
+            <div class="heat">${buildHeat(profile.activity)}</div>`;
+        } catch {
+          body.innerHTML = `<div class="empty-note">Не удалось загрузить профиль${fallbackName ? ` игрока ${escapeHtml(fallbackName)}` : ""}.</div>`;
+        }
+      }
+
+      function buildHeat(activity) {
+        const byDay = new Map((activity || []).map(row => [row.day, row.games]));
+        const cells = [];
+        for (let offset = 89; offset >= 0; offset--) {
+          const date = new Date(Date.now() - offset * 86400000).toISOString().slice(0, 10);
+          const games = byDay.get(date) || 0;
+          const level = games === 0 ? "" : games < 3 ? "l1" : games < 7 ? "l2" : "l3";
+          cells.push(`<i class="${level}" title="${date}: ${games}"></i>`);
+        }
+        return cells.join("");
+      }
+
+      // ---------------------------------------------------------------------------------------
+      // Interactive tutorial. Each step paints a small board so the player sees the rule rather
+      // than reading a description of it - the single biggest drop-off point for a new game.
+      // ---------------------------------------------------------------------------------------
+      // Every example below is taken from the engine's own LINES table, not invented, and every
+      // highlight is computed against an EMPTY board - the previous version passed no board and
+      // silently used the live game state, so cells already occupied vanished from the diagrams.
+      const EMPTY = {};
+      const TUTORIAL = [
+        {
+          title: "Поле и две половины",
+          text: "Пирамида разделена пополам: <b>Лазурная</b> сторона слева, <b>Алая</b> справа. Свои камни вы ставите только на свою половину. Числа в клетках — <b>позиция</b> в ряду, числа по бокам — <b>номер ряда</b>.",
+          paint: () => cells.map(cell => ({ id: cell.id, cls: cell.foot ? "dim" : cell.visualSide === "L" ? "hl" : "dim" }))
+        },
+        {
+          title: "Бросок 1-5: ряд или позиция",
+          text: "Выпало <b>3</b> — можно занять любую свободную клетку <b>ряда 3</b> или клетку с <b>позицией 3</b> на своей половине. Подсвечены все такие клетки.",
+          paint: () => { const legal = legalCells("L", 3, EMPTY); return cells.map(cell => ({ id: cell.id, cls: legal.includes(cell.id) ? "hl" : "dim" })); }
+        },
+        {
+          title: "Бросок 6: любая своя клетка",
+          text: "При <b>6</b> занимайте любую свободную клетку своей половины. Сюда же входит ваша <b>атакующая ножка</b> — она находится <b>под половиной соперника</b> (отмечена отдельно). Ножка соперника, что стоит под вашей половиной, вам недоступна.",
+          paint: () => { const legal = legalCells("L", 6, EMPTY); return cells.map(cell => ({ id: cell.id, cls: legal.includes(cell.id) ? (cell.foot ? "foot" : "hl") : "dim" })); }
+        },
+        {
+          title: "Запретная линия: горизонталь",
+          text: "<b>Три камня одного цвета подряд — это поражение</b>, а не победа. Линия по горизонтали: три зелёных в ряду 3.",
+          stones: { "L3-3": "green", "L3-2": "green", "L3-1": "green" },
+          paint: () => ["L3-3", "L3-2", "L3-1"].map(id => ({ id, cls: "bad" }))
+        },
+        {
+          title: "Вертикаль и диагональ",
+          text: "Линия считается и по <b>вертикали</b>, и по <b>диагонали</b>. Слева показана вертикаль из жёлтых, справа — диагональ из фиолетовых. Любая из трёх ориентаций проигрывает.",
+          stones: { "L1-1": "yellow", "L2-1": "yellow", "L3-1": "yellow", "R3-3": "purple", "R4-2": "purple", "R5-1": "purple" },
+          paint: () => ["L1-1", "L2-1", "L3-1", "R3-3", "R4-2", "R5-1"].map(id => ({ id, cls: "bad" }))
+        },
+        {
+          title: "Кто именно проигрывает",
+          text: "Линия может пересекать середину. Проигрывает та сторона, где лежит <b>большинство камней линии</b>. Здесь два зелёных на Лазурной половине и один на Алой — проигрывает <b>Лазурная</b>.",
+          stones: { "L3-2": "green", "L3-1": "green", "R3-1": "green" },
+          paint: () => [{ id: "L3-2", cls: "bad" }, { id: "L3-1", cls: "bad" }, { id: "R3-1", cls: "hl" }]
+        },
+        {
+          title: "Атакующая ножка бьёт соперника",
+          text: "Ножка стоит на половине соперника и <b>считается его клеткой</b> при подсчёте линии. Здесь линия из жёлтых: один камень на Лазурной половине, два на Алой (включая вашу ножку) — проигрывает <b>Алая</b>. Так ножка становится оружием.",
+          stones: { "L4-1": "yellow", "R5-1": "yellow", "foot-L": "yellow" },
+          paint: () => [{ id: "L4-1", cls: "hl" }, { id: "R5-1", cls: "bad" }, { id: "foot-L", cls: "bad" }]
+        },
+        {
+          title: "Как победить",
+          text: "Заполните свою половину первой — <b>15 клеток</b>, атакующая ножка в счёт не идёт. Также вы побеждаете, если соперник собрал три в ряд, сдался или у него закончилось время.",
+          paint: () => cells.map(cell => ({ id: cell.id, cls: cell.visualSide === "L" && !cell.foot ? "hl" : "dim" }))
+        }
+      ];
+
+      let tutorialIndex = 0;
+      let tutorialCells = null;
+
+      function buildTutorialBoard() {
+        const host = $("#tutBoard");
+        host.innerHTML = '<div class="tut-mid"></div>';
+        // Row numbers on both flanks, matching the printed rules sheet.
+        for (let row = 1; row <= 6; row++) {
+          for (const side of ["l", "r"]) {
+            const tag = document.createElement("span");
+            tag.className = `tut-rownum ${side}`;
+            tag.style.top = ROW_TOPS[row];
+            tag.textContent = row;
+            host.append(tag);
+          }
+        }
+        tutorialCells = new Map();
+        const fragment = document.createDocumentFragment();
+        for (const cell of cells) {
+          const node = document.createElement("div");
+          node.className = "tut-cell";
+          node.style.left = `calc(${cell.col} * 10% + .45%)`;
+          node.style.top = ROW_TOPS[cell.row];
+          node.innerHTML = `<span class="n">${cell.foot ? 6 : cell.pos}</span>`;
+          tutorialCells.set(cell.id, node);
+          fragment.append(node);
+        }
+        host.append(fragment);
+      }
+
+      function renderTutorial() {
+        if (!tutorialCells) buildTutorialBoard();
+        const step = TUTORIAL[tutorialIndex];
+        $("#tutTitle").textContent = step.title;
+        $("#tutText").innerHTML = step.text;
+        $("#tutStep").textContent = `Шаг ${tutorialIndex + 1} из ${TUTORIAL.length}`;
+        $("#tutDots").innerHTML = TUTORIAL.map((_, i) => `<i class="${i === tutorialIndex ? "on" : ""}"></i>`).join("");
+        $("#tutPrev").disabled = tutorialIndex === 0;
+        $("#tutNext").textContent = tutorialIndex === TUTORIAL.length - 1 ? "Понятно" : "Далее";
+
+        const marks = new Map((step.paint?.() || []).map(item => [item.id, item.cls]));
+        for (const [id, node] of tutorialCells) {
+          node.className = `tut-cell ${marks.get(id) || ""}`.trim();
+          const stone = step.stones?.[id];
+          const existing = node.querySelector(".st");
+          if (stone) {
+            if (existing) existing.className = `st mini-stone stone-${stone}`;
+            else node.insertAdjacentHTML("beforeend", `<span class="st mini-stone stone-${stone}"></span>`);
+          } else if (existing) existing.remove();
+        }
+      }
+
+      function openTutorial() {
+        tutorialIndex = 0;
+        openModal("rulesModal");
+        renderTutorial();
+      }
+
+      // ---------------------------------------------------------------------------------------
+      // Match review and puzzles. Both draw the same static board, so one builder serves them.
+      // ---------------------------------------------------------------------------------------
+      function buildStaticBoard(host, onPick) {
+        host.innerHTML = "";
+        const map = new Map();
+        const fragment = document.createDocumentFragment();
+        for (const cell of cells) {
+          const node = document.createElement("div");
+          node.className = "rev-cell" + (onPick ? " pick" : "");
+          node.style.left = `calc(${cell.col} * 10% + .45%)`;
+          node.style.top = ROW_TOPS[cell.row];
+          node.innerHTML = `<span class="n">${cell.foot ? 6 : cell.pos}</span>`;
+          if (onPick) node.addEventListener("click", () => onPick(cell.id));
+          map.set(cell.id, node);
+          fragment.append(node);
+        }
+        host.append(fragment);
+        return map;
+      }
+
+      function paintStones(map, board, marks = {}) {
+        for (const [id, node] of map) {
+          const placed = board[id];
+          const existing = node.querySelector(".st");
+          if (placed) {
+            if (existing) existing.className = `st mini-stone stone-${placed.color}`;
+            else node.insertAdjacentHTML("beforeend", `<span class="st mini-stone stone-${placed.color}"></span>`);
+          } else if (existing) existing.remove();
+          node.classList.toggle("played", marks.played === id);
+          node.classList.toggle("suggest", marks.suggest === id);
+        }
+      }
+
+      // ---- Review ---------------------------------------------------------------------------
+      let review = null;
+      async function openReview(matchId) {
+        openModal("reviewModal");
+        $("#revNote").textContent = "Загрузка разбора...";
+        $("#revSummary").innerHTML = "";
+        try {
+          await ensureConnected();
+          const data = await onlineClient.emit("match:analyse", { matchId });
+          review = { ...data, index: 0, cells: buildStaticBoard($("#revBoard")) };
+          const mine = data.report.filter(entry => entry.side === data.viewerSide);
+          const counts = mine.reduce((acc, entry) => { acc[entry.verdict] = (acc[entry.verdict] || 0) + 1; return acc; }, {});
+          $("#revSummary").innerHTML = Object.entries(VERDICTS)
+            .filter(([key]) => counts[key])
+            .map(([key, meta]) => `<span class="verdict ${meta.tone}">${meta.label}: ${counts[key]}</span>`).join("");
+          renderReview();
+        } catch (error) {
+          $("#revNote").textContent = error?.code === "NOT_FOUND"
+            ? "Разбор доступен только для ваших рейтинговых партий."
+            : "Не удалось загрузить разбор.";
+        }
+      }
+
+      const VERDICTS = {
+        best: { label: "Лучший", tone: "great" }, forced: { label: "Единственный", tone: "neutral" },
+        good: { label: "Хороший", tone: "good" }, inaccuracy: { label: "Неточность", tone: "warn" },
+        mistake: { label: "Ошибка", tone: "bad" }, blunder: { label: "Грубая ошибка", tone: "bad" }
+      };
+
+      function renderReview() {
+        if (!review) return;
+        const total = review.report.length;
+        const index = review.index;
+        $("#revPly").textContent = `${index} / ${total}`;
+        $("#revStart").disabled = $("#revPrev").disabled = index === 0;
+        $("#revNext").disabled = $("#revEnd").disabled = index >= total;
+
+        if (index === 0) {
+          paintStones(review.cells, {});
+          $("#revVerdict").className = "verdict neutral";
+          $("#revVerdict").textContent = "Начало партии";
+          $("#revNote").textContent = "Листайте вперёд, чтобы пройти партию ход за ходом.";
+          return;
+        }
+        const entry = review.report[index - 1];
+        // `entry.board` is the position *before* the move, so the move itself is layered on top.
+        const shown = { ...entry.board, [entry.cellId]: { color: entry.color, player: entry.side } };
+        paintStones(review.cells, shown, { played: entry.cellId, suggest: entry.best?.cellId });
+
+        const meta = VERDICTS[entry.verdict] || VERDICTS.good;
+        $("#revVerdict").className = `verdict ${meta.tone}`;
+        $("#revVerdict").textContent = meta.label;
+        const who = entry.side === review.viewerSide ? "Ваш ход" : "Ход соперника";
+        const better = entry.best
+          ? (entry.best.sameCell
+              ? ` Сильнее было поставить ${COLOR_NAMES[entry.best.color]} на ту же клетку.`
+              : ` Сильнее было ${COLOR_NAMES[entry.best.color]} на ${cellLabel(entry.best.cellId)}.`)
+          : "";
+        $("#revNote").textContent = `${who} №${entry.ply}: выпало ${entry.roll ?? "6"}, поставлен ${COLOR_NAMES[entry.color]} на ${cellLabel(entry.cellId)}.${better}`;
+      }
+
+      // ---- Puzzles ---------------------------------------------------------------------------
+      let puzzle = null;
+      async function openPuzzle() {
+        openModal("puzzleModal");
+        $("#puzResult").textContent = "";
+        $("#puzPrompt").textContent = "Загрузка задачи...";
+        try {
+          await ensureConnected();
+          const data = await onlineClient.emit("puzzle:next", {});
+          puzzle = { ...data, color: "yellow", done: false };
+          puzzle.cells = buildStaticBoard($("#puzBoard"), cellId => submitPuzzle(cellId));
+          paintStones(puzzle.cells, data.board);
+          $("#puzPrompt").textContent = data.prompt;
+          $("#puzRoll").textContent = `Кубик: ${data.roll} · ходят ${data.side === "L" ? "Лазурные" : "Алые"}`;
+          renderPuzzleColors();
+        } catch (error) {
+          $("#puzPrompt").textContent = error?.code === "PUZZLE_UNAVAILABLE"
+            ? "Не удалось составить задачу, попробуйте ещё раз."
+            : "Нужно подключение к серверу.";
+        }
+      }
+
+      function renderPuzzleColors() {
+        $("#puzColors").innerHTML = "";
+        for (const color of COLORS) {
+          if ((puzzle.inventory?.[puzzle.side]?.[color] ?? 0) <= 0) continue;
+          const button = document.createElement("button");
+          button.className = puzzle.color === color ? "selected" : "";
+          button.innerHTML = `<span class="mini-stone stone-${color}"></span>${COLOR_NAMES[color]}`;
+          button.addEventListener("click", () => { puzzle.color = color; renderPuzzleColors(); audio.tick(); });
+          $("#puzColors").append(button);
+        }
+      }
+
+      async function submitPuzzle(cellId) {
+        if (!puzzle || puzzle.done) return;
+        try {
+          const result = await onlineClient.emit("puzzle:solve", { id: puzzle.id, cellId, color: puzzle.color });
+          if (result.correct) {
+            puzzle.done = true;
+            audio.finish(true);
+            paintStones(puzzle.cells, { ...puzzle.board, [cellId]: { color: puzzle.color, player: puzzle.side } }, { played: cellId });
+            $("#puzResult").textContent = result.reward ? `Верно! +${result.reward} монет` : "Верно!";
+            if (result.reward) { progression.coins = (Number(progression.coins) || 0) + result.reward; storage.set("pyramide.progress", JSON.stringify(progression)); updateProfile(); }
+          } else {
+            audio.blocked();
+            $("#puzResult").textContent = result.why || "Не тот ход";
+          }
+        } catch { showToast("Задача устарела, возьмите следующую"); }
+      }
+
+      // ---------------------------------------------------------------------------------------
+      // Cosmetics. Purchases are decided by the server; this only renders and applies the result.
+      // ---------------------------------------------------------------------------------------
+      const SHOP_META = {
+        stones: {
+          classic: "Классические", polished: "Полированные", clay: "Глиняные",
+          lapis: "Лазурит", obsidian: "Обсидиан", gold: "Золотые"
+        },
+        board: {
+          sand: "Песок", granite: "Гранит", papyrus: "Папирус",
+          nightsand: "Ночной песок", marble: "Мрамор"
+        },
+        avatar: Object.fromEntries(AVATARS.map(a => [a.id, a.char]))
+      };
+      const BOARD_SWATCH = {
+        sand: "linear-gradient(170deg,#efd9ac,#e2c48d)", granite: "linear-gradient(170deg,#b9b3ab,#9a948c)",
+        papyrus: "linear-gradient(170deg,#f2e3c0,#e0cda2)", nightsand: "linear-gradient(170deg,#4a4335,#322d24)",
+        marble: "linear-gradient(170deg,#eceae6,#d5d2cc)"
+      };
+      const STONE_SWATCH = {
+        classic: ["#f2c14e", "#5fbf8f", "#9b7bd4"], polished: ["#ffd977", "#6fd6a4", "#b48ce0"],
+        clay: ["#d9a55c", "#7fa87a", "#a08bb5"], lapis: ["#f0c96a", "#4fb7b0", "#5b6fd6"],
+        obsidian: ["#b8a06a", "#4f8f7a", "#6b4f8f"], gold: ["#ffd24a", "#d9b45c", "#b08a3c"]
+      };
+
+      let shop = { slot: "stones", catalogue: null, owned: [], equipped: {} };
+
+      // Applied from local storage first so the look survives a reload even before the socket
+      // connects; the server's answer overwrites it once available.
+      function applyCosmetics(equipped) {
+        const stones = equipped?.stones || storage.get("pyramide.skin.stones") || "classic";
+        const board = equipped?.board || storage.get("pyramide.skin.board") || "sand";
+        document.body.dataset.stones = stones;
+        document.body.dataset.board = board;
+        storage.set("pyramide.skin.stones", stones);
+        storage.set("pyramide.skin.board", board);
+        if (equipped?.avatar) { storage.set("pyramide.avatar", equipped.avatar); paintAvatars(); }
+      }
+
+      async function openShop(slot = shop.slot) {
+        shop.slot = slot;
+        openModal("shopModal");
+        $$("[data-shop]").forEach(button => button.classList.toggle("selected", button.dataset.shop === slot));
+        $("#shopGrid").innerHTML = '<div class="empty-note">Загрузка...</div>';
+        try {
+          await ensureConnected();
+          const data = await onlineClient.emit("shop:list", {});
+          shop = { slot, catalogue: data.catalogue, owned: data.owned || [], equipped: data.equipped || {} };
+          $("#shopCoins").textContent = data.coins ?? 0;
+          progression.coins = data.coins ?? progression.coins;
+          applyCosmetics(shop.equipped);
+          renderShop();
+        } catch {
+          $("#shopGrid").innerHTML = '<div class="empty-note">Мастерская доступна при подключении к серверу.</div>';
+        }
+      }
+
+      function renderShop() {
+        const grid = $("#shopGrid");
+        grid.innerHTML = "";
+        const items = shop.catalogue?.[shop.slot] || [];
+        const fragment = document.createDocumentFragment();
+        for (const item of items) {
+          const owned = item.price === 0 || shop.owned.includes(`${shop.slot}:${item.id}`);
+          const equipped = shop.equipped[shop.slot] === item.id;
+          const node = document.createElement("button");
+          node.type = "button";
+          node.className = `shop-item${equipped ? " equipped" : ""}${owned ? "" : " locked"}`;
+          const preview = shop.slot === "stones"
+            ? `<span class="sw">${STONE_SWATCH[item.id].map(c => `<i style="background:${c}"></i>`).join("")}</span>`
+            : shop.slot === "board"
+              ? `<span class="bar" style="background:${BOARD_SWATCH[item.id]}"></span>`
+              : `<span class="sw" style="font-size:23px">${SHOP_META.avatar[item.id] || "?"}</span>`;
+          node.innerHTML = `${preview}<span class="nm">${shop.slot === "avatar" ? "" : SHOP_META[shop.slot][item.id] || item.id}</span>`
+            + `<span class="pr">${equipped ? "надето" : owned ? "выбрать" : `${item.price} монет`}</span>`;
+          node.addEventListener("click", () => buyOrEquip(item, owned));
+          fragment.append(node);
+        }
+        grid.append(fragment);
+      }
+
+      function buyOrEquip(item, owned) {
+        const act = async () => {
+          try {
+            const result = await onlineClient.emit("shop:buy", { slot: shop.slot, itemId: item.id });
+            shop.equipped[shop.slot] = item.id;
+            if (!shop.owned.includes(`${shop.slot}:${item.id}`)) shop.owned.push(`${shop.slot}:${item.id}`);
+            progression.coins = result.coins;
+            storage.set("pyramide.progress", JSON.stringify(progression));
+            $("#shopCoins").textContent = result.coins;
+            applyCosmetics(shop.equipped); renderShop(); updateProfile();
+            audio.turn();
+            showToast(result.spent ? `Куплено за ${result.spent} монет` : "Применено");
+          } catch (error) {
+            audio.blocked();
+            showToast(error?.code === "NOT_ENOUGH_COINS" ? "Не хватает монет" : "Не удалось выполнить");
+          }
+        };
+        if (owned) act();
+        else askConfirm(`Купить за ${item.price} монет?`, act);
+      }
+
       let clockTickerId = null;
       function startClockTicker() {
         clearInterval(clockTickerId);
@@ -2092,6 +2942,9 @@
       function updateProfile() {
         const level = Math.floor(progression.xp / 120) + 1;
         $("#profileLevel").textContent = level;
+        // Two separate ladders, deliberately labelled differently: the rank comes from experience
+        // (earned in every mode) and the league from online rating. Previously both existed but
+        // only one was visible, so players could not tell which number meant what.
         $("#profileRank").textContent = RANKS[Math.min(RANKS.length - 1, Math.floor((level - 1) / 3))];
         $("#profileXp").textContent = `${progression.xp % 120} / 120 опыта`;
         $("#statClassic").textContent = Number.isFinite(progression.ratingClassic) ? progression.ratingClassic : "—";
@@ -2108,7 +2961,7 @@
         badge.classList.toggle("show", showChip);
         if (showChip) {
           $("#eloValue").textContent = modeRating;
-          badge.title = `${eloTierFor(modeRating)} · ${mode === "blitz" ? "Блиц" : "Классика"}`;
+          badge.title = `Лига «${eloTierFor(modeRating)}» · ${mode === "blitz" ? "Блиц" : "Классика"}`;
         }
       }
 
@@ -2325,6 +3178,26 @@
         state.phase = "menu"; audio.stopAmbience(); render();
       }
       $("#reviewContinue").addEventListener("click", () => { hideReview(); openModal("resultModal"); });
+      $("#tutPrev").addEventListener("click", () => { if (tutorialIndex > 0) { tutorialIndex--; renderTutorial(); } });
+      $("#tutNext").addEventListener("click", () => {
+        if (tutorialIndex < TUTORIAL.length - 1) { tutorialIndex++; renderTutorial(); }
+        else { closeModal("rulesModal"); storage.set("pyramide.tutorialSeen", "1"); }
+      });
+      $$('[data-open="rulesModal"]').forEach(button => button.addEventListener("click", event => { event.stopPropagation(); openTutorial(); }));
+      $("#openShop").addEventListener("click", () => openShop());
+      $$("[data-shop]").forEach(button => button.addEventListener("click", () => openShop(button.dataset.shop)));
+      $("#openPuzzles").addEventListener("click", () => openPuzzle());
+      $("#puzNext").addEventListener("click", () => openPuzzle());
+      $("#puzSkip").addEventListener("click", () => openPuzzle());
+      $("#revStart").addEventListener("click", () => { review.index = 0; renderReview(); });
+      $("#revPrev").addEventListener("click", () => { review.index = Math.max(0, review.index - 1); renderReview(); });
+      $("#revNext").addEventListener("click", () => { review.index = Math.min(review.report.length, review.index + 1); renderReview(); });
+      $("#revEnd").addEventListener("click", () => { review.index = review.report.length; renderReview(); });
+      $("#openAccount").addEventListener("click", () => openAccount());
+      $("#nickSave2").addEventListener("click", () => saveNickname($("#nickInput2").value).then(() => { $("#myName").textContent = storedNickname(); }));
+      $("#getLinkCode").addEventListener("click", issueLinkCode);
+      $("#showRedeem").addEventListener("click", () => { $("#linkCodeBox").hidden = true; $("#redeemBox").hidden = !$("#redeemBox").hidden; });
+      $("#redeemGo").addEventListener("click", redeemLinkCode);
       $("#openLeaderboard").addEventListener("click", () => openLeaderboard());
       $("#openHistory").addEventListener("click", () => openHistory());
       $("#nickSave").addEventListener("click", () => saveNickname($("#nickInput").value));
@@ -2395,28 +3268,22 @@
       const I18N = {
         ru: {},
         en: {
-          "menu.tagline": "An ancient game found among temple drawings. Roll the die, choose a stone and avoid making three in a row.",
-          "menu.chooseMode": "Choose a mode", "menu.findOpponent": "Find an opponent", "menu.startMatch": "Start match",
+          "menu.tagline": "An ancient game found among temple drawings. Roll the die, choose a stone and avoid making three in a row.", "menu.findOpponent": "Find an opponent", "menu.startMatch": "Start match",
           "menu.howToPlay": "How to play", "menu.settings": "Settings",
           "mode.online": "Ranked online", "mode.onlineSub": "Skill-based opponents, rating points",
           "mode.bot": "Play the Keeper", "mode.botSub": "Three difficulty levels",
           "mode.local": "Two players here", "mode.localSub": "Pass the device after each turn",
           "diff.easy": "Apprentice", "diff.medium": "Architect", "diff.hard": "Vizier",
-          "tc.classic": "Classic", "tc.blitz": "Blitz", "tc.classicSub": "5 min + 10 sec", "tc.blitzSub": "2 min + 3 sec",
-          "stat.rating": "Rating", "stat.level": "Level", "stat.wins": "Wins",
-          "elo.label": "Elo", "review.continue": "Show result"
+          "tc.classic": "Classic", "tc.blitz": "Blitz", "tc.classicSub": "5 min + 10 sec", "tc.blitzSub": "2 min + 3 sec", "stat.wins": "Wins", "review.continue": "Show result"
         },
         tr: {
-          "menu.tagline": "Tapinak cizimleri arasinda bulunan kadim bir oyun. Zari at, tas sec ve ucu yan yana getirme.",
-          "menu.chooseMode": "Mod secin", "menu.findOpponent": "Rakip bul", "menu.startMatch": "Maci baslat",
+          "menu.tagline": "Tapinak cizimleri arasinda bulunan kadim bir oyun. Zari at, tas sec ve ucu yan yana getirme.", "menu.findOpponent": "Rakip bul", "menu.startMatch": "Maci baslat",
           "menu.howToPlay": "Nasil oynanir", "menu.settings": "Ayarlar",
           "mode.online": "Dereceli online", "mode.onlineSub": "Seviyene uygun rakipler, puan",
           "mode.bot": "Bekci ile oyna", "mode.botSub": "Uc zorluk seviyesi",
           "mode.local": "Iki oyuncu", "mode.localSub": "Her hamleden sonra cihazi verin",
           "diff.easy": "Cirak", "diff.medium": "Mimar", "diff.hard": "Vezir",
-          "tc.classic": "Klasik", "tc.blitz": "Blitz", "tc.classicSub": "5 dk + 10 sn", "tc.blitzSub": "2 dk + 3 sn",
-          "stat.rating": "Puan", "stat.level": "Seviye", "stat.wins": "Galibiyet",
-          "elo.label": "Elo", "review.continue": "Sonucu goster"
+          "tc.classic": "Klasik", "tc.blitz": "Blitz", "tc.classicSub": "5 dk + 10 sn", "tc.blitzSub": "2 dk + 3 sn", "stat.wins": "Galibiyet", "review.continue": "Sonucu goster"
         }
       };
       let currentLang = "ru";
@@ -2461,6 +3328,7 @@
       document.addEventListener("gesturestart", event => event.preventDefault(), { passive: false });
       document.addEventListener("dblclick", event => event.preventDefault());
 
+      applyCosmetics(null);
       renderBoardBase(); applySettings(); updateProfile(); render();
       // Splash stays for a beat so the studio mark is actually readable, then fades out.
       // Hold the studio splash for a readable beat rather than flashing past it.
@@ -2472,6 +3340,9 @@
       if (document.readyState === "complete") hideSplash();
       else window.addEventListener("load", hideSplash, { once: true });
       showMenuPage("root");
+      // A brand-new player is shown the tutorial once: the rules are unusual (three in a row
+      // *loses*) and nobody reads a rules button before their first game.
+      if (!storage.get("pyramide.tutorialSeen")) setTimeout(openTutorial, 2900);
       tryAutoResumeOnline();
     })();
   </script>
