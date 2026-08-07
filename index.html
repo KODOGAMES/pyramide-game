@@ -355,6 +355,10 @@
     }
     .toast.show { transform: translate(-50%, 0); opacity: 1; }
 
+    /* Dialogs opened on top of another shared one z-index, so a review opened from the history
+       list rendered underneath it - it looked like the click did nothing. */
+    .modal-backdrop.stacked { z-index: 110; }
+    .modal-backdrop:focus { outline: none; }
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -729,9 +733,12 @@
       border-color: #e3b568; background: linear-gradient(180deg, rgba(233,189,109,.24), rgba(233,189,109,.12));
       color: #ffe9c0; box-shadow: inset 0 0 0 1px rgba(255,222,150,.35);
     }
+    /* The underline used to be positioned over the caption line. It now sits flush with the
+       bottom edge and the button reserves room for it. */
+    .difficulty button { padding-bottom: 13px; }
     .difficulty button.selected::after {
-      content: ""; position: absolute; left: 50%; bottom: 5px; transform: translateX(-50%);
-      width: 16px; height: 2px; border-radius: 2px; background: #e9bd6d;
+      content: ""; position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%);
+      width: 18px; height: 2px; border-radius: 2px; background: #e9bd6d; pointer-events: none;
     }
     .difficulty button { position: relative; }
     .tab-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
@@ -935,7 +942,7 @@
         </div>
         <div class="mode-list" id="menuRoot">
           <button class="mode-btn" id="menuPlay"><span class="mode-icon">&#9654;</span><span><strong>Играть</strong><small>Онлайн, с ботом или вдвоём</small></span><span class="mode-chevron">&#9654;</span></button>
-          <button class="mode-btn" id="openHistory"><span class="mode-icon">&#8986;</span><span><strong>История партий онлайн</strong><small>Только рейтинговые матчи и их финальные позиции</small></span></button>
+          <button class="mode-btn" id="openHistory"><span class="mode-icon">&#8986;</span><span><strong>История партий</strong><small>Рейтинговые и локальные партии</small></span></button>
           <button class="mode-btn" id="openLeaderboard"><span class="mode-icon">&#9733;</span><span><strong>Лидеры рейтинга</strong><small>Лучшие игроки Классики и Блица</small></span></button>
           <button class="mode-btn" id="openShop"><span class="mode-icon">&#9670;</span><span><strong>Мастерская</strong><small>Камни, поле и аватары за монеты</small></span></button>
           <button class="mode-btn" id="openPuzzles"><span class="mode-icon">&#9819;</span><span><strong>Задачи</strong><small>Найдите единственный верный ход</small></span></button>
@@ -999,13 +1006,7 @@
     <div class="modal">
       <div class="modal-head"><div><h2 id="settingsTitle">Настройки</h2><p>Вид и звучание партии</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
       <div class="modal-body settings-list">
-        <div class="setting-row" style="display:block">
-          <div style="margin-bottom:9px"><strong>Ваше имя</strong><span>Его увидят соперники и таблица лидеров</span></div>
-          <div style="display:flex;gap:8px">
-            <input class="name-input" id="nickInput" maxlength="24" placeholder="Странник" autocomplete="off">
-            <button class="secondary-btn" id="nickSave" style="padding:0 16px;white-space:nowrap">Сохранить</button>
-          </div>
-        </div>
+        <div class="setting-row"><div><strong>Имя и аватар</strong><span>Настраиваются в профиле</span></div><button class="secondary-btn" id="toProfile" style="padding:8px 15px">Открыть профиль</button></div>
         <div class="setting-row"><div><strong>Оформление</strong><span>Песок храма или чистая геометрия</span></div><div class="theme-toggle"><button data-theme="egypt" class="active">Египет</button><button data-theme="minimal">Минимум</button></div></div>
         <div class="setting-row"><div><strong>Звуки</strong><span>Камни, кубик и сигналы хода</span></div><button class="switch on" id="soundSwitch" aria-label="Звуки"></button></div>
         <div class="setting-row"><div><strong>Атмосфера</strong><span>Тихий ветер и музыкальные тона</span></div><button class="switch on" id="musicSwitch" aria-label="Атмосфера"></button></div>
@@ -1165,6 +1166,17 @@
     </div>
   </div>
 
+  <div class="modal-backdrop" id="inviteModeModal" role="dialog" aria-modal="true" aria-labelledby="inviteModeTitle">
+    <div class="modal" style="width:min(390px,100%)">
+      <div class="modal-body result-copy" style="padding-top:24px">
+        <h2 id="inviteModeTitle">Вызвать на партию</h2>
+        <p>Соперник: <b id="inviteWho">—</b>. Дружеские партии не влияют на рейтинг.</p>
+        <div class="tab-row" id="inviteModes" style="grid-template-columns:1fr 1fr"></div>
+        <div class="result-actions"><button class="secondary-btn" data-close="inviteModeModal" style="grid-column:1/-1">Отмена</button></div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="inviteModal" role="dialog" aria-modal="true" aria-labelledby="inviteTitle">
     <div class="modal" style="width:min(400px,100%)">
       <div class="modal-body result-copy" style="padding-top:26px">
@@ -1181,8 +1193,9 @@
 
   <div class="modal-backdrop" id="historyModal" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
     <div class="modal" style="width:min(520px,100%)">
-      <div class="modal-head"><h2 id="historyTitle">История партий онлайн</h2><button class="icon-btn" data-close="historyModal" aria-label="Закрыть">&#10005;</button></div>
+      <div class="modal-head"><h2 id="historyTitle">История партий</h2><button class="icon-btn" data-close="historyModal" aria-label="Закрыть">&#10005;</button></div>
       <div class="modal-body">
+        <div class="tab-row"><button class="secondary-btn selected" data-hist="online">Онлайн</button><button class="secondary-btn" data-hist="local">С ботом и вдвоём</button></div>
         <div class="data-list" id="historyList"><div class="empty-note">Загрузка...</div></div>
       </div>
     </div>
@@ -1712,6 +1725,7 @@
         rewardButton.dataset.gain = String(gain);
         rewardButton.dataset.claimed = "false";
         stopOfflineClock();
+        recordLocalMatch(result);
         Promise.resolve(window.PlatformBridge?.onMatchEnd?.(result)).catch(() => undefined);
         audio.finish(Boolean(result.winner === "L"));
         playVfx(result.draw ? "draw" : (state.mode === "bot" || state.mode === "local") && result.winner === "L" ? "win" : state.mode === "bot" ? "loss" : "win");
@@ -1720,6 +1734,22 @@
 
       // The finished board must stay readable: the player sees the winning line and the final
       // position, and only opens the result summary when they choose to.
+      // Bot and hot-seat games are never sent to the server, so without a local log they vanished
+      // and the history screen looked broken ("I just played, where is it?").
+      function recordLocalMatch(result) {
+        const log = safeJson(storage.get("pyramide.localHistory"), []) || [];
+        log.unshift({
+          at: Date.now(),
+          mode: state.mode,
+          difficulty: state.mode === "bot" ? state.difficulty : null,
+          clock: state.offlineClock?.mode || "off",
+          result: result.draw ? "draw" : result.winner === "L" ? "win" : "loss",
+          reason: result.reason,
+          board: { ...state.board }
+        });
+        storage.set("pyramide.localHistory", JSON.stringify(log.slice(0, 30)));
+      }
+
       function showReview(headline) {
         $("#reviewText").innerHTML = `<strong>${headline}</strong> Осмотрите поле.`;
         $("#reviewBar").classList.add("show");
@@ -2037,7 +2067,7 @@
         const name = verdict.name;
         const previous = storedNickname();
         storage.set("pyramide.online.name", name);
-        $("#nickInput").value = name;
+        $("#nickInput2").value = name;
         // If we are already connected, push it to the server so opponents and the leaderboard
         // see the new name immediately instead of only after the next reconnect.
         // Confirm straight away: the name is already valid and stored locally. Waiting on the
@@ -2053,13 +2083,13 @@
           if (response?.token) storage.set("pyramide.online.token", response.token);
           if (response?.displayName && response.displayName !== name) {
             storage.set("pyramide.online.name", response.displayName);
-            $("#nickInput").value = response.displayName;
+            $("#nickInput2").value = response.displayName;
           }
         } catch (error) {
           const rejected = error?.code && !["SERVER_ERROR", "TIMEOUT", "NOT_CONNECTED"].includes(error.code);
           if (rejected) {
             storage.set("pyramide.online.name", previous);
-            $("#nickInput").value = previous;
+            $("#nickInput2").value = previous;
             audio.blocked();
             showToast(error.message);
           }
@@ -2103,10 +2133,59 @@
       const RESULT_TITLES = { win: "Победа", loss: "Поражение", draw: "Ничья" };
       const REASON_TITLES = { line: "линия из трёх", filled: "поле заполнено", timeout: "время вышло", forfeit: "сдача" };
 
-      async function openHistory() {
+      let historyTab = "online";
+      const LOCAL_MODE_NAMES = { bot: "С хранителем", local: "Вдвоём на устройстве" };
+      const CLOCK_NAMES = { off: "без часов", classic: "классика", blitz: "блиц" };
+
+      function renderLocalHistory() {
         const list = $("#historyList");
-        list.innerHTML = '<div class="empty-note">Загрузка...</div>';
+        const log = safeJson(storage.get("pyramide.localHistory"), []) || [];
+        if (!log.length) {
+          list.innerHTML = '<div class="empty-note">Здесь появятся партии с ботом и на одном устройстве.</div>';
+          return;
+        }
+        list.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+        log.forEach((entry, index) => {
+          const row = document.createElement("div");
+          row.className = "data-row";
+          const when = new Date(entry.at).toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
+          const title = LOCAL_MODE_NAMES[entry.mode] || "Партия";
+          const extra = entry.difficulty ? ` · ${{ easy: "Ученик", medium: "Зодчий", hard: "Визирь" }[entry.difficulty] || entry.difficulty}` : "";
+          row.innerHTML = `<span class="res-dot res-${entry.result}"></span>
+            <span class="main"><b>${title}</b><span>${RESULT_TITLES[entry.result]} · ${REASON_TITLES[entry.reason] || ""}${extra} · ${CLOCK_NAMES[entry.clock] || ""} ${when}</span></span>`;
+          const actions = document.createElement("span");
+          actions.className = "row-actions";
+          // Local games keep only the final position - there is no server-side event log to
+          // replay, so the review here is a still image rather than a move-by-move analysis.
+          actions.append(makeButton("Позиция", "", () => showLocalPosition(entry)));
+          row.append(actions);
+          fragment.append(row);
+        });
+        list.append(fragment);
+      }
+
+      function showLocalPosition(entry) {
+        openModal("reviewModal");
+        $("#revSummary").innerHTML = "";
+        review = null;
+        const map = createDiagram($("#revBoard"));
+        paintDiagram(map, entry.board || {});
+        diagramContext($("#revCtx"), { note: "Финальная позиция" });
+        $("#revPly").textContent = "—";
+        ["revStart", "revPrev", "revNext", "revEnd"].forEach(id => { $(`#${id}`).disabled = true; });
+        $("#revVerdict").className = "verdict neutral";
+        $("#revVerdict").textContent = RESULT_TITLES[entry.result] || "Итог";
+        $("#revNote").textContent = "Разбор по ходам доступен только для онлайн-партий: локальные игры не записываются на сервер.";
+      }
+
+      async function openHistory(tab = historyTab) {
+        historyTab = tab;
+        $$("[data-hist]").forEach(button => button.classList.toggle("selected", button.dataset.hist === tab));
+        const list = $("#historyList");
         openModal("historyModal");
+        if (tab === "local") { renderLocalHistory(); return; }
+        list.innerHTML = '<div class="empty-note">Загрузка...</div>';
         try {
           if (!onlineClient?.socket?.connected) { if (!onlineClient) onlineClient = new OnlineClient(); await onlineClient.connect(); }
           const response = await onlineClient.emit("history:list", { limit: 20 });
@@ -2114,16 +2193,19 @@
           if (!matches.length) { list.innerHTML = '<div class="empty-note">Здесь появятся ваши рейтинговые онлайн-партии. Игры с ботом и вдвоём на одном устройстве не сохраняются.</div>'; return; }
           list.innerHTML = "";
           matches.forEach((match, index) => {
-            const button = document.createElement("button");
+            const button = document.createElement("div");
             button.className = "data-row";
-            button.type = "button";
             const delta = Number(match.ratingDelta);
             const deltaClass = delta > 0 ? "up" : delta < 0 ? "down" : "even";
             const when = match.endedAt ? new Date(match.endedAt).toLocaleDateString("ru-RU", { day: "numeric", month: "short" }) : "";
             button.innerHTML = `<span class="res-dot res-${match.result}"></span>
               <span class="main"><b>${escapeHtml(match.opponentName)}</b><span>${RESULT_TITLES[match.result]} · ${MODE_TITLES[match.mode] || match.mode} · ${REASON_TITLES[match.reason] || ""} ${when}</span></span>
               <span class="val">${Number.isFinite(delta) ? `<small class="${deltaClass}">${delta > 0 ? "+" : ""}${delta}</small>` : ""}</span>`;
-            button.addEventListener("click", () => openReview(match.id));
+            const actions = document.createElement("span");
+            actions.className = "row-actions";
+            actions.append(makeButton("Ход партии", "accent", event => { event.stopPropagation(); openReview(match.id); }));
+            if (match.opponentId) actions.append(makeButton("Профиль", "", event => { event.stopPropagation(); viewPlayer(match.opponentId, match.opponentName); }));
+            button.append(actions);
             list.append(button);
             if (index === 0) applyServerProfile(null);
           });
@@ -2164,6 +2246,10 @@
             row.innerHTML = `<span class="rank">${entry.place}</span>
               <span class="main"><b>${escapeHtml(entry.displayName)}${entry.isMe ? " (вы)" : ""}</b><span>${entry.games} ${plural(entry.games, "партия", "партии", "партий")}</span></span>
               <span class="val">${entry.rating}</span>`;
+            if (entry.playerId && !entry.isMe) {
+              row.style.cursor = "pointer"; row.title = "Открыть профиль";
+              row.addEventListener("click", () => viewPlayer(entry.playerId, entry.displayName));
+            }
             fragment.append(row);
           }
           list.append(fragment);
@@ -2346,7 +2432,8 @@
         row.className = "data-row";
         const rating = Number.isFinite(person.ratingClassic) ? `Классика ${person.ratingClassic} · Блиц ${person.ratingBlitz}` : "новый игрок";
         row.innerHTML = `<span class="friend-dot ${person.online ? "on" : ""}"></span>
-          <span class="main"><b>${escapeHtml(person.displayName)}</b><span>${person.online ? "в сети" : "не в сети"} · ${rating}</span></span>`;
+          <span class="main" style="cursor:pointer" title="Открыть профиль"><b>${escapeHtml(person.displayName)}</b><span>${person.online ? "в сети" : "не в сети"} · ${rating}</span></span>`;
+        row.querySelector(".main").addEventListener("click", () => viewPlayer(person.otherId, person.displayName));
 
         const actions = document.createElement("span");
         actions.className = "row-actions";
@@ -2354,7 +2441,7 @@
           actions.append(makeButton("Принять", "accent", () => respondFriendRequest(person.otherId, true)));
           actions.append(makeButton("Нет", "", () => respondFriendRequest(person.otherId, false)));
         } else if (kind === "friend") {
-          if (person.online) actions.append(makeButton("Позвать", "accent", () => inviteFriend(person)));
+          if (person.online) actions.append(makeButton("Позвать", "accent", () => chooseInviteMode(person)));
           actions.append(makeButton("Удалить", "", () => askConfirm(`Удалить ${person.displayName} из друзей?`, () => removeFriendById(person.otherId), { title: "Удалить друга", no: "Оставить", yes: "Удалить" })));
         } else {
           actions.append(makeButton("Отменить", "", () => respondFriendRequest(person.otherId, false)));
@@ -2395,13 +2482,30 @@
         catch { showToast("Не удалось удалить"); }
       }
 
-      async function inviteFriend(person) {
-        const mode = selectedOnlineMode || "classic";
+      // Previously the invite silently used whatever mode happened to be selected in the menu and
+      // gave no sign it had been sent. Now the rules are chosen explicitly and the wait is visible.
+      function chooseInviteMode(person) {
+        $("#inviteWho").textContent = person.displayName;
+        $("#inviteModes").innerHTML = "";
+        for (const [mode, label] of [["classic", "Классика 5+10"], ["blitz", "Блиц 2+3"]]) {
+          const button = document.createElement("button");
+          button.className = "secondary-btn";
+          button.textContent = label;
+          button.addEventListener("click", () => { closeModal("inviteModeModal"); inviteFriend(person, mode); });
+          $("#inviteModes").append(button);
+        }
+        openModal("inviteModeModal");
+      }
+
+      async function inviteFriend(person, mode) {
         try {
           await onlineClient.emit("friends:invite", { otherId: person.otherId, mode });
-          showToast(`Вызов отправлен: ${person.displayName}`);
+          audio.turn();
+          showToast(`Вызов отправлен ${person.displayName} — ждём ответа`);
         } catch (error) {
-          showToast(error?.code === "FRIEND_OFFLINE" ? "Друг не в сети" : "Не удалось отправить вызов");
+          audio.blocked();
+          const messages = { FRIEND_OFFLINE: "Друг вышел из сети", NOT_FRIENDS: "Сначала добавьте в друзья" };
+          showToast(messages[error?.code] || "Не удалось отправить вызов");
         }
       }
 
@@ -3113,7 +3217,10 @@
 
       function openModal(id) {
         const modal = document.getElementById(id); if (!modal) return;
-        if (!modal.classList.contains("open")) { modal.classList.add("open"); openModalCount++; document.body.classList.add("has-modal"); }
+        if (!modal.classList.contains("open")) {
+          modal.classList.toggle("stacked", openModalCount > 0);
+          modal.classList.add("open"); openModalCount++; document.body.classList.add("has-modal");
+        }
         syncMenuBackdrop();
         // Focusing the first button made the close "x" look pressed every time a modal opened.
         // Focus the dialog itself instead: screen readers still announce it, nothing looks active.
@@ -3122,7 +3229,7 @@
       }
       function closeModal(id) {
         const modal = document.getElementById(id); if (!modal || !modal.classList.contains("open")) return;
-        modal.classList.remove("open"); openModalCount = Math.max(0, openModalCount - 1);
+        modal.classList.remove("open", "stacked"); openModalCount = Math.max(0, openModalCount - 1);
         if (openModalCount === 0) document.body.classList.remove("has-modal");
         syncMenuBackdrop();
       }
@@ -3214,7 +3321,6 @@
       const audio = new SoundEngine();
 
       function applySettings() {
-        $("#nickInput").value = storedNickname();
         document.documentElement.classList.toggle("minimal", settings.theme === "minimal");
         $$('[data-theme]').forEach(button => button.classList.toggle("active", button.dataset.theme === settings.theme));
         $("#soundSwitch").classList.toggle("on", settings.sound); $("#musicSwitch").classList.toggle("on", settings.music);
@@ -3306,6 +3412,8 @@
       $$('[data-open="rulesModal"]').forEach(button => button.addEventListener("click", event => { event.stopPropagation(); openTutorial(); }));
       $("#openShop").addEventListener("click", () => openShop());
       $$("[data-shop]").forEach(button => button.addEventListener("click", () => openShop(button.dataset.shop)));
+      $$("[data-hist]").forEach(button => button.addEventListener("click", () => openHistory(button.dataset.hist)));
+      $("#toProfile").addEventListener("click", () => { closeModal("settingsModal"); openAccount(); });
       $("#openPuzzles").addEventListener("click", () => openPuzzle());
       $("#puzNext").addEventListener("click", () => openPuzzle());
       $("#puzSkip").addEventListener("click", skipPuzzle);
@@ -3320,8 +3428,7 @@
       $("#redeemGo").addEventListener("click", redeemLinkCode);
       $("#openLeaderboard").addEventListener("click", () => openLeaderboard());
       $("#openHistory").addEventListener("click", () => openHistory());
-      $("#nickSave").addEventListener("click", () => saveNickname($("#nickInput").value));
-      $("#nickInput").addEventListener("keydown", event => { if (event.key === "Enter") saveNickname(event.currentTarget.value); });
+      $("#nickInput2").addEventListener("keydown", event => { if (event.key === "Enter") saveNickname(event.currentTarget.value).then(() => { $("#myName").textContent = storedNickname(); }); });
       $$("[data-lb-mode]").forEach(button => button.addEventListener("click", () => openLeaderboard(button.dataset.lbMode)));
       $$("[data-close]").forEach(button => button.addEventListener("click", event => {
         const target = event.currentTarget.dataset.close;
