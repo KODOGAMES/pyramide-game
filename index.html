@@ -338,7 +338,7 @@
       position: fixed;
       left: 50%;
       top: 82px;
-      z-index: 80;
+      z-index: 200;
       max-width: min(420px, calc(100vw - 32px));
       padding: 10px 16px;
       border: 1px solid rgba(255,221,145,.3);
@@ -582,6 +582,8 @@
     .shop-item:hover { border-color: rgba(255,216,132,.5); }
     .shop-item.equipped { border-color: #e3b568; background: rgba(233,189,109,.16); }
     .shop-item.locked { opacity: .55; }
+    .shop-item.unaffordable { opacity: .4; }
+    .shop-item.unaffordable .pr { color: #ff9a8a; }
     .shop-item .sw { display: flex; justify-content: center; gap: 3px; margin-bottom: 6px; }
     .shop-item .sw i { width: 15px; height: 15px; border-radius: 50%; display: block; }
     .shop-item .bar { height: 20px; border-radius: 6px; margin-bottom: 6px; }
@@ -682,6 +684,28 @@
     .cell.enemy-hint { border-color: rgba(150,120,214,.8); background: rgba(140,110,210,.12); box-shadow: inset 0 0 0 2px rgba(150,120,214,.5); }
     .cell.enemy-hint .cell-number { color: #4a3a7a; }
 
+    /* Identity card: avatar, name, rating and side colour in one clickable block. Previously
+       these were scattered (rank in the topbar, rating in a chip, name duplicated by the clock),
+       which is why it was unclear where to tap to open a profile. */
+    .pcard { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 11px;
+      border: 1px solid rgba(255,225,167,.16); border-radius: 14px; background: rgba(255,255,255,.03);
+      color: inherit; font: inherit; text-align: left; cursor: pointer; transition: border-color .2s, background .2s; }
+    .pcard:hover { border-color: rgba(255,216,132,.45); background: rgba(255,211,121,.07); }
+    .pcard-txt { min-width: 0; }
+    .pcard-txt b { display: block; font-size: 14px; color: #f2e6cd; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pcard-txt span { display: block; margin-top: 1px; font-size: 11.5px; color: #90a6a8; font-variant-numeric: tabular-nums; }
+    .player-panel[data-side="L"] .pcard { border-left: 3px solid #6fb0d8; }
+    .player-panel[data-side="R"] .pcard { border-left: 3px solid #e0836f; }
+    .player-panel.active .pcard { border-color: #e3b568; background: rgba(233,189,109,.1); }
+    /* Reserves live in the clock bar, reusing space that duplicated the names. */
+    .mini-res { display: inline-flex; gap: 7px; align-items: center; }
+    .mini-res i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .mini-res u { text-decoration: none; font-variant-numeric: tabular-nums; font-size: 11px; color: #cbbfa5; }
+    @media (max-width: 900px) {
+      /* On a phone the two panels sit above the board as a single compact row. */
+      .pcard { padding: 7px 9px; }
+      .pcard-txt b { font-size: 13px; }
+    }
     .clock-bar { display: none; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; width: 100%; max-width: 680px; margin: 0 auto 8px; }
     .clock-bar.show { display: grid; }
     .clock-side { display: flex; align-items: center; gap: 9px; padding: 8px 13px; border: 1px solid rgba(255,225,167,.16); border-radius: 14px; background: rgba(0,0,0,.28); transition: border-color .2s, box-shadow .2s; }
@@ -725,6 +749,11 @@
     .data-row .val { font-variant-numeric: tabular-nums; font-size: 14px; color: #e9d3a3; text-align: right; }
     .data-row .val small { display: block; font-size: 11px; margin-top: 2px; }
     .val small.up { color: #8fe0a4; } .val small.down { color: #ff9a8a; } .val small.even { color: #90a6a8; }
+    .res-word { font-family: Georgia, serif; font-size: 15px; letter-spacing: .02em; }
+    .res-word.res-win { color: #8fe0a4; } .res-word.res-loss { color: #ff8f7d; } .res-word.res-draw { color: #d8c79a; }
+    /* Row buttons used to stretch across the whole cell. Fixed to content width and aligned. */
+    .data-row .row-actions { flex: 0 0 auto; align-self: center; }
+    .data-row .row-actions button { white-space: nowrap; }
     .res-dot { width: 9px; height: 9px; border-radius: 50%; }
     .res-win { background: #7ed69a; } .res-loss { background: #ff7d68; } .res-draw { background: #c9b184; }
     /* The selected tab had no styling at all, so there was no way to tell which list you were
@@ -887,16 +916,19 @@
 
     <main class="game-shell">
       <section class="player-panel" data-side="L" id="panelL" aria-label="Игрок лазури">
-        <div class="player-title"><span class="side-sigil blue"></span><div><div class="player-name" id="nameL">Игрок 1</div><div class="player-role">Лазурный дом</div></div></div>
+        <button class="pcard" id="cardL" type="button">
+          <span class="avatar sm" id="avaL">&#128034;</span>
+          <span class="pcard-txt"><b class="player-name" id="nameL">Игрок 1</b><span id="metaL">Лазурный дом</span></span>
+        </button>
         <div class="turn-flag" id="turnL"></div>
         <div class="reserve" id="reserveL"></div>
       </section>
 
       <section class="board-wrap" aria-label="Игровое поле">
         <div class="clock-bar" id="clockBar">
-          <div class="clock-side" id="clockSideL"><span class="time" id="clockL">5:00</span><span class="who" id="clockWhoL">Игрок 1</span></div>
+          <div class="clock-side" id="clockSideL"><span class="time" id="clockL">5:00</span><span class="who mini-res" id="clockWhoL"></span></div>
           <span class="clock-vs">против</span>
-          <div class="clock-side right" id="clockSideR"><span class="time" id="clockR">5:00</span><span class="who" id="clockWhoR">Игрок 2</span></div>
+          <div class="clock-side right" id="clockSideR"><span class="time" id="clockR">5:00</span><span class="who mini-res" id="clockWhoR"></span></div>
         </div>
         <div class="board-heading"><span>Лазурная сторона</span><strong id="matchLabel">Локальная партия</strong><span>Алая сторона</span></div>
         <div class="board" id="board">
@@ -906,7 +938,10 @@
       </section>
 
       <section class="player-panel" data-side="R" id="panelR" aria-label="Игрок заката">
-        <div class="player-title"><span class="side-sigil red"></span><div><div class="player-name" id="nameR">Игрок 2</div><div class="player-role" id="roleR">Алый дом</div></div></div>
+        <button class="pcard" id="cardR" type="button">
+          <span class="avatar sm" id="avaR">&#9917;</span>
+          <span class="pcard-txt"><b class="player-name" id="nameR">Игрок 2</b><span id="metaR">Алый дом</span></span>
+        </button>
         <div class="turn-flag" id="turnR"></div>
         <div class="reserve" id="reserveR"></div>
       </section>
@@ -1359,7 +1394,7 @@
         dom.panelR.classList.toggle("active", state.active === "R" && state.phase !== "gameover");
         $("#turnL").textContent = turnLabel("L");
         $("#turnR").textContent = turnLabel("R");
-        renderReserve("L"); renderReserve("R"); renderPicker(); renderStatus(); renderClocks(); updateProfile();
+        renderReserve("L"); renderReserve("R"); renderPicker(); renderStatus(); renderClocks(); renderIdentityCards(); updateProfile();
         dom.rollButton.disabled = state.phase !== "roll" || !canActLocally();
         dom.rollButton.setAttribute("aria-label", state.roll ? `На кубике ${state.roll}` : "Бросить кубик");
       }
@@ -1391,8 +1426,15 @@
             R: state.active === "R" && state.phase !== "gameover" ? Math.max(0, state.offlineClock.R - spent) : state.offlineClock.R
           };
         }
-        $("#clockWhoL").textContent = names.L;
-        $("#clockWhoR").textContent = names.R;
+        // Reserves rather than names: the names are already on the identity cards, and repeating
+        // them here was the "too much information" the layout suffered from.
+        for (const [side, node] of [["L", $("#clockWhoL")], ["R", $("#clockWhoR")]]) {
+          node.innerHTML = COLORS.map(color => {
+            const left = state.inventory[side]?.[color] ?? 0;
+            const varName = color === "yellow" ? "yellow-stone" : color === "green" ? "green-stone" : "purple-stone";
+            return `<i style="background:var(--${varName});opacity:${left ? 1 : .25}"></i><u>${left}</u>`;
+          }).join("");
+        }
         for (const side of ["L", "R"]) {
           const ms = clocks[side] ?? 0;
           const running = state.active === side && state.phase !== "gameover";
@@ -1522,7 +1564,6 @@
         });
         $("#nameL").textContent = mode === "bot" ? "Вы" : "Игрок 1";
         $("#nameR").textContent = mode === "bot" ? ({ easy: "Ани-ученик", medium: "Ани-зодчий", hard: "Ани-визирь" }[difficulty]) : "Игрок 2";
-        $("#roleR").textContent = mode === "bot" ? "Хранитель пирамиды" : "Алый дом";
         $("#matchLabel").textContent = mode === "bot" ? `Хранитель: ${$("#nameR").textContent}` : "Локальная партия";
         closeModal("menuModal"); closeModal("resultModal"); closeModal("settingsModal");
         $$(".danger", dom.cells).forEach(el => el.classList.remove("danger"));
@@ -1887,19 +1928,17 @@
           board: {}, inventory: { L: { ...STARTING_INVENTORY }, R: { ...STARTING_INVENTORY } }, active: "L",
           selectedColor: "yellow", phase: "roll", roll: null, legal: [], lastCell: null,
           mode: "online", result: null, matchNumber: state.matchNumber + 1,
-          online: { client: onlineClient, side: payload.side, matchId: payload.matchId, revision: 0, clock: { L: 0, R: 0 }, opponentName: payload.opponent, opponentId: payload.opponentId, opponentRating: payload.opponentRating, myRating: payload.myRating, onlineMode: payload.mode, friendly: Boolean(payload.friendly) }
+          online: { client: onlineClient, side: payload.side, matchId: payload.matchId, revision: 0, clock: { L: 0, R: 0 }, opponentName: payload.opponent, opponentId: payload.opponentId, opponentRating: payload.opponentRating, opponentAvatar: payload.opponentAvatar, myRating: payload.myRating, onlineMode: payload.mode, friendly: Boolean(payload.friendly) }
         });
         const youLabel = "Вы", opponentLabel = payload.opponent || "Соперник";
         $("#nameL").textContent = payload.side === "L" ? youLabel : opponentLabel;
         $("#nameR").textContent = payload.side === "R" ? youLabel : opponentLabel;
         renderNameRatings(payload.mode, payload.opponentRating);
-        $("#roleR").textContent = "Алый дом";
         // The opponent's name is a live link to their profile, as on chess.com.
-        const oppNameEl = payload.side === "L" ? $("#nameR") : $("#nameL");
-        oppNameEl.style.cursor = "pointer";
-        oppNameEl.title = "Открыть профиль";
-        oppNameEl.onclick = () => viewPlayer(payload.opponentId, payload.opponent);
-        $("#matchLabel").textContent = `Рейтинговый матч · ${ONLINE_MODE_LABELS[payload.mode] || payload.mode}`;
+        // Profile opening now lives on the whole identity card, not the bare name.
+        $("#matchLabel").textContent = payload.friendly
+          ? `Дружеская партия · ${ONLINE_MODE_LABELS[payload.mode] || payload.mode}`
+          : `Рейтинговый матч · ${ONLINE_MODE_LABELS[payload.mode] || payload.mode}`;
         $$(".danger", dom.cells).forEach(el => el.classList.remove("danger"));
         dom.die.dataset.face = "1";
         stopOfflineClock();
@@ -1986,7 +2025,8 @@
           whereText
         ].filter(Boolean).join(" ");
 
-        const myRating = rating?.[mySide];
+        const friendly = Boolean(state.online?.friendly) || rating?.friendly;
+        const myRating = friendly ? null : rating?.[mySide];
         const coins = rating?.coins?.[mySide] ?? 0;
         if (coins) {
           progression.coins = (Number(progression.coins) || 0) + coins;
@@ -1994,6 +2034,7 @@
           updateProfile(); schedule(() => showCoinGain(coins), 600);
         }
         $("#xpGain").textContent = [
+          friendly ? "Дружеская партия — рейтинг не меняется" : null,
           myRating ? `Рейтинг: ${myRating.ratingBefore + myRating.delta} (${myRating.delta >= 0 ? "+" : ""}${myRating.delta})` : null,
           `+${gain} опыта`, coins ? `+${coins} монет` : null
         ].filter(Boolean).join(" · ");
@@ -2018,6 +2059,7 @@
         if (Number.isFinite(profile.wins)) progression.wins = profile.wins;
         if (Number.isFinite(profile.losses)) progression.losses = profile.losses;
         if (Number.isFinite(profile.coins)) progression.coins = profile.coins;
+        // Deliberately no `else` - an undefined value leaves the stored balance untouched.
         storage.set("pyramide.progress", JSON.stringify(progression));
         updateProfile();
       }
@@ -2198,9 +2240,10 @@
             const delta = Number(match.ratingDelta);
             const deltaClass = delta > 0 ? "up" : delta < 0 ? "down" : "even";
             const when = match.endedAt ? new Date(match.endedAt).toLocaleDateString("ru-RU", { day: "numeric", month: "short" }) : "";
-            button.innerHTML = `<span class="res-dot res-${match.result}"></span>
-              <span class="main"><b>${escapeHtml(match.opponentName)}</b><span>${RESULT_TITLES[match.result]} · ${MODE_TITLES[match.mode] || match.mode} · ${REASON_TITLES[match.reason] || ""} ${when}</span></span>
-              <span class="val">${Number.isFinite(delta) ? `<small class="${deltaClass}">${delta > 0 ? "+" : ""}${delta}</small>` : ""}</span>`;
+            button.innerHTML = `<span class="avatar sm">${avatarChar(match.opponentAvatar)}</span>
+              <span class="main"><b class="res-word res-${match.result}">${RESULT_TITLES[match.result]}</b>
+                <span>${escapeHtml(match.opponentName)} · ${MODE_TITLES[match.mode] || match.mode} · ${REASON_TITLES[match.reason] || ""} ${when}</span></span>
+              <span class="val">${Number.isFinite(delta) && delta !== 0 ? `<small class="${deltaClass}">${delta > 0 ? "+" : ""}${delta}</small>` : ""}</span>`;
             const actions = document.createElement("span");
             actions.className = "row-actions";
             actions.append(makeButton("Ход партии", "accent", event => { event.stopPropagation(); openReview(match.id); }));
@@ -2244,7 +2287,10 @@
             const row = document.createElement("div");
             row.className = `data-row${entry.isMe ? " me" : ""}`;
             row.innerHTML = `<span class="rank">${entry.place}</span>
-              <span class="main"><b>${escapeHtml(entry.displayName)}${entry.isMe ? " (вы)" : ""}</b><span>${entry.games} ${plural(entry.games, "партия", "партии", "партий")}</span></span>
+              <span class="main" style="display:flex;align-items:center;gap:9px">
+                <span class="avatar sm">${avatarChar(entry.avatar)}</span>
+                <span style="min-width:0"><b>${escapeHtml(entry.displayName)}${entry.isMe ? " (вы)" : ""}</b>
+                <span>${entry.games} ${plural(entry.games, "партия", "партии", "партий")}</span></span></span>
               <span class="val">${entry.rating}</span>`;
             if (entry.playerId && !entry.isMe) {
               row.style.cursor = "pointer"; row.title = "Открыть профиль";
@@ -2342,6 +2388,35 @@
         if (target.classList.contains("cell")) return; // cells have their own placement sound
         audio.click();
       }, { passive: true });
+
+      // One place that knows how each player is presented on the board.
+      function renderIdentityCards() {
+        const online = isOnline();
+        const you = state.online?.side;
+        for (const side of ["L", "R"]) {
+          const isMe = online ? side === you : null;
+          const nameEl = $(`#name${side}`);
+          const metaEl = $(`#meta${side}`);
+          const avaEl = $(`#ava${side}`);
+          if (online) {
+            const name = isMe ? (storedNickname() || "Вы") : state.online.opponentName;
+            nameEl.textContent = isMe ? `${name} (Вы)` : name;
+            avaEl.textContent = isMe ? avatarChar(currentAvatar()) : avatarChar(state.online.opponentAvatar);
+            const rating = isMe
+              ? (Number.isFinite(state.online.myRating) ? state.online.myRating : null)
+              : (Number.isFinite(state.online.opponentRating) ? state.online.opponentRating : null);
+            metaEl.textContent = [side === "L" ? "Лазурь" : "Алый", rating ? `рейтинг ${rating}` : null]
+              .filter(Boolean).join(" · ");
+          } else {
+            const bot = state.mode === "bot" && side === "R";
+            nameEl.textContent = bot ? BOT_NAMES[state.difficulty] || "Хранитель" : (side === "L" ? "Игрок 1" : "Игрок 2");
+            avaEl.textContent = side === "L" ? avatarChar(currentAvatar()) : (bot ? "\u{1F9E0}" : "\u{1F464}");
+            metaEl.textContent = side === "L" ? "Лазурный дом" : (bot ? "Хранитель пирамиды" : "Алый дом");
+          }
+        }
+      }
+
+      const BOT_NAMES = { easy: "Ани-ученик", medium: "Ани-зодчий", hard: "Ани-визирь" };
 
       function renderNameRatings(mode, opponentRating) {
         // Prefer the rating the server sent for this match: the locally cached one can be stale
@@ -2617,7 +2692,7 @@
             shop = { ...shop, catalogue: inventory.catalogue, owned: inventory.owned || [], equipped: inventory.equipped || {} };
             applyCosmetics(shop.equipped); renderAvatarGrid();
           } catch { /* cosmetics stay as cached */ }
-          $("#myCoins").textContent = response?.profile?.coins ?? progression.coins ?? 0;
+          $("#myCoins").textContent = Number(progression.coins) || 0;
           $("#myName").textContent = response?.player?.displayName || storedNickname() || "Странник";
           renderMyStats(response?.profile);
         } catch { $("#myMeta").textContent = "Офлайн — данные могут быть неполными"; }
@@ -2771,6 +2846,12 @@
           paint: () => [{ id: "L4-1", cls: "ok" }, { id: "R5-1", cls: "bad" }, { id: "foot-L", cls: "bad" }]
         },
         {
+          title: "Ничья",
+          text: "Если один ход достраивает <b>четыре камня подряд</b>, внутри них оказываются <b>две</b> запретные тройки — по одной против каждой стороны. Осудить обоих нельзя, поэтому объявляется <b>ничья</b>. Здесь четыре жёлтых в ряду 2: тройки «2-2 2-1 2-1» и «2-1 2-1 2-2» бьют по разным половинам.",
+          stones: { "L2-2": "yellow", "L2-1": "yellow", "R2-1": "yellow", "R2-2": "yellow" },
+          paint: () => ["L2-2", "L2-1", "R2-1", "R2-2"].map(id => ({ id, cls: "bad" }))
+        },
+        {
           title: "Как победить",
           text: "Заполните свою половину первой — <b>15 клеток</b>, атакующая ножка в счёт не идёт. Также вы побеждаете, если соперник собрал три в ряд, сдался или у него закончилось время.",
           paint: () => cells.map(cell => ({ id: cell.id, cls: cell.visualSide === "L" && !cell.foot ? "ok" : "dim" }))
@@ -2896,7 +2977,10 @@
         const map = new Map();
         for (const cell of cells) {
           const node = document.createElement("div");
-          node.className = `dgm-cell side-${cell.visualSide}${cell.foot ? " foot-cell" : ""}${onPick ? " pickable" : ""}`;
+          // A foot belongs to the player on the OTHER side, so it must carry its owner's colour -
+          // colouring it by the half it stands on made it look like the defender's own cell.
+          const tint = cell.foot ? cell.owner : cell.visualSide;
+          node.className = `dgm-cell side-${tint}${cell.foot ? " foot-cell" : ""}${onPick ? " pickable" : ""}`;
           node.style.left = `calc(${cell.col} * 10% + .45%)`;
           node.style.top = ROW_TOPS[cell.row];
           node.innerHTML = `<span class="n">${cell.foot ? 6 : cell.pos}</span>`;
@@ -2976,8 +3060,15 @@
           await ensureConnected();
           const data = await onlineClient.emit("shop:list", {});
           shop = { slot, catalogue: data.catalogue, owned: data.owned || [], equipped: data.equipped || {} };
-          $("#shopCoins").textContent = data.coins ?? 0;
-          progression.coins = data.coins ?? progression.coins;
+          // A missing value must never overwrite a real balance - that is how coins were being
+          // wiped whenever the workshop opened against a server that returned no coins field.
+          // null means the server has no persistent store for this session - keep the local mirror
+          // rather than zeroing a balance the player really earned.
+          if (Number.isFinite(data.coins)) {
+            progression.coins = data.coins;
+            storage.set("pyramide.progress", JSON.stringify(progression));
+          }
+          $("#shopCoins").textContent = Number(progression.coins) || 0;
           applyCosmetics(shop.equipped);
           renderShop();
         } catch {
@@ -3001,9 +3092,16 @@
             : shop.slot === "board"
               ? `<span class="bar" style="background:${BOARD_SWATCH[item.id]}"></span>`
               : `<span class="sw" style="font-size:23px">${SHOP_META.avatar[item.id] || "?"}</span>`;
+          if (shop.slot === "avatar" && item.id === currentAvatar()) node.classList.add("equipped");
+          const coins = Number(progression.coins) || 0;
+          const affordable = owned || coins >= item.price;
+          if (!affordable) node.classList.add("unaffordable");
           node.innerHTML = `${preview}<span class="nm">${shop.slot === "avatar" ? "" : SHOP_META[shop.slot][item.id] || item.id}</span>`
-            + `<span class="pr">${equipped ? "надето" : owned ? "выбрать" : `${item.price} монет`}</span>`;
-          node.addEventListener("click", () => buyOrEquip(item, owned));
+            + `<span class="pr">${equipped ? "надето" : owned ? "выбрать" : `${item.price} \u25CF`}</span>`;
+          node.addEventListener("click", () => {
+            if (!affordable) { audio.blocked(); showToast(`Не хватает ${item.price - coins} монет — играйте и решайте задачи`); return; }
+            buyOrEquip(item, owned);
+          });
           fragment.append(node);
         }
         grid.append(fragment);
@@ -3023,26 +3121,46 @@
             showToast(result.spent ? `Куплено за ${result.spent} монет` : "Применено");
           } catch (error) {
             audio.blocked();
-            showToast(error?.code === "NOT_ENOUGH_COINS" ? "Не хватает монет" : "Не удалось выполнить");
+            const messages = {
+              NOT_ENOUGH_COINS: "Не хватает монет",
+              NO_DB: "Мастерская недоступна: сервер без базы данных",
+              NO_PROFILE: "Профиль ещё не создан — сыграйте одну онлайн-партию"
+            };
+            showToast(messages[error?.code] || "Не удалось выполнить, попробуйте позже");
           }
         };
         if (owned) act();
         else askConfirm(`Купить за ${item.price} монет?`, act, { title: "Покупка", no: "Отмена", yes: "Купить" });
       }
 
-      const PUZZLE_LIVES = 5;
+      // Three lives refilling every six hours, plus a hard cap of ten puzzles a day. The cap is
+      // what keeps a daily-challenge feel; without it the mode is an infinite grind and the coin
+      // reward becomes the fastest way to farm the shop.
+      const PUZZLE_LIVES = 3;
+      const REFILL_MS = 6 * 60 * 60 * 1000;
+      const DAILY_CAP = 10;
+
       function puzzleLives() {
         const raw = safeJson(storage.get("pyramide.puzzleLives"), null);
         const today = new Date().toISOString().slice(0, 10);
-        if (!raw || raw.day !== today) return { day: today, left: PUZZLE_LIVES, solved: 0 };
+        const now = Date.now();
+        if (!raw || raw.day !== today) return { day: today, left: PUZZLE_LIVES, solved: 0, played: 0, refillAt: now + REFILL_MS };
+        // Lives refill in whole batches: every elapsed six-hour window restores the full set.
+        if (raw.left < PUZZLE_LIVES && now >= (raw.refillAt || 0)) {
+          return { ...raw, left: PUZZLE_LIVES, refillAt: now + REFILL_MS };
+        }
         return raw;
       }
+      function puzzleCapReached() { return (puzzleLives().played || 0) >= DAILY_CAP; }
       function savePuzzleLives(state) { storage.set("pyramide.puzzleLives", JSON.stringify(state)); }
       function renderLives() {
         const state = puzzleLives();
         $("#puzLives").innerHTML = Array.from({ length: PUZZLE_LIVES }, (_, i) =>
           `<span style="opacity:${i < state.left ? 1 : .25}">&#10084;</span>`).join("");
-        $("#puzSolved").textContent = `Решено сегодня: ${state.solved}`;
+        const waitText = state.left < PUZZLE_LIVES && state.refillAt
+          ? ` · восстановление через ${formatClock(Math.max(0, state.refillAt - Date.now()))}`
+          : "";
+        $("#puzSolved").textContent = `Решено ${state.solved} · осталось ${Math.max(0, DAILY_CAP - (state.played || 0))} из ${DAILY_CAP}${waitText}`;
       }
 
       let puzzle = null;
@@ -3050,8 +3168,15 @@
         openModal("puzzleModal");
         renderLives();
         const lives = puzzleLives();
+        if (puzzleCapReached()) {
+          $("#puzPrompt").textContent = `Дневной лимит — ${DAILY_CAP} задач. Возвращайтесь завтра за новой порцией.`;
+          $("#puzBoard").innerHTML = ""; $("#puzColors").innerHTML = ""; $("#puzCtx").innerHTML = "";
+          $("#puzResult").textContent = "";
+          return;
+        }
         if (lives.left <= 0) {
-          $("#puzPrompt").textContent = "Жизни закончились. Новые появятся завтра — возвращайтесь!";
+          const wait = Math.max(0, (lives.refillAt || 0) - Date.now());
+          $("#puzPrompt").textContent = `Жизни закончились. Три новые появятся через ${formatClock(wait)}.`;
           $("#puzBoard").innerHTML = ""; $("#puzColors").innerHTML = ""; $("#puzCtx").innerHTML = "";
           $("#puzResult").textContent = "";
           return;
@@ -3060,7 +3185,11 @@
         $("#puzPrompt").textContent = "Загрузка задачи...";
         try {
           await ensureConnected();
-          const data = await onlineClient.emit("puzzle:next", {});
+          const prefer = (puzzleLives().played || 0) % 2 === 0 ? "survive" : "win";
+          const data = await onlineClient.emit("puzzle:next", { prefer });
+          const counted = puzzleLives();
+          counted.played = (counted.played || 0) + 1;
+          savePuzzleLives(counted); renderLives();
           puzzle = { ...data, color: null, done: false, tried: false };
           // Only cells that are actually legal for this roll accept a click.
           puzzle.cells = createDiagram($("#puzBoard"), {
@@ -3164,7 +3293,9 @@
         // the menu (which shows the per-mode value, not the combined legacy one).
         const mode = state.online?.onlineMode || "classic";
         const modeRating = mode === "blitz" ? progression.ratingBlitz : progression.ratingClassic;
-        const showChip = isOnline() && Number.isFinite(modeRating);
+        // The chip duplicated what the identity card already shows during a match, and the rank
+        // has no meaning in a rated game - both belong to the profile screen.
+        const showChip = !isOnline() && state.phase === "menu" && Number.isFinite(modeRating);
         const badge = $("#ratingChip");
         badge.classList.toggle("show", showChip);
         if (showChip) {
@@ -3410,6 +3541,14 @@
         else { closeModal("rulesModal"); storage.set("pyramide.tutorialSeen", "1"); }
       });
       $$('[data-open="rulesModal"]').forEach(button => button.addEventListener("click", event => { event.stopPropagation(); openTutorial(); }));
+      // Both identity cards are the profile entry point - previously there was nothing to tap.
+      for (const side of ["L", "R"]) {
+        $(`#card${side}`).addEventListener("click", () => {
+          if (!isOnline()) { if (side === "L") openAccount(); return; }
+          if (side === state.online.side) openAccount();
+          else viewPlayer(state.online.opponentId, state.online.opponentName);
+        });
+      }
       $("#openShop").addEventListener("click", () => openShop());
       $$("[data-shop]").forEach(button => button.addEventListener("click", () => openShop(button.dataset.shop)));
       $$("[data-hist]").forEach(button => button.addEventListener("click", () => openHistory(button.dataset.hist)));
