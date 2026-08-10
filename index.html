@@ -39,8 +39,11 @@
     body {
       height: 100dvh;
       color: #fff8e8;
+      /* Painted backdrop with the gradient kept underneath: the art is dark by design, and the
+         gradient guarantees contrast on ultra-wide screens where the image cannot cover. */
       background:
-        radial-gradient(circle at 17% 8%, rgba(255, 205, 112, .23), transparent 28rem),
+        linear-gradient(180deg, rgba(9,20,29,.72), rgba(9,20,29,.86)),
+        url("assets/bg-desert.webp") center/cover no-repeat fixed,
         linear-gradient(158deg, #18323d 0%, #10212d 52%, #09141d 100%);
       -webkit-tap-highlight-color: transparent;
       -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
@@ -160,9 +163,36 @@
     .reserve-row { display: flex; align-items: center; gap: 9px; color: #e9dcc2; font-variant-numeric: tabular-nums; }
     .player-panel[data-side="L"] .reserve-row { flex-direction: row-reverse; }
     .mini-stone { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 2px 2px 4px rgba(255,255,255,.35), 0 3px 8px rgba(0,0,0,.35); }
-    .stone-yellow { background: radial-gradient(circle at 33% 27%, #fff2a6 0 8%, var(--yellow-stone) 37%, #a46921 100%); }
-    .stone-green { background: radial-gradient(circle at 33% 27%, #c9f1c5 0 8%, var(--green-stone) 38%, #225e42 100%); }
-    .stone-purple { background: radial-gradient(circle at 33% 27%, #ead5f2 0 8%, var(--purple-stone) 38%, #4c3469 100%); }
+    /* Stone faces are artwork now. The pack is a body attribute, so every stone on every screen
+       switches at once and nothing has to be re-rendered. */
+    .stone-yellow, .stone-green, .stone-purple {
+      background-size: contain; background-position: center; background-repeat: no-repeat; background-color: transparent;
+      box-shadow: none;
+    }
+    .stone-yellow { background-image: url("assets/stones/pack1-yellow.png"); }
+    .stone-green  { background-image: url("assets/stones/pack1-green.png"); }
+    .stone-purple { background-image: url("assets/stones/pack1-purple.png"); }
+    body[data-stones="pack2"] .stone-yellow { background-image: url("assets/stones/pack2-yellow.png"); }
+    body[data-stones="pack2"] .stone-green  { background-image: url("assets/stones/pack2-green.png"); }
+    body[data-stones="pack2"] .stone-purple { background-image: url("assets/stones/pack2-purple.png"); }
+    body[data-stones="pack3"] .stone-yellow { background-image: url("assets/stones/pack3-yellow.png"); }
+    body[data-stones="pack3"] .stone-green  { background-image: url("assets/stones/pack3-green.png"); }
+    body[data-stones="pack3"] .stone-purple { background-image: url("assets/stones/pack3-purple.png"); }
+    body[data-stones="pack4"] .stone-yellow { background-image: url("assets/stones/pack4-yellow.png"); }
+    body[data-stones="pack4"] .stone-green  { background-image: url("assets/stones/pack4-green.png"); }
+    body[data-stones="pack4"] .stone-purple { background-image: url("assets/stones/pack4-purple.png"); }
+    body[data-stones="pack5"] .stone-yellow { background-image: url("assets/stones/pack5-yellow.png"); }
+    body[data-stones="pack5"] .stone-green  { background-image: url("assets/stones/pack5-green.png"); }
+    body[data-stones="pack5"] .stone-purple { background-image: url("assets/stones/pack5-purple.png"); }
+    body[data-stones="pack6"] .stone-yellow { background-image: url("assets/stones/pack6-yellow.png"); }
+    body[data-stones="pack6"] .stone-green  { background-image: url("assets/stones/pack6-green.png"); }
+    body[data-stones="pack6"] .stone-purple { background-image: url("assets/stones/pack6-purple.png"); }
+    body[data-stones="pack7"] .stone-yellow { background-image: url("assets/stones/pack7-yellow.png"); }
+    body[data-stones="pack7"] .stone-green  { background-image: url("assets/stones/pack7-green.png"); }
+    body[data-stones="pack7"] .stone-purple { background-image: url("assets/stones/pack7-purple.png"); }
+    body[data-stones="pack8"] .stone-yellow { background-image: url("assets/stones/pack8-yellow.png"); }
+    body[data-stones="pack8"] .stone-green  { background-image: url("assets/stones/pack8-green.png"); }
+    body[data-stones="pack8"] .stone-purple { background-image: url("assets/stones/pack8-purple.png"); }
     .reserve-track { width: 74px; height: 3px; background: rgba(255,255,255,.1); border-radius: 4px; overflow: hidden; }
     .reserve-track i { display: block; height: 100%; width: var(--value); background: currentColor; transition: width .35s; }
 
@@ -241,7 +271,10 @@
     .cell.valid::after { content: ""; position: absolute; inset: -3px; border-radius: inherit; border: 1px solid rgba(67,214,196,.5); opacity: .5; animation: validBreathe 2s ease-in-out infinite; pointer-events: none; }
     .cell.valid .cell-number { color: #0d6d63; }
     .cell.valid:hover { z-index: 3; transform: translateY(-3px) scale(1.06); background: rgba(255,246,203,.9); }
-    .cell.last { box-shadow: 0 0 0 3px rgba(255,250,218,.9), 0 0 26px rgba(255,222,117,.7); z-index: 2; }
+    /* The ring alone got lost against a placed stone; a corner marker reads at any size. */
+    .cell.last { box-shadow: 0 0 0 3px rgba(255,250,218,.95), 0 0 22px rgba(255,222,117,.6); z-index: 3; }
+    .cell.last::before { content: ""; position: absolute; top: -4px; right: -4px; width: 10px; height: 10px;
+      border-radius: 50%; background: #fff3c4; box-shadow: 0 0 10px rgba(255,222,117,.95); z-index: 4; }
     .cell.danger { animation: dangerFlash .72s ease-in-out 3; border-color: #ffdf6c; z-index: 4; }
     .piece {
       width: 72%;
@@ -253,9 +286,36 @@
       animation: pieceDrop .48s cubic-bezier(.18,.85,.3,1.35) both;
     }
     .piece::after { content: ""; position: absolute; width: 28%; height: 16%; left: 21%; top: 17%; border-radius: 50%; background: rgba(255,255,255,.38); transform: rotate(-24deg); filter: blur(1px); }
-    .piece.yellow { background: radial-gradient(circle at 35% 28%, #fff1a0 0 8%, #ebc14c 38%, #9c5e1e 100%); }
-    .piece.green { background: radial-gradient(circle at 35% 28%, #c8efbd 0 8%, #4c9b68 38%, #1d583b 100%); }
-    .piece.purple { background: radial-gradient(circle at 35% 28%, #ead5f2 0 8%, #8864a8 38%, #49305f 100%); }
+    /* Board pieces carry the same artwork as every other surface. They used their own gradients,
+       which is why buying a stone pack changed the shop preview but not the actual game. */
+    .piece.yellow, .piece.green, .piece.purple {
+      background-size: contain; background-position: center; background-repeat: no-repeat; box-shadow: none;
+    }
+    .piece.yellow::after, .piece.green::after, .piece.purple::after { display: none; }
+    .piece.yellow { background-image: url("assets/stones/pack1-yellow.png"); }
+    .piece.green  { background-image: url("assets/stones/pack1-green.png"); }
+    .piece.purple { background-image: url("assets/stones/pack1-purple.png"); }
+    body[data-stones="pack2"] .piece.yellow { background-image: url("assets/stones/pack2-yellow.png"); }
+    body[data-stones="pack2"] .piece.green  { background-image: url("assets/stones/pack2-green.png"); }
+    body[data-stones="pack2"] .piece.purple { background-image: url("assets/stones/pack2-purple.png"); }
+    body[data-stones="pack3"] .piece.yellow { background-image: url("assets/stones/pack3-yellow.png"); }
+    body[data-stones="pack3"] .piece.green  { background-image: url("assets/stones/pack3-green.png"); }
+    body[data-stones="pack3"] .piece.purple { background-image: url("assets/stones/pack3-purple.png"); }
+    body[data-stones="pack4"] .piece.yellow { background-image: url("assets/stones/pack4-yellow.png"); }
+    body[data-stones="pack4"] .piece.green  { background-image: url("assets/stones/pack4-green.png"); }
+    body[data-stones="pack4"] .piece.purple { background-image: url("assets/stones/pack4-purple.png"); }
+    body[data-stones="pack5"] .piece.yellow { background-image: url("assets/stones/pack5-yellow.png"); }
+    body[data-stones="pack5"] .piece.green  { background-image: url("assets/stones/pack5-green.png"); }
+    body[data-stones="pack5"] .piece.purple { background-image: url("assets/stones/pack5-purple.png"); }
+    body[data-stones="pack6"] .piece.yellow { background-image: url("assets/stones/pack6-yellow.png"); }
+    body[data-stones="pack6"] .piece.green  { background-image: url("assets/stones/pack6-green.png"); }
+    body[data-stones="pack6"] .piece.purple { background-image: url("assets/stones/pack6-purple.png"); }
+    body[data-stones="pack7"] .piece.yellow { background-image: url("assets/stones/pack7-yellow.png"); }
+    body[data-stones="pack7"] .piece.green  { background-image: url("assets/stones/pack7-green.png"); }
+    body[data-stones="pack7"] .piece.purple { background-image: url("assets/stones/pack7-purple.png"); }
+    body[data-stones="pack8"] .piece.yellow { background-image: url("assets/stones/pack8-yellow.png"); }
+    body[data-stones="pack8"] .piece.green  { background-image: url("assets/stones/pack8-green.png"); }
+    body[data-stones="pack8"] .piece.purple { background-image: url("assets/stones/pack8-purple.png"); }
     .owner-notch { position: absolute; width: 4px; height: 4px; bottom: 5px; border-radius: 50%; opacity: .7; }
     .owner-notch.L { background: #d1f0ff; }
     .owner-notch.R { background: #ffd8ca; }
@@ -525,6 +585,108 @@
     .rating-chip .elo-delta.up { color: #8fe0a4; } .rating-chip .elo-delta.down { color: #ff9a8a; }
     .name-rating { font-size: 11px; color: #9fb4b4; font-variant-numeric: tabular-nums; }
 
+    /* Hero block. These rules used to live on .menu-hero, which the screen shell replaced -
+       without them the crest lost its size and the wordmark its centring and serif face. */
+    .screen[data-screen="home"] { text-align: center; }
+    .screen[data-screen="home"] .menu-crest { position: relative; display: grid; place-items: center; margin-bottom: 2px; }
+    .screen[data-screen="home"] .menu-crest::before { content: ""; position: absolute; width: 190px; height: 190px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,206,120,.20), transparent 68%); z-index: -1; }
+    .screen[data-screen="home"] .brand-mark { width: 92px; height: 92px; margin: 0 auto;
+      filter: drop-shadow(0 14px 26px rgba(0,0,0,.45)); }
+    .screen[data-screen="home"] h1 { margin: 14px 0 10px; font-family: Georgia, "Times New Roman", serif; font-weight: 400;
+      font-size: clamp(30px, 7vw, 42px); letter-spacing: .16em; text-transform: uppercase;
+      background: linear-gradient(180deg, #ffeec2, #e2b264); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .screen[data-screen="home"] .hero-sub { max-width: 34ch; margin: 0 auto 4px; }
+    .screen[data-screen="home"] .tiles, .screen[data-screen="home"] .glyph-stats { text-align: center; }
+    /* An odd tile count left a gap; the last tile spans the row instead. */
+    /* The hero tile already spans the row, so a trailing odd tile would sit alone with a gap
+       beside it. Any last tile that would be orphaned stretches instead. */
+    .tiles .tile:last-child:nth-child(even) { grid-column: 1 / -1; min-height: 88px; }
+
+    /* ---- Screen shell ------------------------------------------------------------------------
+       Profile, history and leaders used to be stacked pop-ups. They are screens now: one surface,
+       one back button, no overlapping layers to reason about. */
+    .modal.shell { width: min(460px, 100%); max-height: min(92dvh, 780px); display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+    .shell-head { display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-bottom: 1px solid rgba(255,225,167,.12); flex: 0 0 auto; }
+    .shell-head h2 { margin: 0; font-family: Georgia, serif; font-size: 17px; font-weight: 500; color: #ffe1a1; }
+    .shell-spacer { flex: 1; }
+    .shell-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 18px; }
+    .screen { display: none; }
+    .screen.is-active { display: block; animation: screenIn .22s ease both; }
+    @keyframes screenIn { from { opacity: 0; transform: translateX(8px); } }
+    .hero-sub { margin: 0 0 4px; text-align: center; font-size: 13.5px; line-height: 1.5; color: #9fb4b4; }
+    .screen-hint { margin: 16px 0 8px; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: #7d9498; }
+    .row-inline { display: flex; gap: 8px; }
+    .row-inline .secondary-btn { padding: 0 16px; white-space: nowrap; }
+
+    /* Glyph statistics: an icon plus a number reads far faster than three text blocks. */
+    .glyph-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0 20px; }
+    .glyph-stat { text-align: center; }
+    .gs-ico { display: block; font-size: 22px; color: #e9bd6d; line-height: 1; margin-bottom: 5px; }
+    .glyph-stat b { display: block; font-family: Georgia, serif; font-size: 20px; color: #ffe1a1; font-weight: 500; }
+    .gs-lbl { display: block; margin-top: 1px; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: #7d9498; }
+
+    /* Tiles instead of a long list: fewer, larger, immediately scannable targets. */
+    .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .tile { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+      min-height: 104px; padding: 16px 10px; border: 1px solid rgba(255,225,167,.16); border-radius: 18px;
+      background: linear-gradient(165deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); color: inherit; font: inherit; cursor: pointer;
+      transition: border-color .2s, transform .12s, background .2s; }
+    .tile:hover { border-color: rgba(255,216,132,.5); background: rgba(255,211,121,.08); }
+    .tile:active { transform: scale(.985); }
+    .tile-hero { grid-column: 1 / -1; min-height: 128px;
+      border-color: rgba(233,189,109,.45); background: linear-gradient(165deg, rgba(233,189,109,.2), rgba(233,189,109,.06)); }
+    /* Artwork icons: fixed box, contained, never stretched. */
+    .tile-ico { width: 64px; height: 64px; object-fit: contain; display: block; }
+    .tile-hero .tile-ico { width: 80px; height: 80px; }
+    .mc-ico { width: 64px; height: 64px; object-fit: contain; display: block; flex: 0 0 auto; }
+    .foot-btn img { width: 32px; height: 32px; object-fit: contain; opacity: .85; }
+    .foot-btn:hover img { opacity: 1; }
+    .avatar img, .avatar-pick img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .tile-name { font-family: Georgia, serif; font-size: 15px; color: #f6e7c4; }
+    .tile-hero .tile-name { font-size: 21px; }
+    .tile-sub { font-size: 11.5px; color: #90a6a8; text-align: center; }
+    .tile-badge { position: absolute; top: 10px; right: 12px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+      background: #7ed69a; color: #10212d; font-size: 11px; font-weight: 700; display: grid; place-items: center; }
+
+    .shell-foot { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255,225,167,.1); }
+    .foot-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 2px; border: 0; background: none;
+      color: #8ba3a6; font-size: 11px; cursor: pointer; border-radius: 10px; }
+    .foot-btn span { font-size: 16px; color: #b7c4c0; }
+    .foot-btn:hover { color: #ffe1a1; background: rgba(255,255,255,.04); }
+
+    /* Mode cards on their own screen: one decision per screen, no expanding lists. */
+    .mode-card { display: flex; align-items: center; gap: 14px; width: 100%; margin-bottom: 10px; padding: 16px 15px;
+      border: 1px solid rgba(255,225,167,.16); border-radius: 16px; background: rgba(255,255,255,.03); color: inherit; font: inherit;
+      text-align: left; cursor: pointer; transition: border-color .2s, background .2s; }
+    .mode-card:hover { border-color: rgba(255,216,132,.5); background: rgba(255,211,121,.07); }
+    .mc-txt { flex: 1; min-width: 0; }
+    .mc-txt b { display: block; font-family: Georgia, serif; font-size: 16px; color: #f6e7c4; font-weight: 500; }
+    .mc-txt span { display: block; margin-top: 2px; font-size: 12px; color: #90a6a8; }
+    .mc-arrow { color: #7d9498; font-size: 20px; }
+
+    /* Segmented control replaces the old ".difficulty" buttons everywhere. */
+    .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; padding: 4px; margin-bottom: 4px;
+      border: 1px solid rgba(255,225,167,.14); border-radius: 14px; background: rgba(0,0,0,.2); }
+    .seg button { padding: 10px 6px; border: 0; border-radius: 10px; background: none; color: #b7c4c0; font: inherit; font-size: 13px; cursor: pointer; }
+    .seg button.selected { background: linear-gradient(180deg, rgba(233,189,109,.26), rgba(233,189,109,.12)); color: #ffe9c0; box-shadow: inset 0 0 0 1px rgba(255,222,150,.3); }
+
+    .lobby-card { display: flex; align-items: center; justify-content: space-around; gap: 12px; margin: 16px 0 8px;
+      padding: 18px 14px; border: 1px solid rgba(233,189,109,.28); border-radius: 18px; background: rgba(233,189,109,.07); }
+    .lobby-side { text-align: center; }
+    .lobby-side b { display: block; font-family: Georgia, serif; font-size: 23px; color: #ffe1a1; font-weight: 500; }
+    .lobby-vs { font-family: Georgia, serif; font-size: 15px; color: #7d9498; letter-spacing: .1em; }
+    .lobby-time { margin: 0 0 16px; text-align: center; font-size: 12.5px; color: #90a6a8; }
+    .lobby-time b { color: #e9d3a3; }
+    .primary-btn.big { width: 100%; padding: 16px; font-size: 15px; letter-spacing: .06em; }
+
+    .prof-top { text-align: center; margin-bottom: 16px; }
+    .prof-top .avatar { margin: 0 auto 10px; }
+    .prof-top b { display: block; font-family: Georgia, serif; font-size: 19px; color: #f6e7c4; }
+    .prof-top > span { display: block; margin-top: 3px; font-size: 12px; color: #90a6a8; }
+    .prof-top .coin-chip { display: inline-flex; margin-top: 10px; }
+    .data-list.tall { max-height: 58vh; }
+
     /* ---- Shared diagram board (tutorial, review, puzzles) ------------------------------------ */
     /* One component instead of three near-identical ones, so a fix to spacing or colour lands
        everywhere at once. */
@@ -577,16 +739,19 @@
     body[data-board="nightsand"] .cell { background: rgba(238,226,200,.82); }
     body[data-board="marble"] .board, body[data-board="marble"] .rev-board, body[data-board="marble"] .tut-board { background: linear-gradient(170deg, #eceae6, #d5d2cc); }
     .shop-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-    .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 9px; max-height: 44vh; overflow-y: auto; padding: 2px; }
+    .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; max-height: 46vh; overflow-y: auto; padding: 2px; }
     .shop-item { padding: 10px 6px; border-radius: 13px; border: 1px solid rgba(255,225,167,.16); background: rgba(255,255,255,.03); cursor: pointer; text-align: center; }
     .shop-item:hover { border-color: rgba(255,216,132,.5); }
     .shop-item.equipped { border-color: #e3b568; background: rgba(233,189,109,.16); }
     .shop-item.locked { opacity: .55; }
     .shop-item.unaffordable { opacity: .4; }
     .shop-item.unaffordable .pr { color: #ff9a8a; }
-    .shop-item .sw { display: flex; justify-content: center; gap: 3px; margin-bottom: 6px; }
+    .shop-item .sw { display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 8px; min-height: 46px; }
+    .shop-item .sw img { width: 34px; height: 34px; object-fit: contain; }
+    .shop-item .pr.on { color: #8fe0a4; } .shop-item .pr.own { color: #cfe0a4; }
+    .shop-item.equipped { border-color: #e3b568; background: rgba(233,189,109,.16); box-shadow: inset 0 0 0 1px rgba(255,222,150,.3); }
     .shop-item .sw i { width: 15px; height: 15px; border-radius: 50%; display: block; }
-    .shop-item .bar { height: 20px; border-radius: 6px; margin-bottom: 6px; }
+    .shop-item .bar { height: 46px; border-radius: 8px; margin-bottom: 8px; border: 1px solid rgba(0,0,0,.25); }
     .shop-item .nm { display: block; font-size: 11.5px; color: #e8dcc2; }
     .shop-item .pr { display: block; font-size: 10.5px; color: #e9bd6d; margin-top: 2px; }
 
@@ -644,6 +809,9 @@
     /* ---- Account, avatars, profile ---------------------------------------------------------- */
     .avatar { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; font-size: 22px; background: linear-gradient(160deg, rgba(233,189,109,.22), rgba(233,189,109,.08)); border: 1px solid rgba(233,189,109,.32); flex: 0 0 auto; }
     .avatar.sm { width: 34px; height: 34px; border-radius: 10px; font-size: 17px; }
+    /* List avatars need to read at a glance; the shared .sm size was too small in dense rows. */
+    .data-row .avatar { width: 40px; height: 40px; border-radius: 12px; font-size: 21px; flex: 0 0 auto; }
+    .data-row .rank { min-width: 30px; }
     .avatar.lg { width: 78px; height: 78px; border-radius: 20px; font-size: 38px; }
     .avatar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 8px; max-height: 34vh; overflow-y: auto; padding: 2px; }
     .avatar-pick { aspect-ratio: 1; display: grid; place-items: center; font-size: 25px; border-radius: 13px; border: 1px solid rgba(255,225,167,.16); background: rgba(255,255,255,.03); cursor: pointer; position: relative; }
@@ -716,10 +884,14 @@
     .clock-side.running .time { color: #ffe9b8; }
     .clock-side.low .time { color: #ff8f7d; }
     .clock-side.low { border-color: #ff5a44; animation: pulseLow 1s ease-in-out infinite; }
+    .clock-bar.no-clock .time { display: none; }
+    .clock-bar.no-clock .clock-side { justify-content: center; }
     .clock-vs { font-size: 11px; letter-spacing: .16em; color: #6f8689; text-transform: uppercase; }
 
     /* Win/loss flourish. Pure CSS so it costs nothing when idle and cannot leak timers. */
-    .vfx { position: fixed; inset: 0; z-index: 95; pointer-events: none; display: none; }
+    /* The flourish used to sit below dialogs (z-index 100+), so a win was hidden behind the
+       result window while a loss - which fires before it - stayed visible. */
+    .vfx { position: fixed; inset: 0; z-index: 190; pointer-events: none; display: none; }
     .vfx.show { display: block; }
     .vfx-flash { position: absolute; inset: 0; opacity: 0; }
     .vfx.win .vfx-flash { background: radial-gradient(circle at 50% 45%, rgba(255,214,130,.5), transparent 60%); animation: vfxFlash 1.5s ease-out forwards; }
@@ -921,7 +1093,6 @@
           <span class="pcard-txt"><b class="player-name" id="nameL">Игрок 1</b><span id="metaL">Лазурный дом</span></span>
         </button>
         <div class="turn-flag" id="turnL"></div>
-        <div class="reserve" id="reserveL"></div>
       </section>
 
       <section class="board-wrap" aria-label="Игровое поле">
@@ -943,7 +1114,6 @@
           <span class="pcard-txt"><b class="player-name" id="nameR">Игрок 2</b><span id="metaR">Алый дом</span></span>
         </button>
         <div class="turn-flag" id="turnR"></div>
-        <div class="reserve" id="reserveR"></div>
       </section>
 
       <section class="action-dock" aria-live="polite">
@@ -964,148 +1134,184 @@
   </div>
 
   <div class="modal-backdrop open" id="menuModal" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
-    <div class="modal">
-      <div class="modal-body menu-hero">
-        <div class="menu-crest"><div class="brand-mark" role="img" aria-label="Pyramide"></div></div>
-        <h1 id="menuTitle">Pyramide</h1>
-        <p data-i18n="menu.tagline">Древняя партия, найденная среди храмовых рисунков. Бросайте кубик, выбирайте камень и не создайте три в ряд.</p>
-        <div class="menu-rule"></div>
-        <div class="menu-stats">
-          <div class="menu-stat"><b id="statClassic">—</b><span>Классика</span></div>
-          <div class="menu-stat"><b id="statBlitz">—</b><span>Блиц</span></div>
-          <div class="menu-stat"><b id="statWins">0</b><span data-i18n="stat.wins">Побед</span></div>
-        </div>
-        <div class="mode-list" id="menuRoot">
-          <button class="mode-btn" id="menuPlay"><span class="mode-icon">&#9654;</span><span><strong>Играть</strong><small>Онлайн, с ботом или вдвоём</small></span><span class="mode-chevron">&#9654;</span></button>
-          <button class="mode-btn" id="openHistory"><span class="mode-icon">&#8986;</span><span><strong>История партий</strong><small>Рейтинговые и локальные партии</small></span></button>
-          <button class="mode-btn" id="openLeaderboard"><span class="mode-icon">&#9733;</span><span><strong>Лидеры рейтинга</strong><small>Лучшие игроки Классики и Блица</small></span></button>
-          <button class="mode-btn" id="openShop"><span class="mode-icon">&#9670;</span><span><strong>Мастерская</strong><small>Камни, поле и аватары за монеты</small></span></button>
-          <button class="mode-btn" id="openPuzzles"><span class="mode-icon">&#9819;</span><span><strong>Задачи</strong><small>Найдите единственный верный ход</small></span></button>
-          <button class="mode-btn" id="openAccount"><span class="mode-icon">&#128100;</span><span><strong>Мой профиль</strong><small>Аватар, имя, вход с других устройств</small></span></button>
-          <button class="mode-btn" id="openFriends"><span class="mode-icon">&#128101;</span><span><strong>Друзья</strong><small>Добавляйте и вызывайте на партию</small></span></button>
-        </div>
+    <div class="modal shell">
+      <header class="shell-head" id="shellHead" hidden>
+        <button class="icon-btn" id="screenBack" aria-label="Назад">&#8249;</button>
+        <h2 id="screenTitle">Экран</h2>
+        <span class="shell-spacer"></span>
+      </header>
 
-        <div class="mode-list" id="menuModes" hidden>
-          <button class="mode-btn" id="onlineMode" aria-expanded="false"><span class="mode-icon">&#9733;</span><span><strong data-i18n="mode.online">Рейтинговый онлайн</strong><small data-i18n="mode.onlineSub">Соперники по силе, очки рейтинга</small></span><span class="mode-chevron">&#9654;</span></button>
-          <div class="difficulty" id="onlineModes" data-cols="2">
-            <button class="selected" data-online-mode="classic" data-i18n="tc.classic">Классика<small data-i18n="tc.classicSub">5 мин + 10 сек</small></button>
-            <button data-online-mode="blitz" data-i18n="tc.blitz">Блиц<small data-i18n="tc.blitzSub">2 мин + 3 сек</small></button>
-          </div>
-          <button class="primary-btn" id="startOnline" hidden data-i18n="menu.findOpponent">Искать соперника</button>
+      <div class="shell-body">
+        <!-- HOME ------------------------------------------------------------------------- -->
+        <section class="screen is-active" data-screen="home">
+          <div class="menu-crest"><div class="brand-mark" role="img" aria-label="Pyramide"></div></div>
+          <h1 id="menuTitle">Pyramide</h1>
+          <p class="hero-sub" data-i18n="menu.tagline">Древняя партия, найденная среди храмовых рисунков. Бросайте кубик, выбирайте камень и не создайте три в ряд.</p>
 
-          <button class="mode-btn" id="botMode" aria-expanded="false"><span class="mode-icon">AI</span><span><strong data-i18n="mode.bot">Игра с хранителем</strong><small data-i18n="mode.botSub">Три уровня сложности</small></span><span class="mode-chevron">&#9654;</span></button>
-          <div class="difficulty" id="difficulty">
-            <button data-level="easy" data-i18n="diff.easy">Ученик</button><button class="selected" data-level="medium" data-i18n="diff.medium">Зодчий</button><button data-level="hard" data-i18n="diff.hard">Визирь</button>
+          <div class="glyph-stats">
+            <div class="glyph-stat"><span class="gs-ico">&#9765;</span><b id="statClassic">—</b><span class="gs-lbl">Классика</span></div>
+            <div class="glyph-stat"><span class="gs-ico">&#128065;</span><b id="statBlitz">—</b><span class="gs-lbl">Блиц</span></div>
+            <div class="glyph-stat"><span class="gs-ico">&#128034;</span><b id="statWins">0</b><span class="gs-lbl">Побед</span></div>
           </div>
-          <div class="difficulty" id="botClock" data-cols="3">
+
+          <div class="tiles">
+            <button class="tile tile-hero" id="menuPlay">
+              <img class="tile-ico" src="assets/ui/play.png" alt="" width="80" height="80">
+              <span class="tile-name">Играть</span>
+              <span class="tile-sub">Онлайн, с хранителем или вдвоём</span>
+            </button>
+            <button class="tile" id="openAccount">
+              <img class="tile-ico" id="tileAvatar" src="assets/ui/profile.png" alt="" width="64" height="64">
+              <span class="tile-name">Профиль и друзья</span>
+              <span class="tile-badge" id="friendsBadge" hidden></span>
+            </button>
+            <button class="tile" id="openShop"><img class="tile-ico" src="assets/ui/shop.png" alt="" width="64" height="64"><span class="tile-name">Мастерская</span></button>
+            <button class="tile" id="openPuzzles"><img class="tile-ico" src="assets/ui/puzzles.png" alt="" width="64" height="64"><span class="tile-name">Задачи</span></button>
+          </div>
+
+          <nav class="shell-foot">
+            <button class="foot-btn" id="openHistory"><img src="assets/ui/history.png" alt="" width="32" height="32">История</button>
+            <button class="foot-btn" id="openLeaderboard"><img src="assets/ui/leaders.png" alt="" width="32" height="32">Лидеры</button>
+            <button class="foot-btn" data-open="settingsModal"><img src="assets/ui/settings.png" alt="" width="32" height="32">Настройки</button>
+            <button class="foot-btn" data-open="rulesModal"><img src="assets/ui/rules.png" alt="" width="32" height="32">Правила</button>
+            <button class="foot-btn" id="openAbout"><img src="assets/ui/history.png" alt="" width="32" height="32">Об игре</button>
+          </nav>
+        </section>
+
+        <!-- MODES ------------------------------------------------------------------------ -->
+        <section class="screen" data-screen="modes">
+          <button class="mode-card" id="onlineMode">
+            <img class="mc-ico" src="assets/ui/mode-ranked.png" alt="" width="64" height="64">
+            <span class="mc-txt"><b>Рейтинговый</b><span>С подбором соперника по силе</span></span>
+            <span class="mc-arrow">&#8250;</span>
+          </button>
+          <button class="mode-card" id="botMode">
+            <img class="mc-ico" src="assets/ui/mode-bot.png" alt="" width="64" height="64">
+            <span class="mc-txt"><b>С хранителем</b><span>Против стража пирамиды</span></span>
+            <span class="mc-arrow">&#8250;</span>
+          </button>
+          <button class="mode-card" id="localMode">
+            <img class="mc-ico" src="assets/ui/mode-local.png" alt="" width="64" height="64">
+            <span class="mc-txt"><b>Локальный</b><span>Вдвоём на одном устройстве</span></span>
+            <span class="mc-arrow">&#8250;</span>
+          </button>
+        </section>
+
+        <!-- RANKED LOBBY ----------------------------------------------------------------- -->
+        <section class="screen" data-screen="ranked">
+          <div class="seg" id="onlineModes">
+            <button class="selected" data-online-mode="classic">Классика</button>
+            <button data-online-mode="blitz">Блиц</button>
+          </div>
+          <div class="lobby-card">
+            <div class="lobby-side"><span class="gs-ico">&#9765;</span><b id="lobbyRating">1000</b><span class="gs-lbl">Рейтинг</span></div>
+            <span class="lobby-vs">VS</span>
+            <div class="lobby-side"><span class="gs-ico">&#128034;</span><b id="lobbyLeague">—</b><span class="gs-lbl">Лига</span></div>
+          </div>
+          <p class="lobby-time">Контроль времени: <b id="lobbyClock">5 мин + 10 сек</b></p>
+          <button class="primary-btn big" id="startOnline">Начать поиск соперника</button>
+        </section>
+
+        <!-- BOT LOBBY -------------------------------------------------------------------- -->
+        <section class="screen" data-screen="bot">
+          <p class="screen-hint">Уровень хранителя</p>
+          <div class="seg" id="difficulty">
+            <button data-level="easy">Ученик</button><button class="selected" data-level="medium">Зодчий</button><button data-level="hard">Визирь</button>
+          </div>
+          <p class="screen-hint">Часы</p>
+          <div class="seg" id="botClock">
             <button class="selected" data-offline-clock="off">Без часов</button>
-            <button data-offline-clock="classic">Классика<small>5+10</small></button>
-            <button data-offline-clock="blitz">Блиц<small>2+3</small></button>
+            <button data-offline-clock="classic">Классика</button>
+            <button data-offline-clock="blitz">Блиц</button>
           </div>
-          <button class="primary-btn" id="startBot" hidden data-i18n="menu.startMatch">Начать партию</button>
+          <button class="primary-btn big" id="startBot">Начать партию</button>
+        </section>
 
-          <button class="mode-btn" id="localMode" aria-expanded="false"><span class="mode-icon">II</span><span><strong data-i18n="mode.local">Два игрока рядом</strong><small data-i18n="mode.localSub">Передавайте устройство после каждого хода</small></span><span class="mode-chevron">&#9654;</span></button>
-          <div class="difficulty" id="localClock" data-cols="3">
+        <!-- LOCAL LOBBY ------------------------------------------------------------------ -->
+        <section class="screen" data-screen="local">
+          <p class="screen-hint">Часы</p>
+          <div class="seg" id="localClock">
             <button class="selected" data-offline-clock="off">Без часов</button>
-            <button data-offline-clock="classic">Классика<small>5+10</small></button>
-            <button data-offline-clock="blitz">Блиц<small>2+3</small></button>
+            <button data-offline-clock="classic">Классика</button>
+            <button data-offline-clock="blitz">Блиц</button>
           </div>
-          <button class="primary-btn" id="startLocal" hidden>Начать партию</button>
+          <button class="primary-btn big" id="startLocal">Начать партию</button>
+        </section>
 
-          <button class="secondary-btn" id="menuBack" style="margin-top:4px">Назад</button>
-        </div>
-        <div class="menu-footer"><button class="text-btn" data-open="rulesModal" data-i18n="menu.howToPlay">Как играть</button><button class="text-btn" data-open="settingsModal" data-i18n="menu.settings">Настройки</button></div>
+        <!-- PROFILE ---------------------------------------------------------------------- -->
+        <section class="screen" data-screen="profile">
+          <div class="prof-top">
+            <div class="avatar lg" id="myAvatar">&#128034;</div>
+            <b id="myName">Странник</b>
+            <span id="myMeta">—</span>
+            <span class="coin-chip">&#9679; <b id="myCoins">0</b></span>
+          </div>
+          <div class="stat-grid" id="myStats"></div>
+          <div class="seg" id="profTabs">
+            <button class="selected" data-prof="stats">Статистика</button>
+            <button data-prof="friends">Мои друзья</button>
+          </div>
+          <div id="profStats">
+            <p class="screen-hint">Активность за 90 дней</p>
+            <div class="heat" id="myHeat"></div>
+            <p class="screen-hint">Имя</p>
+            <div class="row-inline">
+              <input class="name-input" id="nickInput2" maxlength="18" placeholder="Странник" autocomplete="off">
+              <button class="secondary-btn" id="nickSave2">Сохранить</button>
+            </div>
+            <p class="screen-hint">Аватар</p>
+            <div class="avatar-grid" id="avatarGrid"></div>
+            <p class="screen-hint">Вход с другого устройства</p>
+            <div class="row-inline">
+              <button class="secondary-btn" id="getLinkCode">Получить код</button>
+              <button class="secondary-btn" id="showRedeem">Ввести код</button>
+            </div>
+            <div id="linkCodeBox" hidden><div class="link-code" id="linkCodeValue">------</div><p class="screen-hint" id="linkCodeHint">Код действует 5 минут</p></div>
+            <div id="redeemBox" hidden class="row-inline">
+              <input class="name-input" id="redeemInput" maxlength="12" placeholder="Код" style="text-transform:uppercase">
+              <button class="secondary-btn" id="redeemGo">Войти</button>
+            </div>
+          </div>
+          <div id="profFriends" hidden>
+            <div class="code-box">
+              <div class="code" id="myFriendCode">------</div>
+              <div class="hint">Ваш код — передайте другу</div>
+              <button class="secondary-btn" id="copyCode">Копировать</button>
+            </div>
+            <div class="row-inline">
+              <input class="name-input" id="friendCodeInput" maxlength="10" placeholder="Код друга" style="text-transform:uppercase">
+              <button class="secondary-btn" id="addFriend">Добавить</button>
+            </div>
+            <div class="data-list" id="friendsList"><div class="empty-note">Загрузка...</div></div>
+          </div>
+        </section>
+
+        <!-- HISTORY ---------------------------------------------------------------------- -->
+        <section class="screen" data-screen="history">
+          <div class="seg"><button class="selected" data-hist="online">Онлайн</button><button data-hist="local">С ботом и вдвоём</button></div>
+          <div class="data-list tall" id="historyList"><div class="empty-note">Загрузка...</div></div>
+        </section>
+
+        <!-- LEADERBOARD ------------------------------------------------------------------ -->
+        <section class="screen" data-screen="leaders">
+          <div class="seg"><button class="selected" data-lb-mode="classic">Классика</button><button data-lb-mode="blitz">Блиц</button></div>
+          <div class="data-list tall" id="leaderboardList"><div class="empty-note">Загрузка...</div></div>
+        </section>
+
+        <!-- OTHER PLAYER ----------------------------------------------------------------- -->
+        <section class="screen" data-screen="player"><div id="playerBody"><div class="empty-note">Загрузка...</div></div></section>
       </div>
     </div>
-  </div>
-
-  <div class="modal-backdrop" id="rulesModal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
-    <div class="modal">
-      <div class="modal-head"><div><h2 id="rulesTitle">Как играть</h2><p id="tutStep">Шаг 1 из 6</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
-      <div class="modal-body">
-        <div class="dgm-ctx" id="tutCtx"></div>
-        <div id="tutBoard" aria-hidden="true"></div>
-        <h3 class="tut-title" id="tutTitle">Поле</h3>
-        <p class="tut-text" id="tutText">Текст</p>
-        <div class="tut-nav">
-          <button class="secondary-btn" id="tutPrev">Назад</button>
-          <div class="tut-dots" id="tutDots"></div>
-          <button class="primary-btn" id="tutNext">Далее</button>
-        </div>
-      </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-    <div class="modal">
-      <div class="modal-head"><div><h2 id="settingsTitle">Настройки</h2><p>Вид и звучание партии</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
-      <div class="modal-body settings-list">
-        <div class="setting-row"><div><strong>Имя и аватар</strong><span>Настраиваются в профиле</span></div><button class="secondary-btn" id="toProfile" style="padding:8px 15px">Открыть профиль</button></div>
-        <div class="setting-row"><div><strong>Оформление</strong><span>Песок храма или чистая геометрия</span></div><div class="theme-toggle"><button data-theme="egypt" class="active">Египет</button><button data-theme="minimal">Минимум</button></div></div>
-        <div class="setting-row"><div><strong>Звуки</strong><span>Камни, кубик и сигналы хода</span></div><button class="switch on" id="soundSwitch" aria-label="Звуки"></button></div>
-        <div class="setting-row"><div><strong>Атмосфера</strong><span>Тихий ветер и музыкальные тона</span></div><button class="switch on" id="musicSwitch" aria-label="Атмосфера"></button></div>
-        <div class="setting-row"><div><strong>Новая партия</strong><span>Вернуться к выбору режима</span></div><button class="secondary-btn" id="newGameButton" style="padding:0 14px">В меню</button></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="vfx" id="vfx" aria-hidden="true">
-    <div class="vfx-flash"></div>
-    <div class="vfx-word" id="vfxWord"></div>
-  </div>
-
-  <div class="review-bar" id="reviewBar" role="status">
-    <span id="reviewText"><strong>Партия завершена.</strong> Осмотрите поле.</span>
-    <button class="primary-btn" id="reviewContinue" style="padding:9px 20px" data-i18n="review.continue">Показать итог</button>
   </div>
 
   <div class="modal-backdrop" id="queueModal" role="dialog" aria-modal="true" aria-labelledby="queueTitle">
-    <div class="modal" style="width:min(420px,100%)">
-      <div class="modal-body result-copy" style="padding-top:28px">
-        <div class="result-mark queue-spinner" id="queueSpinner">★</div>
+    <div class="modal" style="width:min(400px,100%)">
+      <div class="modal-body result-copy" style="padding-top:26px">
+        <div class="result-mark queue-spinner">&#9733;</div>
         <h2 id="queueTitle">Поиск соперника</h2>
-        <p id="queueText">Подбираем игрока рядом по рейтингу...</p>
+        <p id="queueText">Подбираем игрока по силе...</p>
         <div class="xp-gain" id="queueTimer">0:00</div>
         <div class="result-actions"><button class="secondary-btn" id="queueCancel" style="grid-column:1/-1">Отменить поиск</button></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
-    <div class="modal" style="width:min(480px,100%)">
-      <div class="modal-head"><h2 id="reviewTitle">Разбор партии</h2><button class="icon-btn" data-close="reviewModal" aria-label="Закрыть">&#10005;</button></div>
-      <div class="modal-body">
-        <div class="summary-row" id="revSummary"></div>
-        <div class="dgm-ctx" id="revCtx"></div>
-        <div id="revBoard"></div>
-        <div class="rev-nav">
-          <button id="revStart" title="В начало">&#124;&#9664;</button>
-          <button id="revPrev" title="Назад">&#9664;</button>
-          <span class="rev-ply" id="revPly">0 / 0</span>
-          <button id="revNext" title="Вперёд">&#9654;</button>
-          <button id="revEnd" title="В конец">&#9654;&#124;</button>
-        </div>
-        <div style="text-align:center"><span class="verdict neutral" id="revVerdict">—</span></div>
-        <p class="rev-note" id="revNote"></p>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="puzzleModal" role="dialog" aria-modal="true" aria-labelledby="puzzleTitle">
-    <div class="modal" style="width:min(460px,100%)">
-      <div class="modal-head"><h2 id="puzzleTitle">Задача</h2><button class="icon-btn" data-close="puzzleModal" aria-label="Закрыть">&#10005;</button></div>
-      <div class="modal-body">
-        <p class="rev-note" id="puzPrompt" style="margin-top:0"></p>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <span id="puzLives" style="font-size:15px;color:#ff8f7d;letter-spacing:2px"></span>
-          <span id="puzSolved" style="font-size:12px;color:#8ba3a6"></span>
-        </div>
-        <div class="dgm-ctx" id="puzCtx"></div>
-        <div id="puzBoard"></div>
-        <div class="puz-colors" id="puzColors"></div>
-        <p class="rev-note" id="puzResult"></p>
-        <div class="result-actions"><button class="secondary-btn" id="puzSkip">Пропустить</button><button class="primary-btn" id="puzNext">Следующая</button></div>
       </div>
     </div>
   </div>
@@ -1124,79 +1330,6 @@
           <button class="secondary-btn" data-shop="avatar">Аватары</button>
         </div>
         <div class="shop-grid" id="shopGrid"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
-    <div class="modal" style="width:min(520px,100%)">
-      <div class="modal-head"><h2 id="accountTitle">Мой профиль</h2><button class="icon-btn" data-close="accountModal" aria-label="Закрыть">&#10005;</button></div>
-      <div class="modal-body">
-        <div class="profile-head">
-          <div class="avatar lg" id="myAvatar">&#128034;</div>
-          <div class="who"><b id="myName">Странник</b><span id="myMeta">—</span></div>
-          <span class="coin-chip" style="margin-left:auto">&#9679; <b id="myCoins">0</b></span>
-        </div>
-        <div class="stat-grid" id="myStats"></div>
-
-        <div class="section-head">Имя</div>
-        <div style="display:flex;gap:8px;margin-bottom:4px">
-          <input class="name-input" id="nickInput2" maxlength="18" placeholder="Странник" autocomplete="off">
-          <button class="secondary-btn" id="nickSave2" style="padding:0 16px;white-space:nowrap">Сохранить</button>
-        </div>
-
-        <div class="section-head">Аватар</div>
-        <div class="avatar-grid" id="avatarGrid"></div>
-
-        <div class="section-head">Вход с другого устройства</div>
-        <p style="margin:0 0 8px;font-size:12.5px;color:#8ba3a6">Чтобы играть с телефона и компьютера под одним аккаунтом: получите код здесь и введите его на втором устройстве.</p>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <button class="secondary-btn" id="getLinkCode" style="flex:1">Получить код</button>
-          <button class="secondary-btn" id="showRedeem" style="flex:1">Ввести код</button>
-        </div>
-        <div id="linkCodeBox" hidden><div class="link-code" id="linkCodeValue">------</div><p style="margin:0;text-align:center;font-size:12px;color:#8ba3a6" id="linkCodeHint">Код действует 5 минут</p></div>
-        <div id="redeemBox" hidden style="display:flex;gap:8px">
-          <input class="name-input" id="redeemInput" maxlength="12" placeholder="Код с другого устройства" style="text-transform:uppercase">
-          <button class="secondary-btn" id="redeemGo" style="padding:0 16px;white-space:nowrap">Войти</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="playerModal" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
-    <div class="modal" style="width:min(500px,100%)">
-      <div class="modal-head"><h2 id="playerTitle">Профиль игрока</h2><button class="icon-btn" data-close="playerModal" aria-label="Закрыть">&#10005;</button></div>
-      <div class="modal-body" id="playerBody"><div class="empty-note">Загрузка...</div></div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="friendsModal" role="dialog" aria-modal="true" aria-labelledby="friendsTitle">
-    <div class="modal" style="width:min(520px,100%)">
-      <div class="modal-head"><h2 id="friendsTitle">Друзья</h2><button class="icon-btn" data-close="friendsModal" aria-label="Закрыть">&#10005;</button></div>
-      <div class="modal-body">
-        <div class="code-box">
-          <div><div class="code" id="myFriendCode">------</div></div>
-          <div class="hint">Ваш код. Передайте его другу, чтобы он вас добавил.</div>
-          <button class="secondary-btn" id="copyCode" style="padding:7px 13px">Копировать</button>
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:6px">
-          <input class="name-input" id="friendCodeInput" maxlength="10" placeholder="Код друга" autocomplete="off" style="text-transform:uppercase">
-          <button class="secondary-btn" id="addFriend" style="padding:0 16px;white-space:nowrap">Добавить</button>
-        </div>
-        <div class="data-list" id="friendsList" style="max-height:44vh"><div class="empty-note">Загрузка...</div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-    <div class="modal" style="width:min(400px,100%)">
-      <div class="modal-body result-copy" style="padding-top:26px">
-        <h2 id="confirmTitle">Выйти в меню?</h2>
-        <p id="confirmText">Партия ещё идёт.</p>
-        <div class="result-actions">
-          <button class="secondary-btn" id="confirmNo">Остаться</button>
-          <button class="primary-btn" id="confirmYes">Выйти</button>
-        </div>
       </div>
     </div>
   </div>
@@ -1226,28 +1359,115 @@
     </div>
   </div>
 
-  <div class="modal-backdrop" id="historyModal" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
-    <div class="modal" style="width:min(520px,100%)">
-      <div class="modal-head"><h2 id="historyTitle">История партий</h2><button class="icon-btn" data-close="historyModal" aria-label="Закрыть">&#10005;</button></div>
+  <div class="modal-backdrop" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
+    <div class="modal" style="width:min(480px,100%)">
+      <div class="modal-head"><h2 id="reviewTitle">Разбор партии</h2><button class="icon-btn" data-close="reviewModal" aria-label="Закрыть">&#10005;</button></div>
       <div class="modal-body">
-        <div class="tab-row"><button class="secondary-btn selected" data-hist="online">Онлайн</button><button class="secondary-btn" data-hist="local">С ботом и вдвоём</button></div>
-        <div class="data-list" id="historyList"><div class="empty-note">Загрузка...</div></div>
+        <div class="summary-row" id="revSummary"></div>
+        <div class="dgm-ctx" id="revCtx"></div>
+        <div id="revBoard"></div>
+        <div class="rev-nav">
+          <button id="revStart" title="В начало">&#124;&#9664;</button>
+          <button id="revPrev" title="Назад">&#9664;</button>
+          <span class="rev-ply" id="revPly">0 / 0</span>
+          <button id="revNext" title="Вперёд">&#9654;</button>
+          <button id="revEnd" title="В конец">&#9654;&#124;</button>
+        </div>
+        <div style="text-align:center"><span class="verdict neutral" id="revVerdict">—</span></div>
+        <p class="rev-note" id="revNote"></p>
       </div>
     </div>
   </div>
 
-  <div class="modal-backdrop" id="leaderboardModal" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
-    <div class="modal" style="width:min(520px,100%)">
-      <div class="modal-head"><h2 id="leaderboardTitle">Таблица лидеров</h2><button class="icon-btn" data-close="leaderboardModal" aria-label="Закрыть">&#10005;</button></div>
+
+  <div class="modal-backdrop" id="puzzleModal" role="dialog" aria-modal="true" aria-labelledby="puzzleTitle">
+    <div class="modal" style="width:min(460px,100%)">
+      <div class="modal-head"><h2 id="puzzleTitle">Задача</h2><button class="icon-btn" data-close="puzzleModal" aria-label="Закрыть">&#10005;</button></div>
       <div class="modal-body">
-        <div class="tab-row">
-          <button class="secondary-btn selected" data-lb-mode="classic">Классика</button>
-          <button class="secondary-btn" data-lb-mode="blitz">Блиц</button>
+        <p class="rev-note" id="puzPrompt" style="margin-top:0"></p>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span id="puzLives" style="font-size:15px;color:#ff8f7d;letter-spacing:2px"></span>
+          <span id="puzSolved" style="font-size:12px;color:#8ba3a6"></span>
         </div>
-        <div class="data-list" id="leaderboardList"><div class="empty-note">Загрузка...</div></div>
+        <div class="dgm-ctx" id="puzCtx"></div>
+        <div id="puzBoard"></div>
+        <div class="puz-colors" id="puzColors"></div>
+        <p class="rev-note" id="puzResult"></p>
+        <div class="result-actions"><button class="secondary-btn" id="puzSkip">Пропустить</button><button class="primary-btn" id="puzNext">Следующая</button></div>
       </div>
     </div>
   </div>
+
+
+  <div class="modal-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <div class="modal" style="width:min(400px,100%)">
+      <div class="modal-head"><h2 id="aboutTitle">Об игре</h2><button class="icon-btn" data-close="aboutModal" aria-label="Закрыть">&#10005;</button></div>
+      <div class="modal-body result-copy">
+        <div class="menu-crest"><div class="brand-mark" role="img" aria-label="Pyramide" style="width:64px;height:64px"></div></div>
+        <p style="margin:12px 0 4px"><b>Pyramide</b></p>
+        <p style="margin:0 0 14px;color:#9fb4b4;font-size:13px">Древняя настольная игра на песке</p>
+        <p style="margin:0;font-size:13.5px">Автор: <b>Степан Липчак</b></p>
+        <p style="margin:6px 0 0;font-size:13.5px">Сайт: <a href="https://kodogames.ru/" target="_blank" rel="noopener" style="color:#e9bd6d">kodogames.ru</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal" style="width:min(400px,100%)">
+      <div class="modal-body result-copy" style="padding-top:26px">
+        <h2 id="confirmTitle">Выйти в меню?</h2>
+        <p id="confirmText">Партия ещё идёт.</p>
+        <div class="result-actions">
+          <button class="secondary-btn" id="confirmNo">Остаться</button>
+          <button class="primary-btn" id="confirmYes">Выйти</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal-backdrop" id="rulesModal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+    <div class="modal">
+      <div class="modal-head"><div><h2 id="rulesTitle">Как играть</h2><p id="tutStep">Шаг 1 из 6</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
+      <div class="modal-body">
+        <div class="dgm-ctx" id="tutCtx"></div>
+        <div id="tutBoard" aria-hidden="true"></div>
+        <h3 class="tut-title" id="tutTitle">Поле</h3>
+        <p class="tut-text" id="tutText">Текст</p>
+        <div class="tut-nav">
+          <button class="secondary-btn" id="tutPrev">Назад</button>
+          <div class="tut-dots" id="tutDots"></div>
+          <button class="primary-btn" id="tutNext">Далее</button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal">
+      <div class="modal-head"><div><h2 id="settingsTitle">Настройки</h2><p>Вид и звучание партии</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
+      <div class="modal-body settings-list">
+        <div class="setting-row"><div><strong>Имя и аватар</strong><span>Настраиваются в профиле</span></div><button class="secondary-btn" id="toProfile" style="padding:8px 15px">Открыть профиль</button></div>
+        <div class="setting-row"><div><strong>Оформление</strong><span>Песок храма или чистая геометрия</span></div><div class="theme-toggle"><button data-theme="egypt" class="active">Египет</button><button data-theme="minimal">Минимум</button></div></div>
+        <div class="setting-row"><div><strong>Звуки</strong><span>Камни, кубик и сигналы хода</span></div><button class="switch on" id="soundSwitch" aria-label="Звуки"></button></div>
+        <div class="setting-row"><div><strong>Атмосфера</strong><span>Тихий ветер и музыкальные тона</span></div><button class="switch on" id="musicSwitch" aria-label="Атмосфера"></button></div>
+        <div class="setting-row"><div><strong>Новая партия</strong><span>Вернуться к выбору режима</span></div><button class="secondary-btn" id="newGameButton" style="padding:0 14px">В меню</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vfx" id="vfx" aria-hidden="true">
+    <div class="vfx-flash"></div>
+    <div class="vfx-word" id="vfxWord"></div>
+  </div>
+
+  <div class="review-bar" id="reviewBar" role="status">
+    <span id="reviewText"><strong>Партия завершена.</strong> Осмотрите поле.</span>
+    <button class="primary-btn" id="reviewContinue" style="padding:9px 20px" data-i18n="review.continue">Показать итог</button>
+  </div>
+
 
   <div class="modal-backdrop" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
     <div class="modal" style="width:min(470px,100%)">
@@ -1337,7 +1557,7 @@
       const dom = {
         cells: $("#cells"), die: $("#die"), rollButton: $("#rollButton"), picker: $("#colorPicker"),
         status: $("#turnStatus"), hint: $("#turnHint"), kicker: $("#turnKicker"), toast: $("#toast"),
-        panelL: $("#panelL"), panelR: $("#panelR"), reserveL: $("#reserveL"), reserveR: $("#reserveR"),
+        panelL: $("#panelL"), panelR: $("#panelR"),
         clockL: $("#clockL"), clockR: $("#clockR"),
         menu: $("#menuModal"), result: $("#resultModal")
       };
@@ -1394,7 +1614,7 @@
         dom.panelR.classList.toggle("active", state.active === "R" && state.phase !== "gameover");
         $("#turnL").textContent = turnLabel("L");
         $("#turnR").textContent = turnLabel("R");
-        renderReserve("L"); renderReserve("R"); renderPicker(); renderStatus(); renderClocks(); renderIdentityCards(); updateProfile();
+        renderPicker(); renderStatus(); renderClocks(); renderIdentityCards(); updateProfile();
         dom.rollButton.disabled = state.phase !== "roll" || !canActLocally();
         dom.rollButton.setAttribute("aria-label", state.roll ? `На кубике ${state.roll}` : "Бросить кубик");
       }
@@ -1408,9 +1628,12 @@
 
       function renderClocks() {
         const bar = $("#clockBar");
+        // The bar is the single home for per-player reserves, so it shows even when the game is
+        // untimed - otherwise removing the duplicate rows from the panels would lose information.
         const timed = isOnline() || state.offlineClock.mode !== "off";
-        if (!timed || state.phase === "menu") { bar.classList.remove("show"); return; }
+        if (state.phase === "menu") { bar.classList.remove("show"); return; }
         bar.classList.add("show");
+        bar.classList.toggle("no-clock", !timed);
 
         let names, clocks;
         if (isOnline()) {
@@ -1456,39 +1679,6 @@
       // transitions and re-binds listeners. They are built once here and only their values and
       // states are patched afterwards.
       const stoneVar = { yellow: "yellow-stone", green: "green-stone", purple: "purple-stone" };
-      const reserveCells = { L: null, R: null };
-
-      function buildReserve(side) {
-        const target = side === "L" ? dom.reserveL : dom.reserveR;
-        target.innerHTML = "";
-        const rows = {};
-        const fragment = document.createDocumentFragment();
-        for (const color of COLORS) {
-          const row = document.createElement("div");
-          row.className = "reserve-row";
-          row.innerHTML = `<span class="mini-stone stone-${color}"></span><b>0</b>`
-            + `<span class="reserve-track" style="color:var(--${stoneVar[color]})"><i style="--value:100%"></i></span>`;
-          rows[color] = { count: row.querySelector("b"), bar: row.querySelector("i") };
-          fragment.append(row);
-        }
-        target.append(fragment);
-        reserveCells[side] = rows;
-      }
-
-      function renderReserve(side) {
-        if (!reserveCells[side]) buildReserve(side);
-        const rows = reserveCells[side];
-        for (const color of COLORS) {
-          const left = state.inventory[side][color];
-          const row = rows[color];
-          const text = String(left);
-          // Guarding the write keeps the browser from invalidating layout when nothing changed.
-          if (row.count.textContent !== text) row.count.textContent = text;
-          const pct = `${left / STARTING_INVENTORY[color] * 100}%`;
-          if (row.bar.style.getPropertyValue("--value") !== pct) row.bar.style.setProperty("--value", pct);
-        }
-      }
-
       let pickerButtons = null;
       function buildPicker() {
         dom.picker.innerHTML = "";
@@ -1568,6 +1758,7 @@
         closeModal("menuModal"); closeModal("resultModal"); closeModal("settingsModal");
         $$(".danger", dom.cells).forEach(el => el.classList.remove("danger"));
         dom.die.dataset.face = "1";
+        hideReview(); closeModal("resultModal");
         render(); audio.startAmbience(); audio.turn();
         startOfflineClock();
         Promise.resolve(window.PlatformBridge?.onMatchStart?.()).catch(() => undefined);
@@ -1860,7 +2051,7 @@
           this.socket.on("game:state", payload => applyServerState(payload));
           this.socket.on("game:complete", payload => applyServerState(payload, { complete: true, rating: payload.rating }));
           this.socket.on("opponent:disconnected", () => showToast("Соперник потерял связь. Ждем возвращения..."));
-          this.socket.on("friends:update", payload => { friendsCache = payload; if ($("#friendsModal").classList.contains("open")) renderFriends(); });
+          this.socket.on("friends:update", payload => { friendsCache = payload; if (currentScreen() === "profile" && profileTab === "friends") renderFriends(); });
           this.socket.on("friends:invited", payload => {
             pendingInvite = payload;
             $("#inviteText").textContent = `${payload.from} зовёт вас на партию (${ONLINE_MODE_LABELS[payload.mode] || payload.mode}). Дружеские партии не влияют на рейтинг.`;
@@ -1933,7 +2124,6 @@
         const youLabel = "Вы", opponentLabel = payload.opponent || "Соперник";
         $("#nameL").textContent = payload.side === "L" ? youLabel : opponentLabel;
         $("#nameR").textContent = payload.side === "R" ? youLabel : opponentLabel;
-        renderNameRatings(payload.mode, payload.opponentRating);
         // The opponent's name is a live link to their profile, as on chess.com.
         // Profile opening now lives on the whole identity card, not the bare name.
         $("#matchLabel").textContent = payload.friendly
@@ -1941,7 +2131,7 @@
           : `Рейтинговый матч · ${ONLINE_MODE_LABELS[payload.mode] || payload.mode}`;
         $$(".danger", dom.cells).forEach(el => el.classList.remove("danger"));
         dom.die.dataset.face = "1";
-        stopOfflineClock();
+        stopOfflineClock(); hideReview(); closeModal("resultModal"); closeModal("queueModal");
         render(); audio.startAmbience(); audio.turn();
         showToast(`Соперник найден: ${opponentLabel}`);
         Promise.resolve(window.PlatformBridge?.onMatchStart?.()).catch(() => undefined);
@@ -2142,6 +2332,7 @@
 
       // Short, purely decorative flourish. Elements are created on demand and removed afterwards
       // so nothing animates or occupies memory between matches.
+      let vfxCleanupTimer = null;
       function playVfx(kind) {
         const layer = $("#vfx");
         layer.className = `vfx show ${kind}`;
@@ -2168,7 +2359,14 @@
           }
           layer.append(fragment);
         }
-        schedule(() => { layer.className = "vfx"; layer.querySelectorAll(".vfx-ray, .vfx-spark").forEach(node => node.remove()); }, 1900);
+        // Cleanup must NOT go through schedule(): clearTimers() runs when leaving to the menu and
+        // would cancel it, leaving the rays and sparks in the DOM forever. Measured 26 orphaned
+        // nodes after three games before this was changed.
+        clearTimeout(vfxCleanupTimer);
+        vfxCleanupTimer = setTimeout(() => {
+          layer.className = "vfx";
+          layer.querySelectorAll(".vfx-ray, .vfx-spark").forEach(node => node.remove());
+        }, 1900);
       }
 
       const MODE_TITLES = { classic: "Классика", blitz: "Блиц" };
@@ -2225,7 +2423,6 @@
         historyTab = tab;
         $$("[data-hist]").forEach(button => button.classList.toggle("selected", button.dataset.hist === tab));
         const list = $("#historyList");
-        openModal("historyModal");
         if (tab === "local") { renderLocalHistory(); return; }
         list.innerHTML = '<div class="empty-note">Загрузка...</div>';
         try {
@@ -2314,32 +2511,6 @@
       // ---------------------------------------------------------------------------------------
       // Menu navigation, dropdowns, offline clocks, UI sound and feedback.
       // ---------------------------------------------------------------------------------------
-      function showMenuPage(page) {
-        $("#menuRoot").hidden = page !== "root";
-        $("#menuModes").hidden = page !== "modes";
-        if (page === "root") expandMode(null);
-      }
-
-      // Item 10: clicking an already-open section closes it again.
-      function expandMode(which) {
-        const sections = { bot: ["#difficulty", "#botClock", "#startBot"], online: ["#onlineModes", "#startOnline"], local: ["#localClock", "#startLocal"] };
-        for (const [key, selectors] of Object.entries(sections)) {
-          const open = key === which;
-          for (const selector of selectors) {
-            const node = $(selector);
-            if (!node) continue;
-            if (node.classList.contains("difficulty")) node.classList.toggle("show", open);
-            else node.hidden = !open;
-          }
-        }
-        $("#botMode").setAttribute("aria-expanded", String(which === "bot"));
-        $("#onlineMode").setAttribute("aria-expanded", String(which === "online"));
-        $("#localMode").setAttribute("aria-expanded", String(which === "local"));
-        openSection = which;
-      }
-      let openSection = null;
-      const toggleSection = which => expandMode(openSection === which ? null : which);
-
       // ---- Offline clocks (item 9): bot and hot-seat games can now be timed too ----------------
       let offlineClockId = null;
       function startOfflineClock() {
@@ -2401,7 +2572,7 @@
           if (online) {
             const name = isMe ? (storedNickname() || "Вы") : state.online.opponentName;
             nameEl.textContent = isMe ? `${name} (Вы)` : name;
-            avaEl.textContent = isMe ? avatarChar(currentAvatar()) : avatarChar(state.online.opponentAvatar);
+            avaEl.innerHTML = isMe ? avatarChar(currentAvatar()) : avatarChar(state.online.opponentAvatar);
             const rating = isMe
               ? (Number.isFinite(state.online.myRating) ? state.online.myRating : null)
               : (Number.isFinite(state.online.opponentRating) ? state.online.opponentRating : null);
@@ -2410,32 +2581,14 @@
           } else {
             const bot = state.mode === "bot" && side === "R";
             nameEl.textContent = bot ? BOT_NAMES[state.difficulty] || "Хранитель" : (side === "L" ? "Игрок 1" : "Игрок 2");
-            avaEl.textContent = side === "L" ? avatarChar(currentAvatar()) : (bot ? "\u{1F9E0}" : "\u{1F464}");
+            avaEl.innerHTML = side === "L" ? avatarChar(currentAvatar())
+              : (bot ? `<img src="assets/bots/${state.difficulty}.png" alt="" width="64" height="64">` : avatarChar("tut"));
             metaEl.textContent = side === "L" ? "Лазурный дом" : (bot ? "Хранитель пирамиды" : "Алый дом");
           }
         }
       }
 
       const BOT_NAMES = { easy: "Ани-ученик", medium: "Ани-зодчий", hard: "Ани-визирь" };
-
-      function renderNameRatings(mode, opponentRating) {
-        // Prefer the rating the server sent for this match: the locally cached one can be stale
-        // (it only updates when a match of that mode finishes on this device).
-        const mine = Number.isFinite(state.online?.myRating)
-          ? state.online.myRating
-          : (mode === "blitz" ? progression.ratingBlitz : progression.ratingClassic);
-        const side = state.online?.side;
-        for (const which of ["L", "R"]) {
-          const host = $(`#name${which}`).parentElement;
-          host.querySelector(".name-rating")?.remove();
-          const value = which === side ? mine : opponentRating;
-          if (!Number.isFinite(value)) continue;
-          const tag = document.createElement("div");
-          tag.className = "name-rating";
-          tag.textContent = `${value}`;
-          host.append(tag);
-        }
-      }
 
       // ---- Confirm before abandoning a live game (item 14) --------------------------------------
       let confirmAction = null;
@@ -2460,7 +2613,6 @@
       }
 
       async function openFriends() {
-        openModal("friendsModal");
         const list = $("#friendsList");
         list.innerHTML = '<div class="empty-note">Загрузка...</div>';
         try {
@@ -2611,23 +2763,21 @@
       // ---------------------------------------------------------------------------------------
       // Cosmetic avatars. The free set is deliberately generous so a new player is never stuck
       // with a placeholder; paid ones are the first sink for the soft currency.
+      // Avatar artwork comes from the studio atlas. The sheet supplies eleven portraits, so the
+      // catalogue matches it exactly rather than inventing entries that would render as blanks.
       const AVATARS = [
-        { id: "scarab", char: "\u{1F422}", price: 0 }, { id: "cat", char: "\u{1F408}", price: 0 },
-        { id: "bird", char: "\u{1F426}", price: 0 }, { id: "snake", char: "\u{1F40D}", price: 0 },
-        { id: "eye", char: "\u{1F441}", price: 0 }, { id: "sun", char: "\u2600", price: 0 },
-        { id: "moon", char: "\u{1F319}", price: 0 }, { id: "star", char: "\u2B50", price: 0 },
-        { id: "lion", char: "\u{1F981}", price: 150 }, { id: "croc", char: "\u{1F40A}", price: 150 },
-        { id: "falcon", char: "\u{1F985}", price: 250 }, { id: "gem", char: "\u{1F48E}", price: 300 },
-        { id: "crown", char: "\u{1F451}", price: 500 }, { id: "fire", char: "\u{1F525}", price: 400 },
-        { id: "scroll", char: "\u{1F4DC}", price: 200 }, { id: "key", char: "\u{1F5DD}", price: 350 }
+        { id: "pharaoh", price: 0 }, { id: "bastet", price: 0 }, { id: "anubis", price: 0 }, { id: "tut", price: 0 },
+        { id: "sobek", price: 150 }, { id: "bastet2", price: 150 }, { id: "anubis2", price: 200 }, { id: "cleo", price: 250 },
+        { id: "thoth", price: 300 }, { id: "khnum", price: 350 }, { id: "tut2", price: 500 }
       ];
-      const avatarChar = id => AVATARS.find(a => a.id === id)?.char || AVATARS[0].char;
+      const AVATAR_SRC = id => `assets/avatars/${AVATARS.some(a => a.id === id) ? id : AVATARS[0].id}.png`;
+      const avatarChar = id => `<img src="${AVATAR_SRC(id)}" alt="" width="64" height="64">`;
 
-      function currentAvatar() { return storage.get("pyramide.avatar") || "scarab"; }
+      function currentAvatar() { const id = storage.get("pyramide.avatar"); return AVATARS.some(a => a.id === id) ? id : AVATARS[0].id; }
       function paintAvatars() {
         const me = currentAvatar();
-        $("#topAvatar").textContent = avatarChar(me);
-        $("#myAvatar").textContent = avatarChar(me);
+        $("#topAvatar").innerHTML = avatarChar(me);
+        $("#myAvatar").innerHTML = avatarChar(me);
       }
 
       function renderAvatarGrid() {
@@ -2641,7 +2791,7 @@
           const cell = document.createElement("button");
           cell.type = "button";
           cell.className = `avatar-pick${avatar.id === me ? " selected" : ""}${unlocked ? "" : " locked"}`;
-          cell.innerHTML = `<span>${avatar.char}</span>${unlocked ? "" : `<span class="price">${avatar.price}</span>`}`;
+          cell.innerHTML = `<img src="${AVATAR_SRC(avatar.id)}" alt="" width="56" height="56">${unlocked ? "" : `<span class="price">${avatar.price}</span>`}`;
           cell.addEventListener("click", () => unlocked ? chooseAvatar(avatar.id) : buyAvatar(avatar));
           fragment.append(cell);
         }
@@ -2658,7 +2808,7 @@
       // Buying used to deduct coins in localStorage, which any player could edit - every paid
       // avatar was effectively free. The server now owns the balance and the ownership record.
       function buyAvatar(avatar) {
-        askConfirm(`Купить аватар за ${avatar.price} монет?`, async () => {
+        askConfirm(`Купить аватар «${avatar.id}» за ${avatar.price} монет?`, async () => {
           try {
             await ensureConnected();
             const result = await onlineClient.emit("shop:buy", { slot: "avatar", itemId: avatar.id });
@@ -2675,8 +2825,16 @@
         });
       }
 
+      let profileTab = "stats";
+      function showProfileTab(tab) {
+        profileTab = tab;
+        $$("[data-prof]").forEach(button => button.classList.toggle("selected", button.dataset.prof === tab));
+        $("#profStats").hidden = tab !== "stats";
+        $("#profFriends").hidden = tab !== "friends";
+        if (tab === "friends") openFriends();
+      }
+
       async function openAccount() {
-        openModal("accountModal");
         paintAvatars(); renderAvatarGrid();
         $("#nickInput2").value = storedNickname();
         $("#linkCodeBox").hidden = true; $("#redeemBox").hidden = true;
@@ -2702,6 +2860,7 @@
         const source = profile || progression;
         const games = (source.gamesClassic || 0) + (source.gamesBlitz || 0);
         $("#myMeta").textContent = games ? `${games} ${plural(games, "партия", "партии", "партий")} онлайн` : "Ещё не играли онлайн";
+        $("#myHeat").innerHTML = buildHeat(profile?.activity);
         $("#myStats").innerHTML = [
           ["Классика", source.ratingClassic ?? "—"], ["Блиц", source.ratingBlitz ?? "—"],
           ["Побед", source.wins ?? 0], ["Поражений", source.losses ?? 0],
@@ -2753,7 +2912,9 @@
       // ---- Viewing another player's profile -------------------------------------------------------
       async function viewPlayer(playerId, fallbackName) {
         if (!playerId) { showToast("Профиль недоступен"); return; }
-        openModal("playerModal");
+        // Opening a match screen overlay is fine, but inside the shell this is just a screen.
+        if (!$("#menuModal").classList.contains("open")) openModal("menuModal");
+        goScreen("player");
         const body = $("#playerBody");
         body.innerHTML = '<div class="empty-note">Загрузка...</div>';
         try {
@@ -2873,7 +3034,12 @@
         diagramContext($("#tutCtx"), { roll: step.roll ?? null });
         const marks = {};
         for (const item of step.paint?.() || []) marks[item.id] = item.cls;
-        paintDiagram(tutorialCells, step.stones || {}, marks);
+        // Tutorial steps declare stones as plain colour strings; the renderer expects the same
+        // {color} shape a real board uses. Without this the class became "stone-undefined" and
+        // every example stone rendered grey - which is why the colour lesson had no colours.
+        const stones = Object.fromEntries(Object.entries(step.stones || {})
+          .map(([id, color]) => [id, typeof color === "string" ? { color } : color]));
+        paintDiagram(tutorialCells, stones, marks);
       }
 
       function openTutorial() {
@@ -3024,25 +3190,29 @@
       // Cosmetics. Purchases are decided by the server; this only renders and applies the result.
       // ---------------------------------------------------------------------------------------
       const SHOP_META = {
-        stones: { classic: "Классические", polished: "Полированные", clay: "Глиняные", lapis: "Лазурит", obsidian: "Обсидиан", gold: "Золотые" },
+        stones: { pack1: "Гладкие", pack2: "Рунные", pack3: "Треснувшие", pack4: "Спираль", pack5: "Вихрь", pack6: "Огранка", pack7: "Кристалл", pack8: "Звёздные" },
         board: { sand: "Песок", granite: "Гранит", papyrus: "Папирус", nightsand: "Ночной песок", marble: "Мрамор" },
-        avatar: Object.fromEntries(AVATARS.map(a => [a.id, a.char]))
+        avatar: Object.fromEntries(AVATARS.map(a => [a.id, a.id]))
       };
       const BOARD_SWATCH = {
         sand: "linear-gradient(170deg,#efd9ac,#e2c48d)", granite: "linear-gradient(170deg,#b9b3ab,#9a948c)",
         papyrus: "linear-gradient(170deg,#f2e3c0,#e0cda2)", nightsand: "linear-gradient(170deg,#4a4335,#322d24)",
         marble: "linear-gradient(170deg,#eceae6,#d5d2cc)"
       };
-      const STONE_SWATCH = {
-        classic: ["#f2c14e", "#5fbf8f", "#9b7bd4"], polished: ["#ffd977", "#6fd6a4", "#b48ce0"],
-        clay: ["#d9a55c", "#7fa87a", "#a08bb5"], lapis: ["#f0c96a", "#4fb7b0", "#5b6fd6"],
-        obsidian: ["#b8a06a", "#4f8f7a", "#6b4f8f"], gold: ["#ffd24a", "#8fbf6a", "#c47ad0"]
-      };
+      // Swatches are the real stone images now, so the shop preview matches what gets equipped.
+      const STONE_PACKS = ["pack1","pack2","pack3","pack4","pack5","pack6","pack7","pack8"];
+      const stoneSrc = (pack, color) => `assets/stones/${pack}-${color}.png`;
 
+      // Ids we actually ship artwork for.
+      const DRAWABLE = {
+        stones: new Set(STONE_PACKS),
+        avatar: new Set(AVATARS.map(a => a.id)),
+        board: new Set(["sand", "granite", "papyrus", "nightsand", "marble"])
+      };
       let shop = { slot: "stones", catalogue: null, owned: [], equipped: {} };
 
       function applyCosmetics(equipped) {
-        const stones = equipped?.stones || storage.get("pyramide.skin.stones") || "classic";
+        const stones = equipped?.stones || storage.get("pyramide.skin.stones") || "pack1";
         const board = equipped?.board || storage.get("pyramide.skin.board") || "sand";
         document.body.dataset.stones = stones;
         document.body.dataset.board = board;
@@ -3059,7 +3229,16 @@
         try {
           await ensureConnected();
           const data = await onlineClient.emit("shop:list", {});
-          shop = { slot, catalogue: data.catalogue, owned: data.owned || [], equipped: data.equipped || {} };
+          // Drop any catalogue entry we have no artwork for, so a stale backend degrades to a
+          // smaller shop instead of a grid of broken images.
+          const clean = {};
+          for (const [key, items] of Object.entries(data.catalogue || {})) {
+            clean[key] = (items || []).filter(item => key === "board" || DRAWABLE[key].has(item.id));
+          }
+          const missing = Object.entries(data.catalogue || {})
+            .reduce((n, [k, v]) => n + (v || []).length, 0) - Object.values(clean).reduce((n, v) => n + v.length, 0);
+          if (missing > 0) showToast("Часть товаров недоступна: сервер устарел");
+          shop = { slot, catalogue: clean, owned: data.owned || [], equipped: data.equipped || {} };
           // A missing value must never overwrite a real balance - that is how coins were being
           // wiped whenever the workshop opened against a server that returned no coins field.
           // null means the server has no persistent store for this session - keep the local mirror
@@ -3080,6 +3259,10 @@
         const grid = $("#shopGrid");
         grid.innerHTML = "";
         const items = shop.catalogue?.[shop.slot] || [];
+        if (!items.length) {
+          grid.innerHTML = '<div class="empty-note">Товары появятся после обновления сервера.</div>';
+          return;
+        }
         const fragment = document.createDocumentFragment();
         for (const item of items) {
           const owned = item.price === 0 || shop.owned.includes(`${shop.slot}:${item.id}`);
@@ -3088,16 +3271,19 @@
           node.type = "button";
           node.className = `shop-item${equipped ? " equipped" : ""}${owned ? "" : " locked"}`;
           const preview = shop.slot === "stones"
-            ? `<span class="sw">${STONE_SWATCH[item.id].map(c => `<i style="background:${c}"></i>`).join("")}</span>`
+            ? `<span class="sw">${COLORS.map(c => `<img src="${stoneSrc(item.id, c)}" alt="" width="26" height="26">`).join("")}</span>`
             : shop.slot === "board"
               ? `<span class="bar" style="background:${BOARD_SWATCH[item.id]}"></span>`
-              : `<span class="sw" style="font-size:23px">${SHOP_META.avatar[item.id] || "?"}</span>`;
+              : `<span class="sw"><img src="${AVATAR_SRC(item.id)}" alt="" width="46" height="46"></span>`;
           if (shop.slot === "avatar" && item.id === currentAvatar()) node.classList.add("equipped");
           const coins = Number(progression.coins) || 0;
           const affordable = owned || coins >= item.price;
           if (!affordable) node.classList.add("unaffordable");
-          node.innerHTML = `${preview}<span class="nm">${shop.slot === "avatar" ? "" : SHOP_META[shop.slot][item.id] || item.id}</span>`
-            + `<span class="pr">${equipped ? "надето" : owned ? "выбрать" : `${item.price} \u25CF`}</span>`;
+          // State is spelled out rather than implied by styling alone: owned-but-not-worn was
+          // previously indistinguishable from "buy me".
+          const state = equipped ? "Надето" : owned ? "Надеть" : affordable ? `${item.price} \u25CF` : `${item.price} \u25CF`;
+          node.innerHTML = `${preview}<span class="nm">${SHOP_META[shop.slot]?.[item.id] || item.id}</span>`
+            + `<span class="pr ${equipped ? "on" : owned ? "own" : ""}">${state}</span>`;
           node.addEventListener("click", () => {
             if (!affordable) { audio.blocked(); showToast(`Не хватает ${item.price - coins} монет — играйте и решайте задачи`); return; }
             buyOrEquip(item, owned);
@@ -3262,6 +3448,55 @@
         openPuzzle();
       }
 
+      // ---------------------------------------------------------------------------------------
+      // Screen router. Replaces the stack of pop-ups: one surface, a navigation stack and a back
+      // button. Nothing can render underneath anything else because only one screen is mounted.
+      // ---------------------------------------------------------------------------------------
+      const SCREEN_TITLES = {
+        home: null, modes: "Выберите режим", ranked: "Рейтинговый матч", bot: "Игра с хранителем",
+        local: "Игра вдвоём", profile: "Профиль", history: "История партий",
+        leaders: "Лидеры рейтинга", player: "Профиль игрока"
+      };
+      const screenStack = ["home"];
+      const onEnterScreen = {};
+
+      function currentScreen() { return screenStack[screenStack.length - 1]; }
+
+      function paintScreen() {
+        const name = currentScreen();
+        $$("[data-screen]").forEach(node => node.classList.toggle("is-active", node.dataset.screen === name));
+        const title = SCREEN_TITLES[name];
+        $("#shellHead").hidden = !title;
+        if (title) $("#screenTitle").textContent = title;
+        $(".shell-body").scrollTop = 0;
+        onEnterScreen[name]?.();
+      }
+
+      function goScreen(name) {
+        if (currentScreen() === name) return;
+        screenStack.push(name);
+        paintScreen();
+        audio.tick();
+      }
+
+      function goBack() {
+        if (screenStack.length <= 1) return;
+        screenStack.pop();
+        paintScreen();
+        audio.tick();
+      }
+
+      function resetScreens() { screenStack.length = 1; screenStack[0] = "home"; paintScreen(); }
+
+      // The ranked lobby shows what is at stake before the search starts.
+      function refreshLobby() {
+        const mode = selectedOnlineMode || "classic";
+        const rating = mode === "blitz" ? progression.ratingBlitz : progression.ratingClassic;
+        $("#lobbyRating").textContent = Number.isFinite(rating) ? rating : "—";
+        $("#lobbyLeague").textContent = Number.isFinite(rating) ? eloTierFor(rating) : "—";
+        $("#lobbyClock").textContent = mode === "blitz" ? "2 мин + 3 сек" : "5 мин + 10 сек";
+      }
+
       let clockTickerId = null;
       function startClockTicker() {
         clearInterval(clockTickerId);
@@ -3339,7 +3574,8 @@
         clearTimeout(showToast.timer); showToast.timer = setTimeout(() => dom.toast.classList.remove("show"), 1900);
       }
 
-      let openModalCount = $$(".modal-backdrop.open").length;
+      let openModalCount = 0;
+      $$(".modal-backdrop.open").forEach(node => { openModalCount++; node.style.zIndex = String(100 + openModalCount * 10); });
       if (openModalCount > 0) document.body.classList.add("has-modal");
       if ($("#menuModal").classList.contains("open")) document.body.classList.add("in-menu");
       function syncMenuBackdrop() {
@@ -3349,8 +3585,13 @@
       function openModal(id) {
         const modal = document.getElementById(id); if (!modal) return;
         if (!modal.classList.contains("open")) {
-          modal.classList.toggle("stacked", openModalCount > 0);
-          modal.classList.add("open"); openModalCount++; document.body.classList.add("has-modal");
+          // A single "stacked" class gave every nested dialog the same z-index, so two of them
+          // tied and DOM order decided which won - that is why a review opened from history kept
+          // appearing underneath it. Depth must be encoded as an actual number.
+          openModalCount++;
+          modal.style.zIndex = String(100 + openModalCount * 10);
+          modal.classList.add("open");
+          document.body.classList.add("has-modal");
         }
         syncMenuBackdrop();
         // Focusing the first button made the close "x" look pressed every time a modal opened.
@@ -3360,7 +3601,9 @@
       }
       function closeModal(id) {
         const modal = document.getElementById(id); if (!modal || !modal.classList.contains("open")) return;
-        modal.classList.remove("open", "stacked"); openModalCount = Math.max(0, openModalCount - 1);
+        modal.classList.remove("open", "stacked");
+        modal.style.zIndex = "";
+        openModalCount = Math.max(0, openModalCount - 1);
         if (openModalCount === 0) document.body.classList.remove("has-modal");
         syncMenuBackdrop();
       }
@@ -3462,10 +3705,10 @@
       }
 
       $("#rollButton").addEventListener("click", rollDice);
-      $("#localMode").addEventListener("click", () => toggleSection("local"));
-      $("#menuPlay").addEventListener("click", () => showMenuPage("modes"));
-      $("#menuBack").addEventListener("click", () => showMenuPage("root"));
-      $("#openFriends").addEventListener("click", () => openFriends());
+      $("#localMode").addEventListener("click", () => goScreen("local"));
+      $("#menuPlay").addEventListener("click", () => goScreen("modes"));
+      $("#screenBack").addEventListener("click", goBack);
+      $$("[data-prof]").forEach(button => button.addEventListener("click", () => showProfileTab(button.dataset.prof)));
       $("#addFriend").addEventListener("click", addFriendByCode);
       $("#friendCodeInput").addEventListener("keydown", event => { if (event.key === "Enter") addFriendByCode(); });
       $("#copyCode").addEventListener("click", async () => {
@@ -3498,18 +3741,34 @@
         try { await onlineClient.emit("friends:inviteRespond", { inviteId: pendingInvite.inviteId, accept: false }); } catch { /* expired */ }
         pendingInvite = null;
       });
-      $("#botMode").addEventListener("click", () => toggleSection("bot"));
+      $("#botMode").addEventListener("click", () => goScreen("bot"));
       $$("#difficulty button").forEach(button => button.addEventListener("click", () => { state.difficulty = button.dataset.level; $$("#difficulty button").forEach(item => item.classList.toggle("selected", item === button)); audio.tick(); }));
       $("#startBot").addEventListener("click", () => { resetOfflineClock(offlineClockChoice.bot); startGame("bot", state.difficulty); });
       let selectedOnlineMode = "classic";
-      $("#onlineMode").addEventListener("click", () => toggleSection("online"));
-      $$("#onlineModes button").forEach(button => button.addEventListener("click", () => { selectedOnlineMode = button.dataset.onlineMode; $$("#onlineModes button").forEach(item => item.classList.toggle("selected", item === button)); audio.tick(); }));
+      $("#onlineMode").addEventListener("click", () => goScreen("ranked"));
+      $$("#onlineModes button").forEach(button => button.addEventListener("click", () => { selectedOnlineMode = button.dataset.onlineMode; $$("#onlineModes button").forEach(item => item.classList.toggle("selected", item === button)); refreshLobby(); audio.tick(); }));
       $("#startOnline").addEventListener("click", () => startOnlineQueue(selectedOnlineMode));
       $("#queueCancel").addEventListener("click", cancelOnlineQueue);
-      $("#rematch").addEventListener("click", async () => {
-        if (state.mode === "online") { startOnlineQueue(state.online?.onlineMode || "classic"); return; }
-        if (progression.games % 3 === 0 && window.PlatformBridge?.showInterstitial) await window.PlatformBridge.showInterstitial().catch(() => false);
-        startGame(state.mode, state.difficulty);
+      $("#rematch").addEventListener("click", async event => {
+        const button = event.currentTarget;
+        if (button.disabled) return;
+        button.disabled = true;                       // guard against double-taps opening two games
+        try {
+          closeModal("resultModal"); hideReview();
+          if (state.mode === "online") {
+            // A rematch online is a fresh search, not a resumed game - say so, because silence
+            // here made it look as though the button did nothing.
+            showToast("Ищем нового соперника");
+            await startOnlineQueue(state.online?.onlineMode || "classic");
+            return;
+          }
+          if (progression.games % 3 === 0 && window.PlatformBridge?.showInterstitial) {
+            await window.PlatformBridge.showInterstitial().catch(() => false);
+          }
+          startGame(state.mode, state.difficulty);
+        } finally {
+          setTimeout(() => { button.disabled = false; }, 800);
+        }
       });
       $("#resultReward").addEventListener("click", async event => {
         const button = event.currentTarget;
@@ -3531,7 +3790,7 @@
         closeModal("resultModal"); closeModal("settingsModal"); openModal("menuModal");
         // Always return to the top level of the menu, otherwise the player lands back on the
         // mode list they left from and the main entries are nowhere to be seen.
-        showMenuPage("root");
+        resetScreens();
         state.phase = "menu"; audio.stopAmbience(); render();
       }
       $("#reviewContinue").addEventListener("click", () => { hideReview(); openModal("resultModal"); });
@@ -3549,10 +3808,22 @@
           else viewPlayer(state.online.opponentId, state.online.opponentName);
         });
       }
+      onEnterScreen.profile = () => { openAccount(); showProfileTab(profileTab); };
+      onEnterScreen.history = () => openHistory(historyTab);
+      onEnterScreen.leaders = () => openLeaderboard(leaderboardMode);
+      onEnterScreen.ranked = () => refreshLobby();
+      onEnterScreen.home = () => { $("#tileAvatar").src = AVATAR_SRC(currentAvatar()); };
+      $("#openAbout").addEventListener("click", () => openModal("aboutModal"));
       $("#openShop").addEventListener("click", () => openShop());
       $$("[data-shop]").forEach(button => button.addEventListener("click", () => openShop(button.dataset.shop)));
       $$("[data-hist]").forEach(button => button.addEventListener("click", () => openHistory(button.dataset.hist)));
-      $("#toProfile").addEventListener("click", () => { closeModal("settingsModal"); openAccount(); });
+      $("#toProfile").addEventListener("click", () => {
+        closeModal("settingsModal");
+        // The profile is a screen inside the shell now, so the shell must be open and the stack
+        // pointed at it - calling the loader alone left the player staring at the same dialog.
+        if (!$("#menuModal").classList.contains("open")) openModal("menuModal");
+        goScreen("profile");
+      });
       $("#openPuzzles").addEventListener("click", () => openPuzzle());
       $("#puzNext").addEventListener("click", () => openPuzzle());
       $("#puzSkip").addEventListener("click", skipPuzzle);
@@ -3560,13 +3831,13 @@
       $("#revPrev").addEventListener("click", () => { review.index = Math.max(0, review.index - 1); renderReview(); });
       $("#revNext").addEventListener("click", () => { review.index = Math.min(review.report.length, review.index + 1); renderReview(); });
       $("#revEnd").addEventListener("click", () => { review.index = review.report.length; renderReview(); });
-      $("#openAccount").addEventListener("click", () => openAccount());
+      $("#openAccount").addEventListener("click", () => goScreen("profile"));
       $("#nickSave2").addEventListener("click", () => saveNickname($("#nickInput2").value).then(() => { $("#myName").textContent = storedNickname(); }));
       $("#getLinkCode").addEventListener("click", issueLinkCode);
       $("#showRedeem").addEventListener("click", () => { $("#linkCodeBox").hidden = true; $("#redeemBox").hidden = !$("#redeemBox").hidden; });
       $("#redeemGo").addEventListener("click", redeemLinkCode);
-      $("#openLeaderboard").addEventListener("click", () => openLeaderboard());
-      $("#openHistory").addEventListener("click", () => openHistory());
+      $("#openLeaderboard").addEventListener("click", () => goScreen("leaders"));
+      $("#openHistory").addEventListener("click", () => goScreen("history"));
       $("#nickInput2").addEventListener("keydown", event => { if (event.key === "Enter") saveNickname(event.currentTarget.value).then(() => { $("#myName").textContent = storedNickname(); }); });
       $$("[data-lb-mode]").forEach(button => button.addEventListener("click", () => openLeaderboard(button.dataset.lbMode)));
       $$("[data-close]").forEach(button => button.addEventListener("click", event => {
@@ -3696,6 +3967,7 @@
       document.addEventListener("dblclick", event => event.preventDefault());
 
       applyCosmetics(null);
+      paintAvatars();
       renderBoardBase(); applySettings(); updateProfile(); render();
       // Splash stays for a beat so the studio mark is actually readable, then fades out.
       // Hold the studio splash for a readable beat rather than flashing past it.
@@ -3706,7 +3978,7 @@
       };
       if (document.readyState === "complete") hideSplash();
       else window.addEventListener("load", hideSplash, { once: true });
-      showMenuPage("root");
+      paintScreen();
       // A brand-new player is shown the tutorial once: the rules are unusual (three in a row
       // *loses*) and nobody reads a rules button before their first game.
       if (!storage.get("pyramide.tutorialSeen")) setTimeout(openTutorial, 2900);
