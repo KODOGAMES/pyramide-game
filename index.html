@@ -2520,15 +2520,25 @@
           if (!matches.length) { list.innerHTML = '<div class="empty-note">Здесь появятся ваши рейтинговые онлайн-партии. Игры с ботом и вдвоём на одном устройстве не сохраняются.</div>'; return; }
           list.innerHTML = "";
           matches.forEach((match, index) => {
+            // The row markup and the code that fills it must agree: an earlier edit updated only
+            // the second half, so every render threw on a missing .hist-acts and the whole list
+            // reported itself as a connection problem.
             const button = document.createElement("div");
-            button.className = "data-row";
+            button.className = "hist-row";
             const delta = Number(match.ratingDelta);
             const deltaClass = delta > 0 ? "up" : delta < 0 ? "down" : "even";
             const when = match.endedAt ? new Date(match.endedAt).toLocaleDateString("ru-RU", { day: "numeric", month: "short" }) : "";
-            button.innerHTML = `<span class="avatar sm">${avatarChar(match.opponentAvatar)}</span>
-              <span class="main"><b class="res-word res-${match.result}">${RESULT_TITLES[match.result]}</b>
-                <span>${escapeHtml(match.opponentName)} · ${MODE_TITLES[match.mode] || match.mode} · ${REASON_TITLES[match.reason] || ""} ${when}</span></span>
-              <span class="val">${Number.isFinite(delta) && delta !== 0 ? `<small class="${deltaClass}">${delta > 0 ? "+" : ""}${delta}</small>` : ""}</span>`;
+            button.innerHTML = `
+              <span class="avatar hist-ava">${avatarChar(match.opponentAvatar)}</span>
+              <span class="hist-main">
+                <span class="hist-top">
+                  <b class="res-word res-${match.result}">${RESULT_TITLES[match.result]}</b>
+                  <span class="hist-bar res-${match.result}"></span>
+                  ${Number.isFinite(delta) && delta !== 0 ? `<span class="hist-delta ${deltaClass}">${delta > 0 ? "+" : ""}${delta}</span>` : ""}
+                </span>
+                <span class="hist-meta">${escapeHtml(match.opponentName)} · ${MODE_TITLES[match.mode] || match.mode} · ${REASON_TITLES[match.reason] || ""} ${when}</span>
+                <span class="hist-acts"></span>
+              </span>`;
             const actions = document.createElement("span");
             actions.className = "row-actions";
             actions.append(makeButton("Ход партии", "accent", event => { event.stopPropagation(); openReview(match.id); }));
@@ -2537,7 +2547,8 @@
             list.append(button);
             if (index === 0) applyServerProfile(null);
           });
-        } catch {
+        } catch (error) {
+          console.error("history failed:", error);
           list.innerHTML = '<div class="empty-note">Не удалось загрузить историю. Проверьте соединение.</div>';
         }
       }
