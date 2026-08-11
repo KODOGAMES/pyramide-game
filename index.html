@@ -42,7 +42,7 @@
       /* Painted backdrop with the gradient kept underneath: the art is dark by design, and the
          gradient guarantees contrast on ultra-wide screens where the image cannot cover. */
       background:
-        linear-gradient(180deg, rgba(9,20,29,.72), rgba(9,20,29,.86)),
+        linear-gradient(180deg, rgba(9,20,29,.18), rgba(9,20,29,.45)),
         url("assets/bg-desert.webp") center/cover no-repeat fixed,
         linear-gradient(158deg, #18323d 0%, #10212d 52%, #09141d 100%);
       -webkit-tap-highlight-color: transparent;
@@ -921,6 +921,20 @@
     .data-row .val { font-variant-numeric: tabular-nums; font-size: 14px; color: #e9d3a3; text-align: right; }
     .data-row .val small { display: block; font-size: 11px; margin-top: 2px; }
     .val small.up { color: #8fe0a4; } .val small.down { color: #ff9a8a; } .val small.even { color: #90a6a8; }
+    /* History rows: avatar, a coloured verdict with a strength bar, meta line, then actions. */
+    .hist-row { display: flex; gap: 12px; align-items: flex-start; padding: 12px 13px; margin-bottom: 8px;
+      border: 1px solid rgba(255,225,167,.12); border-radius: 14px; background: rgba(255,255,255,.03); }
+    .hist-ava { width: 48px; height: 48px; border-radius: 14px; flex: 0 0 auto; }
+    .hist-main { flex: 1; min-width: 0; }
+    .hist-top { display: flex; align-items: center; gap: 10px; }
+    .hist-bar { flex: 1; height: 9px; border-radius: 5px; min-width: 40px; }
+    .hist-bar.res-win { background: linear-gradient(90deg, #7ed69a, rgba(126,214,154,.25)); }
+    .hist-bar.res-loss { background: linear-gradient(90deg, #ff7d68, rgba(255,125,104,.25)); }
+    .hist-bar.res-draw { background: linear-gradient(90deg, #c9b184, rgba(201,177,132,.25)); }
+    .hist-delta { font-variant-numeric: tabular-nums; font-size: 14px; }
+    .hist-delta.up { color: #8fe0a4; } .hist-delta.down { color: #ff9a8a; } .hist-delta.even { color: #90a6a8; }
+    .hist-meta { display: block; margin: 4px 0 8px; font-size: 12px; color: #90a6a8; }
+    .hist-acts { display: block; }
     .res-word { font-family: Georgia, serif; font-size: 15px; letter-spacing: .02em; }
     .res-word.res-win { color: #8fe0a4; } .res-word.res-loss { color: #ff8f7d; } .res-word.res-draw { color: #d8c79a; }
     /* Row buttons used to stretch across the whole cell. Fixed to content width and aligned. */
@@ -1174,7 +1188,6 @@
             <button class="foot-btn" id="openLeaderboard"><img src="assets/ui/leaders.png" alt="" width="32" height="32">Лидеры</button>
             <button class="foot-btn" data-open="settingsModal"><img src="assets/ui/settings.png" alt="" width="32" height="32">Настройки</button>
             <button class="foot-btn" data-open="rulesModal"><img src="assets/ui/rules.png" alt="" width="32" height="32">Правила</button>
-            <button class="foot-btn" id="openAbout"><img src="assets/ui/history.png" alt="" width="32" height="32">Об игре</button>
           </nav>
         </section>
 
@@ -1450,6 +1463,7 @@
       <div class="modal-head"><div><h2 id="settingsTitle">Настройки</h2><p>Вид и звучание партии</p></div><button class="close-btn" data-close aria-label="Закрыть">x</button></div>
       <div class="modal-body settings-list">
         <div class="setting-row"><div><strong>Имя и аватар</strong><span>Настраиваются в профиле</span></div><button class="secondary-btn" id="toProfile" style="padding:8px 15px">Открыть профиль</button></div>
+        <div class="setting-row"><div><strong>Об игре</strong><span>Автор и контакты</span></div><button class="secondary-btn" id="openAbout" style="padding:8px 15px">Открыть</button></div>
         <div class="setting-row"><div><strong>Оформление</strong><span>Песок храма или чистая геометрия</span></div><div class="theme-toggle"><button data-theme="egypt" class="active">Египет</button><button data-theme="minimal">Минимум</button></div></div>
         <div class="setting-row"><div><strong>Звуки</strong><span>Камни, кубик и сигналы хода</span></div><button class="switch on" id="soundSwitch" aria-label="Звуки"></button></div>
         <div class="setting-row"><div><strong>Атмосфера</strong><span>Тихий ветер и музыкальные тона</span></div><button class="switch on" id="musicSwitch" aria-label="Атмосфера"></button></div>
@@ -1746,6 +1760,7 @@
       }
 
       function startGame(mode, difficulty = state.difficulty) {
+        if (isOnline() && state.phase !== "gameover") { showToast("Сначала завершите текущую партию"); return; }
         clearTimers();
         Object.assign(state, {
           board: {}, inventory: { L: { ...STARTING_INVENTORY }, R: { ...STARTING_INVENTORY } }, active: "L",
@@ -1758,7 +1773,7 @@
         closeModal("menuModal"); closeModal("resultModal"); closeModal("settingsModal");
         $$(".danger", dom.cells).forEach(el => el.classList.remove("danger"));
         dom.die.dataset.face = "1";
-        hideReview(); closeModal("resultModal");
+        hideReview(); closeModal("resultModal"); resetScreens();
         render(); audio.startAmbience(); audio.turn();
         startOfflineClock();
         Promise.resolve(window.PlatformBridge?.onMatchStart?.()).catch(() => undefined);
@@ -2086,6 +2101,13 @@
       let queueTimerId = null;
 
       async function startOnlineQueue(mode) {
+        // Safety net independent of navigation: a running match must be resolved before any new
+        // search, otherwise the player leaves an opponent sitting at a live board.
+        if (isOnline() && state.phase !== "gameover") {
+          showToast("Вы уже в партии — завершите её или сдайтесь");
+          closeModal("menuModal");
+          return;
+        }
         openModal("queueModal");
         $("#queueText").textContent = `Ищем соперника: ${ONLINE_MODE_LABELS[mode]}...`;
         queueStartedAt = Date.now();
@@ -2112,7 +2134,7 @@
       }
 
       function onMatchFound(payload) {
-        clearInterval(queueTimerId); closeModal("queueModal"); closeModal("menuModal");
+        clearInterval(queueTimerId); closeModal("queueModal"); closeModal("menuModal"); resetScreens();
         onlineClient.matchId = payload.matchId;
         clearTimers();
         Object.assign(state, {
@@ -2445,7 +2467,7 @@
             actions.className = "row-actions";
             actions.append(makeButton("Ход партии", "accent", event => { event.stopPropagation(); openReview(match.id); }));
             if (match.opponentId) actions.append(makeButton("Профиль", "", event => { event.stopPropagation(); viewPlayer(match.opponentId, match.opponentName); }));
-            button.append(actions);
+            button.querySelector(".hist-acts").append(actions);
             list.append(button);
             if (index === 0) applyServerProfile(null);
           });
@@ -2912,8 +2934,14 @@
       // ---- Viewing another player's profile -------------------------------------------------------
       async function viewPlayer(playerId, fallbackName) {
         if (!playerId) { showToast("Профиль недоступен"); return; }
-        // Opening a match screen overlay is fine, but inside the shell this is just a screen.
-        if (!$("#menuModal").classList.contains("open")) openModal("menuModal");
+        // During a live match the shell IS the main menu, so opening it here abandoned the game
+        // visually and let the player start a second search while still seated at the first board.
+        // The shell is opened in a "temporary" mode and closes straight back to the game.
+        const live = state.phase !== "menu" && state.phase !== "gameover";
+        if (!$("#menuModal").classList.contains("open")) {
+          openModal("menuModal");
+          shellTemporary = live;
+        }
         goScreen("player");
         const body = $("#playerBody");
         body.innerHTML = '<div class="empty-note">Загрузка...</div>';
@@ -3479,9 +3507,21 @@
         audio.tick();
       }
 
+      let shellTemporary = false;
       function goBack() {
         if (screenStack.length <= 1) return;
         screenStack.pop();
+        // Backing out to the top level while a game is still running must return to the board,
+        // not park the player in the main menu with a live match behind it. Checking the match
+        // state here (rather than a flag set when the screen opened) cannot fall out of sync.
+        const live = state.phase !== "menu" && state.phase !== "gameover";
+        if (screenStack.length === 1 && live) {
+          shellTemporary = false;
+          paintScreen();
+          closeModal("menuModal");
+          audio.tick();
+          return;
+        }
         paintScreen();
         audio.tick();
       }
