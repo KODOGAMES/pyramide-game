@@ -39,12 +39,8 @@
     body {
       height: 100dvh;
       color: #fff8e8;
-      /* Painted backdrop with the gradient kept underneath: the art is dark by design, and the
-         gradient guarantees contrast on ultra-wide screens where the image cannot cover. */
-      background:
-        linear-gradient(180deg, rgba(9,20,29,.18), rgba(9,20,29,.45)),
-        url("assets/bg-desert.webp") center/cover no-repeat fixed,
-        linear-gradient(158deg, #18323d 0%, #10212d 52%, #09141d 100%);
+      /* Matches keep the plain gradient; the painted courtyard is added only behind the menu. */
+      background: linear-gradient(158deg, #18323d 0%, #10212d 52%, #09141d 100%);
       -webkit-tap-highlight-color: transparent;
       -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
       -webkit-touch-callout: none;
@@ -165,37 +161,68 @@
     .mini-stone { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 2px 2px 4px rgba(255,255,255,.35), 0 3px 8px rgba(0,0,0,.35); }
     /* Stone faces are artwork now. The pack is a body attribute, so every stone on every screen
        switches at once and nothing has to be re-rendered. */
-    .stone-yellow, .stone-green, .stone-purple {
-      background-size: contain; background-position: center; background-repeat: no-repeat; background-color: transparent;
-      box-shadow: none;
+    .stone-yellow, .stone-green, .stone-purple { box-shadow: none; }
+    /* Each pack is a single strip of three stones; the colour is selected by position, so a
+       pack switch swaps one image instead of three. */
+    .stone-yellow, .stone-green, .stone-purple,
+    .piece.yellow, .piece.green, .piece.purple {
+      background-image: url("assets/stones/pack1.webp");
+      background-size: 300% 100%;
+      background-repeat: no-repeat;
+      background-color: transparent;
     }
-    .stone-yellow { background-image: url("assets/stones/pack1-yellow.png"); }
-    .stone-green  { background-image: url("assets/stones/pack1-green.png"); }
-    .stone-purple { background-image: url("assets/stones/pack1-purple.png"); }
-    body[data-stones="pack2"] .stone-yellow { background-image: url("assets/stones/pack2-yellow.png"); }
-    body[data-stones="pack2"] .stone-green  { background-image: url("assets/stones/pack2-green.png"); }
-    body[data-stones="pack2"] .stone-purple { background-image: url("assets/stones/pack2-purple.png"); }
-    body[data-stones="pack3"] .stone-yellow { background-image: url("assets/stones/pack3-yellow.png"); }
-    body[data-stones="pack3"] .stone-green  { background-image: url("assets/stones/pack3-green.png"); }
-    body[data-stones="pack3"] .stone-purple { background-image: url("assets/stones/pack3-purple.png"); }
-    body[data-stones="pack4"] .stone-yellow { background-image: url("assets/stones/pack4-yellow.png"); }
-    body[data-stones="pack4"] .stone-green  { background-image: url("assets/stones/pack4-green.png"); }
-    body[data-stones="pack4"] .stone-purple { background-image: url("assets/stones/pack4-purple.png"); }
-    body[data-stones="pack5"] .stone-yellow { background-image: url("assets/stones/pack5-yellow.png"); }
-    body[data-stones="pack5"] .stone-green  { background-image: url("assets/stones/pack5-green.png"); }
-    body[data-stones="pack5"] .stone-purple { background-image: url("assets/stones/pack5-purple.png"); }
-    body[data-stones="pack6"] .stone-yellow { background-image: url("assets/stones/pack6-yellow.png"); }
-    body[data-stones="pack6"] .stone-green  { background-image: url("assets/stones/pack6-green.png"); }
-    body[data-stones="pack6"] .stone-purple { background-image: url("assets/stones/pack6-purple.png"); }
-    body[data-stones="pack7"] .stone-yellow { background-image: url("assets/stones/pack7-yellow.png"); }
-    body[data-stones="pack7"] .stone-green  { background-image: url("assets/stones/pack7-green.png"); }
-    body[data-stones="pack7"] .stone-purple { background-image: url("assets/stones/pack7-purple.png"); }
-    body[data-stones="pack8"] .stone-yellow { background-image: url("assets/stones/pack8-yellow.png"); }
-    body[data-stones="pack8"] .stone-green  { background-image: url("assets/stones/pack8-green.png"); }
-    body[data-stones="pack8"] .stone-purple { background-image: url("assets/stones/pack8-purple.png"); }
-    .reserve-track { width: 74px; height: 3px; background: rgba(255,255,255,.1); border-radius: 4px; overflow: hidden; }
-    .reserve-track i { display: block; height: 100%; width: var(--value); background: currentColor; transition: width .35s; }
-
+    .stone-green,  .piece.green  { background-position: 0% 0; }
+    .stone-yellow, .piece.yellow { background-position: 50% 0; }
+    .stone-purple, .piece.purple { background-position: 100% 0; }
+    body[data-stones="pack2"] .stone-yellow, body[data-stones="pack2"] .stone-green,
+    body[data-stones="pack2"] .stone-purple, body[data-stones="pack2"] .piece.yellow,
+    body[data-stones="pack2"] .piece.green, body[data-stones="pack2"] .piece.purple { background-image: url("assets/stones/pack2.webp"); }
+    body[data-stones="pack3"] .stone-yellow, body[data-stones="pack3"] .stone-green,
+    body[data-stones="pack3"] .stone-purple, body[data-stones="pack3"] .piece.yellow,
+    body[data-stones="pack3"] .piece.green, body[data-stones="pack3"] .piece.purple { background-image: url("assets/stones/pack3.webp"); }
+    body[data-stones="pack4"] .stone-yellow, body[data-stones="pack4"] .stone-green,
+    body[data-stones="pack4"] .stone-purple, body[data-stones="pack4"] .piece.yellow,
+    body[data-stones="pack4"] .piece.green, body[data-stones="pack4"] .piece.purple { background-image: url("assets/stones/pack4.webp"); }
+    body[data-stones="pack5"] .stone-yellow, body[data-stones="pack5"] .stone-green,
+    body[data-stones="pack5"] .stone-purple, body[data-stones="pack5"] .piece.yellow,
+    body[data-stones="pack5"] .piece.green, body[data-stones="pack5"] .piece.purple { background-image: url("assets/stones/pack5.webp"); }
+    body[data-stones="pack6"] .stone-yellow, body[data-stones="pack6"] .stone-green,
+    body[data-stones="pack6"] .stone-purple, body[data-stones="pack6"] .piece.yellow,
+    body[data-stones="pack6"] .piece.green, body[data-stones="pack6"] .piece.purple { background-image: url("assets/stones/pack6.webp"); }
+    body[data-stones="pack7"] .stone-yellow, body[data-stones="pack7"] .stone-green,
+    body[data-stones="pack7"] .stone-purple, body[data-stones="pack7"] .piece.yellow,
+    body[data-stones="pack7"] .piece.green, body[data-stones="pack7"] .piece.purple { background-image: url("assets/stones/pack7.webp"); }
+    body[data-stones="pack8"] .stone-yellow, body[data-stones="pack8"] .stone-green,
+    body[data-stones="pack8"] .stone-purple, body[data-stones="pack8"] .piece.yellow,
+    body[data-stones="pack8"] .piece.green, body[data-stones="pack8"] .piece.purple { background-image: url("assets/stones/pack8.webp"); }
+    body[data-stones="pack9"] .stone-yellow, body[data-stones="pack9"] .stone-green,
+    body[data-stones="pack9"] .stone-purple, body[data-stones="pack9"] .piece.yellow,
+    body[data-stones="pack9"] .piece.green, body[data-stones="pack9"] .piece.purple { background-image: url("assets/stones/pack9.webp"); }
+    body[data-stones="pack10"] .stone-yellow, body[data-stones="pack10"] .stone-green,
+    body[data-stones="pack10"] .stone-purple, body[data-stones="pack10"] .piece.yellow,
+    body[data-stones="pack10"] .piece.green, body[data-stones="pack10"] .piece.purple { background-image: url("assets/stones/pack10.webp"); }
+    body[data-stones="pack11"] .stone-yellow, body[data-stones="pack11"] .stone-green,
+    body[data-stones="pack11"] .stone-purple, body[data-stones="pack11"] .piece.yellow,
+    body[data-stones="pack11"] .piece.green, body[data-stones="pack11"] .piece.purple { background-image: url("assets/stones/pack11.webp"); }
+    body[data-stones="pack12"] .stone-yellow, body[data-stones="pack12"] .stone-green,
+    body[data-stones="pack12"] .stone-purple, body[data-stones="pack12"] .piece.yellow,
+    body[data-stones="pack12"] .piece.green, body[data-stones="pack12"] .piece.purple { background-image: url("assets/stones/pack12.webp"); }
+    .cell.last { box-shadow: 0 0 0 3px rgba(255,236,170,.95), 0 0 18px rgba(255,222,117,.45); z-index: 3; }
+    .cell.danger { animation: dangerFlash .72s ease-in-out 3; border-color: #ffdf6c; z-index: 4; }
+    .piece {
+      width: 72%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      position: absolute;
+      box-shadow: inset 4px 4px 6px rgba(255,255,255,.42), inset -5px -7px 8px rgba(41,23,17,.29), 0 6px 9px rgba(68,35,17,.34);
+      transform-origin: 50% 75%;
+      animation: pieceDrop .48s cubic-bezier(.18,.85,.3,1.35) both;
+    }
+    .piece::after { content: ""; position: absolute; width: 28%; height: 16%; left: 21%; top: 17%; border-radius: 50%; background: rgba(255,255,255,.38); transform: rotate(-24deg); filter: blur(1px); }
+    /* Board pieces carry the same artwork as every other surface. They used their own gradients,
+       which is why buying a stone pack changed the shop preview but not the actual game. */
+    .piece.yellow, .piece.green, .piece.purple { box-shadow: none; }
+    .piece.yellow::after, .piece.green::after, .piece.purple::after { display: none; }
     .board-wrap { grid-area: board; position: relative; width: 100%; max-width: 680px; margin: auto; animation: boardRise .85s cubic-bezier(.2,.75,.25,1) both; }
     .board-heading { display: flex; justify-content: space-between; align-items: baseline; padding: 0 4% 8px; color: #a5b8ba; font-size: 11px; letter-spacing: .15em; text-transform: uppercase; }
     .board-heading strong { color: #f9dfaa; font-family: Georgia, serif; font-size: 13px; font-weight: 500; }
@@ -286,34 +313,8 @@
     .piece::after { content: ""; position: absolute; width: 28%; height: 16%; left: 21%; top: 17%; border-radius: 50%; background: rgba(255,255,255,.38); transform: rotate(-24deg); filter: blur(1px); }
     /* Board pieces carry the same artwork as every other surface. They used their own gradients,
        which is why buying a stone pack changed the shop preview but not the actual game. */
-    .piece.yellow, .piece.green, .piece.purple {
-      background-size: contain; background-position: center; background-repeat: no-repeat; box-shadow: none;
-    }
+    .piece.yellow, .piece.green, .piece.purple { box-shadow: none; }
     .piece.yellow::after, .piece.green::after, .piece.purple::after { display: none; }
-    .piece.yellow { background-image: url("assets/stones/pack1-yellow.png"); }
-    .piece.green  { background-image: url("assets/stones/pack1-green.png"); }
-    .piece.purple { background-image: url("assets/stones/pack1-purple.png"); }
-    body[data-stones="pack2"] .piece.yellow { background-image: url("assets/stones/pack2-yellow.png"); }
-    body[data-stones="pack2"] .piece.green  { background-image: url("assets/stones/pack2-green.png"); }
-    body[data-stones="pack2"] .piece.purple { background-image: url("assets/stones/pack2-purple.png"); }
-    body[data-stones="pack3"] .piece.yellow { background-image: url("assets/stones/pack3-yellow.png"); }
-    body[data-stones="pack3"] .piece.green  { background-image: url("assets/stones/pack3-green.png"); }
-    body[data-stones="pack3"] .piece.purple { background-image: url("assets/stones/pack3-purple.png"); }
-    body[data-stones="pack4"] .piece.yellow { background-image: url("assets/stones/pack4-yellow.png"); }
-    body[data-stones="pack4"] .piece.green  { background-image: url("assets/stones/pack4-green.png"); }
-    body[data-stones="pack4"] .piece.purple { background-image: url("assets/stones/pack4-purple.png"); }
-    body[data-stones="pack5"] .piece.yellow { background-image: url("assets/stones/pack5-yellow.png"); }
-    body[data-stones="pack5"] .piece.green  { background-image: url("assets/stones/pack5-green.png"); }
-    body[data-stones="pack5"] .piece.purple { background-image: url("assets/stones/pack5-purple.png"); }
-    body[data-stones="pack6"] .piece.yellow { background-image: url("assets/stones/pack6-yellow.png"); }
-    body[data-stones="pack6"] .piece.green  { background-image: url("assets/stones/pack6-green.png"); }
-    body[data-stones="pack6"] .piece.purple { background-image: url("assets/stones/pack6-purple.png"); }
-    body[data-stones="pack7"] .piece.yellow { background-image: url("assets/stones/pack7-yellow.png"); }
-    body[data-stones="pack7"] .piece.green  { background-image: url("assets/stones/pack7-green.png"); }
-    body[data-stones="pack7"] .piece.purple { background-image: url("assets/stones/pack7-purple.png"); }
-    body[data-stones="pack8"] .piece.yellow { background-image: url("assets/stones/pack8-yellow.png"); }
-    body[data-stones="pack8"] .piece.green  { background-image: url("assets/stones/pack8-green.png"); }
-    body[data-stones="pack8"] .piece.purple { background-image: url("assets/stones/pack8-purple.png"); }
     .owner-notch { position: absolute; width: 4px; height: 4px; bottom: 5px; border-radius: 50%; opacity: .7; }
     .owner-notch.L { background: #d1f0ff; }
     .owner-notch.R { background: #ffd8ca; }
@@ -415,6 +416,14 @@
 
     /* Dialogs opened on top of another shared one z-index, so a review opened from the history
        list rendered underneath it - it looked like the click did nothing. */
+    /* Temple courtyard behind the menu only, with no scrim: the art is already dark enough. */
+    body.in-menu::before {
+      content: ""; position: fixed; inset: 0; z-index: 0;
+      background: url("assets/bg-menu.webp") center/cover no-repeat;
+      pointer-events: none;
+    }
+    /* The shell must sit above the painting, and the blurred menu scrim must not smear it. */
+    body.in-menu #menuModal { backdrop-filter: none; -webkit-backdrop-filter: none; }
     .modal-backdrop.stacked { z-index: 110; }
     .modal-backdrop:focus { outline: none; }
     .modal-backdrop {
@@ -424,7 +433,7 @@
       display: grid;
       place-items: center;
       padding: 18px;
-      background: rgba(5, 14, 20, .55);
+      background: rgba(5, 14, 20, .30);
       backdrop-filter: blur(14px);
       opacity: 0;
       visibility: hidden;
@@ -620,7 +629,9 @@
     /* Glyph statistics: an icon plus a number reads far faster than three text blocks. */
     .glyph-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0 20px; }
     .glyph-stat { text-align: center; }
-    .gs-ico { display: block; font-size: 22px; color: #e9bd6d; line-height: 1; margin-bottom: 5px; }
+    .gs-ico { display: block; width: 40px; height: 40px; object-fit: contain; margin: 0 auto 5px; }
+    .lg-ico { width: 22px; height: 22px; object-fit: contain; vertical-align: -5px; margin-right: 4px; }
+    .coin-chip img { vertical-align: -4px; }
     .glyph-stat b { display: block; font-family: Georgia, serif; font-size: 20px; color: #ffe1a1; font-weight: 500; }
     .gs-lbl { display: block; margin-top: 1px; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: #7d9498; }
 
@@ -709,8 +720,7 @@
     .dgm-cell.side-L .n { color: #3f7fa8; } .dgm-cell.side-R .n { color: #a8503f; }
     .dgm-cell.foot-cell { border-style: dashed; }
     /* Centring via flex on the cell itself - the old absolute inset drifted on narrow screens. */
-    .dgm-cell .st { position: absolute; width: 76%; height: 76%; left: 12%; top: 12%; border-radius: 50%;
-      background-size: contain; background-position: center; background-repeat: no-repeat; }
+    .dgm-cell .st { position: absolute; width: 76%; height: 76%; left: 12%; top: 12%; border-radius: 50%; }
     .dgm-cell.mark-ok { border-color: #43d6c4; background: rgba(70,214,196,.2); box-shadow: inset 0 0 0 2px rgba(67,214,196,.8); }
     .dgm-cell.mark-bad { border-color: #ff5a44; background: rgba(255,90,68,.2); box-shadow: inset 0 0 0 2px rgba(255,90,68,.85); }
     .dgm-cell.mark-foot { border-color: #c98adf; background: rgba(201,138,223,.22); box-shadow: inset 0 0 0 2px rgba(201,138,223,.85); }
@@ -875,9 +885,13 @@
     .side-res { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; }
     .sr-row { display: flex; align-items: center; gap: 9px; justify-content: flex-end; }
     .player-panel[data-side="R"] .sr-row { flex-direction: row-reverse; justify-content: flex-end; }
-    .sr-bar { height: 2px; width: 46px; border-radius: 2px; display: block; opacity: .8; }
-    .sr-row b { font-variant-numeric: tabular-nums; font-size: 13px; color: #e0d4b8; min-width: 14px; text-align: right; }
-    .sr-row .mini-stone { width: 16px; height: 16px; }
+    /* A track that empties as stones are spent - the old flat dash gave no sense of supply. */
+    .sr-track { display: block; width: 92px; height: 4px; border-radius: 3px; background: rgba(255,255,255,.09); overflow: hidden; }
+    .sr-fill { display: block; height: 100%; border-radius: 3px; transition: width .35s ease; }
+    .player-panel[data-side="R"] .sr-track { transform: scaleX(-1); }
+    .sr-row b { font-variant-numeric: tabular-nums; font-size: 14px; color: #e8dcc2; min-width: 16px; text-align: right; }
+    .sr-stone { width: 22px; height: 22px; background-size: 300% 100%; background-repeat: no-repeat; display: block; }
+    .sw-stone { width: 30px; height: 30px; background-size: 300% 100%; background-repeat: no-repeat; display: inline-block; }
     @media (max-width: 900px) { .side-res { display: none; } }
     .mini-res { display: inline-flex; gap: 7px; align-items: center; }
     .mini-res i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
@@ -905,6 +919,15 @@
     /* The flourish used to sit below dialogs (z-index 100+), so a win was hidden behind the
        result window while a loss - which fires before it - stayed visible. */
     .vfx { position: fixed; inset: 0; z-index: 190; pointer-events: none; display: none; }
+    /* While waiting for a tap the layer accepts clicks and the word stays put. */
+    .vfx.await-tap { pointer-events: auto; cursor: pointer; }
+    .vfx.await-tap .vfx-word { animation: vfxWordHold 1.1s cubic-bezier(.2,.8,.3,1) forwards; }
+    .vfx.await-tap .vfx-flash { animation-duration: 2.4s; }
+    @keyframes vfxWordHold { 0% { opacity: 0; transform: scale(.82); } 100% { opacity: 1; transform: scale(1); } }
+    .vfx-hint { position: absolute; left: 0; right: 0; top: 56%; text-align: center; font-size: 13px;
+      letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.6); opacity: 0;
+      animation: hintIn .5s ease 1.1s forwards; }
+    @keyframes hintIn { to { opacity: 1; } }
     .vfx.show { display: block; }
     .vfx-flash { position: absolute; inset: 0; opacity: 0; }
     .vfx.win .vfx-flash { background: radial-gradient(circle at 50% 45%, rgba(255,214,130,.5), transparent 60%); animation: vfxFlash 1.5s ease-out forwards; }
@@ -940,10 +963,7 @@
     .hist-ava { width: 48px; height: 48px; border-radius: 14px; flex: 0 0 auto; }
     .hist-main { flex: 1; min-width: 0; }
     .hist-top { display: flex; align-items: center; gap: 10px; }
-    .hist-bar { flex: 1; height: 9px; border-radius: 5px; min-width: 40px; }
-    .hist-bar.res-win { background: linear-gradient(90deg, #7ed69a, rgba(126,214,154,.25)); }
-    .hist-bar.res-loss { background: linear-gradient(90deg, #ff7d68, rgba(255,125,104,.25)); }
-    .hist-bar.res-draw { background: linear-gradient(90deg, #c9b184, rgba(201,177,132,.25)); }
+    .hist-top { justify-content: space-between; }
     .hist-delta { font-variant-numeric: tabular-nums; font-size: 14px; }
     .hist-delta.up { color: #8fe0a4; } .hist-delta.down { color: #ff9a8a; } .hist-delta.even { color: #90a6a8; }
     .hist-meta { display: block; margin: 4px 0 8px; font-size: 12px; color: #90a6a8; }
@@ -1117,7 +1137,7 @@
       <section class="player-panel" data-side="L" id="panelL" aria-label="Игрок лазури">
         <button class="pcard" id="cardL" type="button">
           <span class="avatar sm" id="avaL">&#128034;</span>
-          <span class="pcard-txt"><b class="player-name" id="nameL">Игрок 1</b><span id="metaL">Лазурный дом</span></span>
+          <span class="pcard-txt"><b class="player-name" id="nameL">Игрок 1</b><span id="metaL">Синий дом</span></span>
         </button>
         <div class="turn-flag" id="turnL"></div>
         <div class="side-res" id="resL"></div>
@@ -1129,7 +1149,7 @@
           <span class="clock-vs">против</span>
           <div class="clock-side right" id="clockSideR"><span class="time" id="clockR">5:00</span><span class="who mini-res" id="clockWhoR"></span></div>
         </div>
-        <div class="board-heading"><span>Лазурная сторона</span><strong id="matchLabel">Локальная партия</strong><span>Алая сторона</span></div>
+        <div class="board-heading"><span>Синяя сторона</span><strong id="matchLabel">Локальная партия</strong><span>Красная сторона</span></div>
         <div class="board" id="board">
           <div class="center-glyph"></div>
           <div class="cells" id="cells"></div>
@@ -1139,7 +1159,7 @@
       <section class="player-panel" data-side="R" id="panelR" aria-label="Игрок заката">
         <button class="pcard" id="cardR" type="button">
           <span class="avatar sm" id="avaR">&#9917;</span>
-          <span class="pcard-txt"><b class="player-name" id="nameR">Игрок 2</b><span id="metaR">Алый дом</span></span>
+          <span class="pcard-txt"><b class="player-name" id="nameR">Игрок 2</b><span id="metaR">Красный дом</span></span>
         </button>
         <div class="turn-flag" id="turnR"></div>
         <div class="side-res" id="resR"></div>
@@ -1178,48 +1198,48 @@
           <p class="hero-sub" data-i18n="menu.tagline">Древняя партия, найденная среди храмовых рисунков. Бросайте кубик, выбирайте камень и не создайте три в ряд.</p>
 
           <div class="glyph-stats">
-            <div class="glyph-stat"><span class="gs-ico">&#9765;</span><b id="statClassic">—</b><span class="gs-lbl">Классика</span></div>
-            <div class="glyph-stat"><span class="gs-ico">&#128065;</span><b id="statBlitz">—</b><span class="gs-lbl">Блиц</span></div>
-            <div class="glyph-stat"><span class="gs-ico">&#128034;</span><b id="statWins">0</b><span class="gs-lbl">Побед</span></div>
+            <div class="glyph-stat"><img class="gs-ico" src="assets/ui/stat-classic.webp" alt="" width="48" height="48"><b id="statClassic">-</b><span class="gs-lbl">Классика</span></div>
+            <div class="glyph-stat"><img class="gs-ico" src="assets/ui/stat-blitz.webp" alt="" width="48" height="48"><b id="statBlitz">-</b><span class="gs-lbl">Блиц</span></div>
+            <div class="glyph-stat"><img class="gs-ico" src="assets/ui/stat-wins.webp" alt="" width="48" height="48"><b id="statWins">0</b><span class="gs-lbl">Побед</span></div>
           </div>
 
           <div class="tiles">
             <button class="tile tile-hero" id="menuPlay">
-              <img class="tile-ico" src="assets/ui/play.png" alt="" width="80" height="80">
+              <img class="tile-ico" src="assets/ui/play.webp" alt="" width="80" height="80">
               <span class="tile-name">Играть</span>
               <span class="tile-sub">Онлайн, с хранителем или вдвоём</span>
             </button>
             <button class="tile" id="openAccount">
-              <img class="tile-ico" id="tileAvatar" src="assets/ui/profile.png" alt="" width="64" height="64">
+              <img class="tile-ico" id="tileAvatar" src="assets/ui/profile.webp" alt="" width="64" height="64">
               <span class="tile-name">Профиль и друзья</span>
               <span class="tile-badge" id="friendsBadge" hidden></span>
             </button>
-            <button class="tile" id="openShop"><img class="tile-ico" src="assets/ui/shop.png" alt="" width="64" height="64"><span class="tile-name">Мастерская</span></button>
-            <button class="tile" id="openPuzzles"><img class="tile-ico" src="assets/ui/puzzles.png" alt="" width="64" height="64"><span class="tile-name">Задачи</span></button>
+            <button class="tile" id="openShop"><img class="tile-ico" src="assets/ui/shop.webp" alt="" width="64" height="64"><span class="tile-name">Мастерская</span></button>
+            <button class="tile" id="openPuzzles"><img class="tile-ico" src="assets/ui/puzzles.webp" alt="" width="64" height="64"><span class="tile-name">Задачи</span></button>
           </div>
 
           <nav class="shell-foot">
-            <button class="foot-btn" id="openHistory"><img src="assets/ui/history.png" alt="" width="32" height="32">История</button>
-            <button class="foot-btn" id="openLeaderboard"><img src="assets/ui/leaders.png" alt="" width="32" height="32">Лидеры</button>
-            <button class="foot-btn" data-open="settingsModal"><img src="assets/ui/settings.png" alt="" width="32" height="32">Настройки</button>
-            <button class="foot-btn" data-open="rulesModal"><img src="assets/ui/rules.png" alt="" width="32" height="32">Правила</button>
+            <button class="foot-btn" id="openHistory"><img src="assets/ui/history.webp" alt="" width="32" height="32">История</button>
+            <button class="foot-btn" id="openLeaderboard"><img src="assets/ui/leaders.webp" alt="" width="32" height="32">Лидеры</button>
+            <button class="foot-btn" data-open="settingsModal"><img src="assets/ui/settings.webp" alt="" width="32" height="32">Настройки</button>
+            <button class="foot-btn" data-open="rulesModal"><img src="assets/ui/rules.webp" alt="" width="32" height="32">Правила</button>
           </nav>
         </section>
 
         <!-- MODES ------------------------------------------------------------------------ -->
         <section class="screen" data-screen="modes">
           <button class="mode-card" id="onlineMode">
-            <img class="mc-ico" src="assets/ui/mode-ranked.png" alt="" width="64" height="64">
+            <img class="mc-ico" src="assets/ui/mode-ranked.webp" alt="" width="64" height="64">
             <span class="mc-txt"><b>Рейтинговый</b><span>С подбором соперника по силе</span></span>
             <span class="mc-arrow">&#8250;</span>
           </button>
           <button class="mode-card" id="botMode">
-            <img class="mc-ico" src="assets/ui/mode-bot.png" alt="" width="64" height="64">
+            <img class="mc-ico" src="assets/ui/mode-bot.webp" alt="" width="64" height="64">
             <span class="mc-txt"><b>С хранителем</b><span>Против стража пирамиды</span></span>
             <span class="mc-arrow">&#8250;</span>
           </button>
           <button class="mode-card" id="localMode">
-            <img class="mc-ico" src="assets/ui/mode-local.png" alt="" width="64" height="64">
+            <img class="mc-ico" src="assets/ui/mode-local.webp" alt="" width="64" height="64">
             <span class="mc-txt"><b>Локальный</b><span>Вдвоём на одном устройстве</span></span>
             <span class="mc-arrow">&#8250;</span>
           </button>
@@ -1234,9 +1254,9 @@
           <div class="lobby-card">
             <div class="lobby-side"><span class="gs-ico">&#9765;</span><b id="lobbyRating">1000</b><span class="gs-lbl">Рейтинг</span></div>
             <span class="lobby-vs">VS</span>
-            <div class="lobby-side"><span class="gs-ico">&#128034;</span><b id="lobbyLeague">—</b><span class="gs-lbl">Лига</span></div>
+            <div class="lobby-side"><span class="gs-ico">&#128034;</span><b id="lobbyLeague">-</b><span class="gs-lbl">Лига</span></div>
           </div>
-          <p class="lobby-time">Контроль времени: <b id="lobbyClock">5 мин + 10 сек</b></p>
+          <p class="lobby-time">Контроль времени: <b id="lobbyClock">5 мин + 5 сек</b></p>
           <button class="primary-btn big" id="startOnline">Начать поиск соперника</button>
         </section>
 
@@ -1271,8 +1291,8 @@
           <div class="prof-top">
             <div class="avatar lg" id="myAvatar">&#128034;</div>
             <b id="myName">Странник</b>
-            <span id="myMeta">—</span>
-            <span class="coin-chip">&#9679; <b id="myCoins">0</b></span>
+            <span id="myMeta">-</span>
+            <span class="coin-chip"><img src="assets/ui/coin.webp" alt="" width="20" height="20"><b id="myCoins">0</b></span>
           </div>
           <div class="stat-grid" id="myStats"></div>
           <div class="seg" id="profTabs">
@@ -1303,7 +1323,7 @@
           <div id="profFriends" hidden>
             <div class="code-box">
               <div class="code" id="myFriendCode">------</div>
-              <div class="hint">Ваш код — передайте другу</div>
+              <div class="hint">Ваш код - передайте другу</div>
               <button class="secondary-btn" id="copyCode">Копировать</button>
             </div>
             <div class="row-inline">
@@ -1350,7 +1370,7 @@
       <div class="modal-body">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
           <span style="font-size:12.5px;color:#8ba3a6">Монеты за победы и решённые задачи</span>
-          <span class="coin-chip">&#9679; <b id="shopCoins">0</b></span>
+          <span class="coin-chip"><img src="assets/ui/coin.webp" alt="" width="20" height="20"><b id="shopCoins">0</b></span>
         </div>
         <div class="shop-tabs">
           <button class="secondary-btn selected" data-shop="stones">Камни</button>
@@ -1366,7 +1386,7 @@
     <div class="modal" style="width:min(390px,100%)">
       <div class="modal-body result-copy" style="padding-top:24px">
         <h2 id="inviteModeTitle">Вызвать на партию</h2>
-        <p>Соперник: <b id="inviteWho">—</b>. Дружеские партии не влияют на рейтинг.</p>
+        <p>Соперник: <b id="inviteWho">-</b>. Дружеские партии не влияют на рейтинг.</p>
         <div class="tab-row" id="inviteModes" style="grid-template-columns:1fr 1fr"></div>
         <div class="result-actions"><button class="secondary-btn" data-close="inviteModeModal" style="grid-column:1/-1">Отмена</button></div>
       </div>
@@ -1401,7 +1421,7 @@
           <button id="revNext" title="Вперёд">&#9654;</button>
           <button id="revEnd" title="В конец">&#9654;&#124;</button>
         </div>
-        <div style="text-align:center"><span class="verdict neutral" id="revVerdict">—</span></div>
+        <div style="text-align:center"><span class="verdict neutral" id="revVerdict">-</span></div>
         <p class="rev-note" id="revNote"></p>
       </div>
     </div>
@@ -1517,28 +1537,29 @@
 
       const COLORS = ["yellow", "green", "purple"];
       const COLOR_NAMES = { yellow: "желтый", green: "зеленый", purple: "фиолетовый" };
-      const SIDE_NAMES = { L: "Лазурь", R: "Алый" }; // kept short for turn labels
-      const SIDE_FULL = { L: "Лазурная сторона", R: "Алая сторона" };
+      const SIDE_NAMES = { L: "Синий", R: "Красный" }; // kept short for turn labels
+      const SIDE_FULL = { L: "Синяя сторона", R: "Красная сторона" };
       const RANKS = ["Носильщик", "Каменщик", "Зодчий", "Хранитель врат", "Жрец Ра", "Визирь", "Фараон"];
       // Online rating tiers, shown next to the raw Elo number so the ladder reads as progress.
       // League ladder. The old version had almost nothing below 900, so every new player sat in
       // the same tier for a long time with no sense of movement. Progression is dense at the
       // bottom (where most players are and where feedback matters most) and sparse at the top.
       const ELO_TIERS = [
-        { min: 0,    name: "Песчинка",     icon: "\u{1F32C}" },
-        { min: 700,  name: "Странник",     icon: "\u{1F45E}" },
-        { min: 800,  name: "Носильщик",    icon: "\u{1FAA8}" },
-        { min: 880,  name: "Каменотёс",    icon: "\u2692" },
-        { min: 950,  name: "Известняк",    icon: "\u{1F9F1}" },
-        { min: 1020, name: "Гранит",       icon: "\u26F0" },
-        { min: 1090, name: "Бронза Нила",  icon: "\u{1F947}" },
-        { min: 1160, name: "Обсидиан",     icon: "\u{1F311}" },
-        { min: 1240, name: "Лазурит",      icon: "\u{1F537}" },
-        { min: 1330, name: "Золото Ра",    icon: "\u2600" },
-        { min: 1430, name: "Жрец",         icon: "\u{1F52E}" },
-        { min: 1550, name: "Визирь",       icon: "\u{1F4DC}" },
-        { min: 1700, name: "Фараон",       icon: "\u{1F451}" }
+        { min: 0,    name: "Песчинка",    icon: "sand" },
+        { min: 700,  name: "Странник",    icon: "wanderer" },
+        { min: 800,  name: "Носильщик",   icon: "porter" },
+        { min: 880,  name: "Каменотёс",   icon: "mason" },
+        { min: 950,  name: "Известняк",   icon: "limestone" },
+        { min: 1020, name: "Гранит",      icon: "granite" },
+        { min: 1090, name: "Бронза Нила", icon: "bronze" },
+        { min: 1160, name: "Обсидиан",    icon: "obsidian" },
+        { min: 1240, name: "Лазурит",     icon: "lapis" },
+        { min: 1330, name: "Золото Ра",   icon: "goldra" },
+        { min: 1430, name: "Жрец",        icon: "priest" },
+        { min: 1550, name: "Визирь",      icon: "vizier" },
+        { min: 1700, name: "Фараон",      icon: "pharaoh" }
       ];
+      const leagueIcon = tier => `<img class="lg-ico" src="assets/leagues/${tier.icon}.webp" alt="" width="28" height="28">`;
       const eloTier = rating => [...ELO_TIERS].reverse().find(t => rating >= t.min) || ELO_TIERS[0];
       // Progress towards the next league, so the number on the profile means something.
       function leagueProgress(rating) {
@@ -1657,7 +1678,12 @@
           el.classList.toggle("enemy-hint", isLegal && !canActLocally() && state.phase !== "gameover");
           el.classList.toggle("last", state.lastCell === cell.id);
           if (placed) {
-            if (!$(".piece", el)) el.insertAdjacentHTML("beforeend", `<span class="piece ${placed.color}"><i class="owner-notch ${placed.player}"></i></span>`);
+            if (!$(".piece", el)) {
+              // A stone is drawn with its owner's pack, so both players see each other's skins.
+              const pack = skinFor(placed.player);
+              el.insertAdjacentHTML("beforeend",
+                `<span class="piece ${placed.color}" style="background-image:url('assets/stones/${pack}.webp')"><i class="owner-notch ${placed.player}"></i></span>`);
+            }
           } else {
             const piece = $(".piece", el);
             if (piece) piece.remove();
@@ -1711,10 +1737,18 @@
           const host = $(`#res${side}`);
           host.hidden = !wide;
           if (!wide) continue;
+          const pack = skinFor(side);
           host.innerHTML = COLORS.map(color => {
             const left = state.inventory[side]?.[color] ?? 0;
+            const max = STARTING_INVENTORY[color];
+            // The bar length tracks the stones left, so depletion is readable at a glance.
+            const pct = Math.round(left / max * 100);
             const v = color === "yellow" ? "yellow-stone" : color === "green" ? "green-stone" : "purple-stone";
-            return `<span class="sr-row"><i class="sr-bar" style="background:var(--${v})"></i><b>${left}</b><span class="mini-stone stone-${color}"></span></span>`;
+            return `<span class="sr-row">
+              <i class="sr-track"><u class="sr-fill" style="width:${pct}%;background:var(--${v})"></u></i>
+              <b>${left}</b>
+              <span class="sr-stone stone-${color}" style="background-image:url('assets/stones/${pack}.webp')"></span>
+            </span>`;
           }).join("");
         }
         for (const [side, node] of [["L", $("#clockWhoL")], ["R", $("#clockWhoR")]]) {
@@ -1731,7 +1765,13 @@
           (side === "L" ? dom.clockL : dom.clockR).textContent = formatClock(ms);
           const box = $(side === "L" ? "#clockSideL" : "#clockSideR");
           box.classList.toggle("running", running);
-          box.classList.toggle("low", ms <= 20000 && state.phase !== "gameover");
+          const low = ms <= 20000 && state.phase !== "gameover";
+          box.classList.toggle("low", low);
+          // One beep per second, only for the side actually on the clock.
+          if (low && running && Math.floor(ms / 1000) !== lastTickSecond) {
+            lastTickSecond = Math.floor(ms / 1000);
+            audio.lowTime();
+          }
         }
       }
 
@@ -2069,7 +2109,7 @@
       // like Yandex Games require every external domain to be explicitly whitelisted, so shipping
       // the library inside the game bundle avoids that dependency entirely.
       const SOCKET_IO_SRC = "assets/vendor/socket.io.min.js";
-      const ONLINE_MODE_LABELS = { classic: "Классика 5+10", blitz: "Блиц 2+3" };
+      const ONLINE_MODE_LABELS = { classic: "Классика 5+5", blitz: "Блиц 2+2" };
 
       function loadScriptOnce(src) {
         return new Promise((resolve, reject) => {
@@ -2159,7 +2199,7 @@
         // Safety net independent of navigation: a running match must be resolved before any new
         // search, otherwise the player leaves an opponent sitting at a live board.
         if (matchLive()) {
-          showToast("Вы уже в партии — вернитесь к доске или сдайтесь");
+          showToast("Вы уже в партии - вернитесь к доске или сдайтесь");
           closeModal("menuModal");
           return;
         }
@@ -2196,7 +2236,7 @@
           board: {}, inventory: { L: { ...STARTING_INVENTORY }, R: { ...STARTING_INVENTORY } }, active: "L",
           selectedColor: "yellow", phase: "roll", roll: null, legal: [], lastCell: null,
           mode: "online", result: null, matchNumber: state.matchNumber + 1,
-          online: { client: onlineClient, side: payload.side, matchId: payload.matchId, revision: 0, clock: { L: 0, R: 0 }, opponentName: payload.opponent, opponentId: payload.opponentId, opponentRating: payload.opponentRating, opponentAvatar: payload.opponentAvatar, myRating: payload.myRating, onlineMode: payload.mode, friendly: Boolean(payload.friendly) }
+          online: { client: onlineClient, side: payload.side, matchId: payload.matchId, revision: 0, clock: { L: 0, R: 0 }, opponentName: payload.opponent, opponentId: payload.opponentId, opponentRating: payload.opponentRating, opponentAvatar: payload.opponentAvatar, opponentStones: payload.opponentStones, myRating: payload.myRating, onlineMode: payload.mode, friendly: Boolean(payload.friendly) }
         });
         const youLabel = "Вы", opponentLabel = payload.opponent || "Соперник";
         $("#nameL").textContent = payload.side === "L" ? youLabel : opponentLabel;
@@ -2210,6 +2250,7 @@
         dom.die.dataset.face = "1";
         stopOfflineClock(); hideReview(); closeModal("resultModal"); closeModal("queueModal");
         render(); audio.startAmbience(); audio.turn();
+        audio.opponentFound();
         showToast(`Соперник найден: ${opponentLabel}`);
         Promise.resolve(window.PlatformBridge?.onMatchStart?.()).catch(() => undefined);
       }
@@ -2250,7 +2291,7 @@
         }
 
         if (newlyPlaced) audio.place(state.board[newlyPlaced].color);
-        else if (skipped) showToast("Нет доступных клеток — ход передан");
+        else if (skipped) showToast("Нет доступных клеток - ход передан");
 
         if (serverState.result) {
           const sameLines = serverState.result.lines || [];
@@ -2277,7 +2318,7 @@
           const reasonText = {
             line: "Три одинаковых камня закрыли линию.",
             filled: won ? "Вы заполнили свою половину первым." : "Соперник заполнил все свои клетки.",
-            timeout: won ? "У соперника закончилось время — он не сделал ход вовремя." : "У вас закончилось время на часах.",
+            timeout: won ? "У соперника закончилось время - он не сделал ход вовремя." : "У вас закончилось время на часах.",
             forfeit: won ? "Соперник вышел из партии или сдался." : "Вы покинули партию."
           }[result.reason]
             || (result.reason === "forfeit" && !won ? "Вы сдали партию." : "Партия завершена.");
@@ -2294,12 +2335,12 @@
           : result.reason === "filled"
             ? (won ? "Вы заполнили свою половину первым." : "Соперник заполнил свою половину первым.")
           : result.reason === "timeout"
-            ? (won ? "У соперника закончилось время — он не успел сходить." : "У вас закончилось время на часах.")
+            ? (won ? "У соперника закончилось время - он не успел сходить." : "У вас закончилось время на часах.")
           : result.reason === "forfeit"
             ? (won ? "Соперник сдался или покинул партию." : "Вы сдались.")
           : "";
         $("#resultText").textContent = [
-          `Вы играли за ${sideNames[mySide]}, соперник (${state.online.opponentName}) — за ${sideNames[other(mySide)]}.`,
+          `Вы играли за ${sideNames[mySide]}, соперник (${state.online.opponentName}) - за ${sideNames[other(mySide)]}.`,
           whereText
         ].filter(Boolean).join(" ");
 
@@ -2312,7 +2353,7 @@
           updateProfile(); schedule(() => showCoinGain(coins), 600);
         }
         $("#xpGain").textContent = [
-          friendly ? "Дружеская партия — рейтинг не меняется" : null,
+          friendly ? "Дружеская партия - рейтинг не меняется" : null,
           myRating ? `Рейтинг: ${myRating.ratingBefore + myRating.delta} (${myRating.delta >= 0 ? "+" : ""}${myRating.delta})` : null,
           `+${gain} опыта`, coins ? `+${coins} монет` : null
         ].filter(Boolean).join(" · ");
@@ -2425,6 +2466,9 @@
         const layer = $("#vfx");
         layer.className = `vfx show ${kind}`;
         $("#vfxWord").textContent = kind === "win" ? "Победа" : kind === "loss" ? "Поражение" : "Ничья";
+        if (!layer.querySelector(".vfx-hint")) {
+          layer.insertAdjacentHTML("beforeend", '<div class="vfx-hint">нажмите, чтобы продолжить</div>');
+        }
         layer.querySelectorAll(".vfx-ray, .vfx-spark").forEach(node => node.remove());
         if (kind === "win") {
           const fragment = document.createDocumentFragment();
@@ -2447,14 +2491,19 @@
           }
           layer.append(fragment);
         }
-        // Cleanup must NOT go through schedule(): clearTimers() runs when leaving to the menu and
-        // would cancel it, leaving the rays and sparks in the DOM forever. Measured 26 orphaned
-        // nodes after three games before this was changed.
+        // The outcome stays on screen until the player dismisses it: a timed fade meant a win
+        // could disappear before it was noticed. Cleanup is NOT scheduled through schedule(),
+        // because clearTimers() on leaving to the menu would cancel it and orphan the nodes.
         clearTimeout(vfxCleanupTimer);
-        vfxCleanupTimer = setTimeout(() => {
+        layer.classList.add("await-tap");
+        const dismiss = () => {
+          layer.removeEventListener("pointerdown", dismiss);
           layer.className = "vfx";
           layer.querySelectorAll(".vfx-ray, .vfx-spark").forEach(node => node.remove());
-        }, 1900);
+        };
+        layer.addEventListener("pointerdown", dismiss);
+        // A long stop is still armed so a stuck overlay can never block the interface for good.
+        vfxCleanupTimer = setTimeout(dismiss, 15000);
       }
 
       const MODE_TITLES = { classic: "Классика", blitz: "Блиц" };
@@ -2500,7 +2549,7 @@
         const map = createDiagram($("#revBoard"));
         paintDiagram(map, entry.board || {});
         diagramContext($("#revCtx"), { note: "Финальная позиция" });
-        $("#revPly").textContent = "—";
+        $("#revPly").textContent = "-";
         ["revStart", "revPrev", "revNext", "revEnd"].forEach(id => { $(`#${id}`).disabled = true; });
         $("#revVerdict").className = "verdict neutral";
         $("#revVerdict").textContent = RESULT_TITLES[entry.result] || "Итог";
@@ -2533,7 +2582,6 @@
               <span class="hist-main">
                 <span class="hist-top">
                   <b class="res-word res-${match.result}">${RESULT_TITLES[match.result]}</b>
-                  <span class="hist-bar res-${match.result}"></span>
                   ${Number.isFinite(delta) && delta !== 0 ? `<span class="hist-delta ${deltaClass}">${delta > 0 ? "+" : ""}${delta}</span>` : ""}
                 </span>
                 <span class="hist-meta">${escapeHtml(match.opponentName)} · ${MODE_TITLES[match.mode] || match.mode} · ${REASON_TITLES[match.reason] || ""} ${when}</span>
@@ -2558,7 +2606,7 @@
         const cell = cells.find(item => item.id === id);
         if (!cell) return id;
         if (cell.foot) return `ножка ${SIDE_NAMES[cell.owner]}`;
-        return `${cell.visualSide === "L" ? "Лазурь" : "Алый"} ${cell.level}-${cell.pos}`;
+        return `${cell.visualSide === "L" ? "Синий" : "Красный"} ${cell.level}-${cell.pos}`;
       }
 
       function escapeHtml(value) {
@@ -2641,7 +2689,7 @@
         clock.turnStart = Date.now();
       }
 
-      const OFFLINE_TIME_CONTROLS = { classic: { initialMs: 300000, incrementMs: 10000 }, blitz: { initialMs: 120000, incrementMs: 3000 } };
+      const OFFLINE_TIME_CONTROLS = { classic: { initialMs: 300000, incrementMs: 5000 }, blitz: { initialMs: 120000, incrementMs: 2000 } };
       function resetOfflineClock(mode) {
         const preset = OFFLINE_TIME_CONTROLS[mode];
         state.offlineClock = preset
@@ -2675,14 +2723,14 @@
             const rating = isMe
               ? (Number.isFinite(state.online.myRating) ? state.online.myRating : null)
               : (Number.isFinite(state.online.opponentRating) ? state.online.opponentRating : null);
-            metaEl.textContent = [side === "L" ? "Лазурь" : "Алый", rating ? `рейтинг ${rating}` : null]
+            metaEl.textContent = [side === "L" ? "Синий" : "Красный", rating ? `рейтинг ${rating}` : null]
               .filter(Boolean).join(" · ");
           } else {
             const bot = state.mode === "bot" && side === "R";
             nameEl.textContent = bot ? BOT_NAMES[state.difficulty] || "Хранитель" : (side === "L" ? "Игрок 1" : "Игрок 2");
             avaEl.innerHTML = side === "L" ? avatarChar(currentAvatar())
-              : (bot ? `<img src="assets/bots/${state.difficulty}.png" alt="" width="64" height="64">` : avatarChar("tut"));
-            metaEl.textContent = side === "L" ? "Лазурный дом" : (bot ? "Хранитель пирамиды" : "Алый дом");
+              : (bot ? `<img src="assets/bots/${state.difficulty}.webp" alt="" width="64" height="64">` : avatarChar("tut"));
+            metaEl.textContent = side === "L" ? "Синий дом" : (bot ? "Хранитель пирамиды" : "Красный дом");
           }
         }
       }
@@ -2813,7 +2861,7 @@
       function chooseInviteMode(person) {
         $("#inviteWho").textContent = person.displayName;
         $("#inviteModes").innerHTML = "";
-        for (const [mode, label] of [["classic", "Классика 5+10"], ["blitz", "Блиц 2+3"]]) {
+        for (const [mode, label] of [["classic", "Классика 5+5"], ["blitz", "Блиц 2+2"]]) {
           const button = document.createElement("button");
           button.className = "secondary-btn";
           button.textContent = label;
@@ -2827,7 +2875,7 @@
         try {
           await onlineClient.emit("friends:invite", { otherId: person.otherId, mode });
           audio.turn();
-          showToast(`Вызов отправлен ${person.displayName} — ждём ответа`);
+          showToast(`Вызов отправлен ${person.displayName} - ждём ответа`);
         } catch (error) {
           audio.blocked();
           const messages = { FRIEND_OFFLINE: "Друг вышел из сети", NOT_FRIENDS: "Сначала добавьте в друзья" };
@@ -2864,12 +2912,14 @@
       // with a placeholder; paid ones are the first sink for the soft currency.
       // Avatar artwork comes from the studio atlas. The sheet supplies eleven portraits, so the
       // catalogue matches it exactly rather than inventing entries that would render as blanks.
+      // Twelve portraits from the studio sheet: the first four are plain citizens (free), the
+      // rest grow in ornamentation and price.
       const AVATARS = [
-        { id: "pharaoh", price: 0 }, { id: "bastet", price: 0 }, { id: "anubis", price: 0 }, { id: "tut", price: 0 },
-        { id: "sobek", price: 150 }, { id: "bastet2", price: 150 }, { id: "anubis2", price: 200 }, { id: "cleo", price: 250 },
-        { id: "thoth", price: 300 }, { id: "khnum", price: 350 }, { id: "tut2", price: 500 }
+        { id: "av1", price: 0 }, { id: "av2", price: 0 }, { id: "av3", price: 0 }, { id: "av4", price: 0 },
+        { id: "av5", price: 150 }, { id: "av6", price: 150 }, { id: "av7", price: 250 }, { id: "av8", price: 250 },
+        { id: "av9", price: 400 }, { id: "av10", price: 450 }, { id: "av11", price: 600 }, { id: "av12", price: 900 }
       ];
-      const AVATAR_SRC = id => `assets/avatars/${AVATARS.some(a => a.id === id) ? id : AVATARS[0].id}.png`;
+      const AVATAR_SRC = id => `assets/avatars/${AVATARS.some(a => a.id === id) ? id : AVATARS[0].id}.webp`;
       const avatarChar = id => `<img src="${AVATAR_SRC(id)}" alt="" width="64" height="64">`;
 
       function currentAvatar() { const id = storage.get("pyramide.avatar"); return AVATARS.some(a => a.id === id) ? id : AVATARS[0].id; }
@@ -2952,7 +3002,7 @@
           $("#myCoins").textContent = Number(progression.coins) || 0;
           $("#myName").textContent = response?.player?.displayName || storedNickname() || "Странник";
           renderMyStats(response?.profile);
-        } catch { $("#myMeta").textContent = "Офлайн — данные могут быть неполными"; }
+        } catch { $("#myMeta").textContent = "Офлайн - данные могут быть неполными"; }
       }
 
       // Peak was read from the classic column only, so a blitz rating of 1013 sat next to a
@@ -2961,15 +3011,15 @@
       function peakOf(source) {
         const values = [source.bestClassic, source.bestBlitz, source.ratingClassic, source.ratingBlitz]
           .map(Number).filter(Number.isFinite);
-        return values.length ? Math.max(...values) : "—";
+        return values.length ? Math.max(...values) : "-";
       }
 
       function leagueTile(rating) {
-        if (!Number.isFinite(rating)) return '<div class="stat-box"><b>—</b><span>Лига</span></div>';
+        if (!Number.isFinite(rating)) return '<div class="stat-box"><b>-</b><span>Лига</span></div>';
         const tier = eloTier(rating);
         const p = leagueProgress(rating);
         const hint = p.next ? `до «${p.next.name}» ${p.left}` : "высшая лига";
-        return `<div class="stat-box league"><b>${tier.icon} ${tier.name}</b><span>${hint}</span>
+        return `<div class="stat-box league"><b>${leagueIcon(tier)} ${tier.name}</b><span>${hint}</span>
           <i class="lg-bar"><u style="width:${Math.max(4, p.pct)}%"></u></i></div>`;
       }
 
@@ -2978,9 +3028,9 @@
         const wins = source.wins || 0;
         const rate = games ? Math.round(wins / games * 100) : 0;
         return [
-          ["Классика", source.ratingClassic ?? "—"], ["Блиц", source.ratingBlitz ?? "—"],
+          ["Классика", source.ratingClassic ?? "-"], ["Блиц", source.ratingBlitz ?? "-"],
           ["Партий", games], ["Побед", wins],
-          ["Процент побед", games ? `${rate}%` : "—"], ["Пик рейтинга", peakOf(source)]
+          ["Процент побед", games ? `${rate}%` : "-"], ["Пик рейтинга", peakOf(source)]
         ].map(([label, value]) => `<div class="stat-box"><b>${value}</b><span>${label}</span></div>`).join("");
       }
 
@@ -3005,7 +3055,7 @@
           clearInterval(linkTimer);
           linkTimer = setInterval(() => {
             left--;
-            hint.textContent = left > 0 ? `Код действует ещё ${formatClock(left * 1000)}` : "Код истёк — получите новый";
+            hint.textContent = left > 0 ? `Код действует ещё ${formatClock(left * 1000)}` : "Код истёк - получите новый";
             if (left <= 0) clearInterval(linkTimer);
           }, 1000);
         } catch { showToast("Нужно подключение к серверу"); }
@@ -3090,54 +3140,54 @@
       const TUTORIAL = [
         {
           title: "Поле и две половины",
-          text: "Пирамида разделена пополам: <b>Лазурная</b> сторона слева, <b>Алая</b> справа. Свои камни вы ставите только на свою половину. Числа в клетках — <b>позиция</b> в ряду, числа по бокам — <b>номер ряда</b>.",
+          text: "Пирамида разделена пополам: <b>Синяя</b> сторона слева, <b>Красная</b> справа. Свои камни вы ставите только на свою половину. Числа в клетках - <b>позиция</b> в ряду, числа по бокам - <b>номер ряда</b>.",
           paint: () => cells.map(cell => ({ id: cell.id, cls: cell.foot ? "dim" : cell.visualSide === "L" ? "ok" : "dim" }))
         },
         {
           title: "Бросок 1-5: ряд или позиция",
           roll: 3,
-          text: "Выпало <b>3</b> — можно занять любую свободную клетку <b>ряда 3</b> или клетку с <b>позицией 3</b> на своей половине. Подсвечены все такие клетки.",
+          text: "Выпало <b>3</b> - можно занять любую свободную клетку <b>ряда 3</b> или клетку с <b>позицией 3</b> на своей половине. Подсвечены все такие клетки.",
           paint: () => { const legal = legalCells("L", 3, EMPTY); return cells.map(cell => ({ id: cell.id, cls: legal.includes(cell.id) ? "ok" : "dim" })); }
         },
         {
           title: "Бросок 6: любая своя клетка",
           roll: 6,
-          text: "При <b>6</b> занимайте любую свободную клетку своей половины. Сюда же входит ваша <b>атакующая ножка</b> — она находится <b>под половиной соперника</b> (отмечена отдельно). Ножка соперника, что стоит под вашей половиной, вам недоступна.",
+          text: "При <b>6</b> занимайте любую свободную клетку своей половины. Сюда же входит ваша <b>атакующая ножка</b> - она находится <b>под половиной соперника</b> (отмечена отдельно). Ножка соперника, что стоит под вашей половиной, вам недоступна.",
           paint: () => { const legal = legalCells("L", 6, EMPTY); return cells.map(cell => ({ id: cell.id, cls: legal.includes(cell.id) ? (cell.foot ? "foot" : "ok") : "dim" })); }
         },
         {
           title: "Запретная линия: горизонталь",
-          text: "<b>Три камня одного цвета подряд — это поражение</b>, а не победа. Линия по горизонтали: три зелёных в ряду 3.",
+          text: "<b>Три камня одного цвета подряд - это поражение</b>, а не победа. Линия по горизонтали: три зелёных в ряду 3.",
           stones: { "L3-3": "green", "L3-2": "green", "L3-1": "green" },
           paint: () => ["L3-3", "L3-2", "L3-1"].map(id => ({ id, cls: "bad" }))
         },
         {
           title: "Вертикаль и диагональ",
-          text: "Линия считается и по <b>вертикали</b>, и по <b>диагонали</b>. Слева показана вертикаль из жёлтых, справа — диагональ из фиолетовых. Любая из трёх ориентаций проигрывает.",
+          text: "Линия считается и по <b>вертикали</b>, и по <b>диагонали</b>. Слева показана вертикаль из жёлтых, справа - диагональ из фиолетовых. Любая из трёх ориентаций проигрывает.",
           stones: { "L1-1": "yellow", "L2-1": "yellow", "L3-1": "yellow", "R3-3": "purple", "R4-2": "purple", "R5-1": "purple" },
           paint: () => ["L1-1", "L2-1", "L3-1", "R3-3", "R4-2", "R5-1"].map(id => ({ id, cls: "bad" }))
         },
         {
           title: "Кто именно проигрывает",
-          text: "Линия может пересекать середину. Проигрывает та сторона, где лежит <b>большинство камней линии</b>. Здесь два зелёных на Лазурной половине и один на Алой — проигрывает <b>Лазурная</b>.",
+          text: "Линия может пересекать середину. Проигрывает та сторона, где лежит <b>большинство камней линии</b>. Здесь два зелёных на Синей половине и один на Красной - проигрывает <b>Синяя</b>.",
           stones: { "L3-2": "green", "L3-1": "green", "R3-1": "green" },
           paint: () => [{ id: "L3-2", cls: "bad" }, { id: "L3-1", cls: "bad" }, { id: "R3-1", cls: "ok" }]
         },
         {
           title: "Атакующая ножка бьёт соперника",
-          text: "Ножка стоит на половине соперника и <b>считается его клеткой</b> при подсчёте линии. Здесь линия из жёлтых: один камень на Лазурной половине, два на Алой (включая вашу ножку) — проигрывает <b>Алая</b>. Так ножка становится оружием.",
+          text: "Ножка стоит на половине соперника и <b>считается его клеткой</b> при подсчёте линии. Здесь линия из жёлтых: один камень на Синей половине, два на Красной (включая вашу ножку) - проигрывает <b>Красная</b>. Так ножка становится оружием.",
           stones: { "L4-1": "yellow", "R5-1": "yellow", "foot-L": "yellow" },
           paint: () => [{ id: "L4-1", cls: "ok" }, { id: "R5-1", cls: "bad" }, { id: "foot-L", cls: "bad" }]
         },
         {
           title: "Ничья",
-          text: "Если один ход достраивает <b>четыре камня подряд</b>, внутри них оказываются <b>две</b> запретные тройки — по одной против каждой стороны. Осудить обоих нельзя, поэтому объявляется <b>ничья</b>. Здесь четыре жёлтых в ряду 2: тройки «2-2 2-1 2-1» и «2-1 2-1 2-2» бьют по разным половинам.",
+          text: "Если один ход достраивает <b>четыре камня подряд</b>, внутри них оказываются <b>две</b> запретные тройки - по одной против каждой стороны. Осудить обоих нельзя, поэтому объявляется <b>ничья</b>. Здесь четыре жёлтых в ряду 2: тройки «2-2 2-1 2-1» и «2-1 2-1 2-2» бьют по разным половинам.",
           stones: { "L2-2": "yellow", "L2-1": "yellow", "R2-1": "yellow", "R2-2": "yellow" },
           paint: () => ["L2-2", "L2-1", "R2-1", "R2-2"].map(id => ({ id, cls: "bad" }))
         },
         {
           title: "Как победить",
-          text: "Заполните свою половину первой — <b>15 клеток</b>, атакующая ножка в счёт не идёт. Также вы побеждаете, если соперник собрал три в ряд, сдался или у него закончилось время.",
+          text: "Заполните свою половину первой - <b>15 клеток</b>, атакующая ножка в счёт не идёт. Также вы побеждаете, если соперник собрал три в ряд, сдался или у него закончилось время.",
           paint: () => cells.map(cell => ({ id: cell.id, cls: cell.visualSide === "L" && !cell.foot ? "ok" : "dim" }))
         }
       ];
@@ -3297,9 +3347,9 @@
 
       function diagramContext(host, { roll = null, inventory = null, note = "" } = {}) {
         const parts = [];
-        if (roll != null) parts.push(`<span class="dgm-die">&#9856; Выпало: <b>${roll}</b></span>`);
+        if (roll != null) parts.push(`<span class="dgm-die"><img src="assets/ui/dice.webp" alt="" width="18" height="18">Выпало: <b>${roll}</b></span>`);
         if (inventory) {
-          for (const [side, cls, label] of [["L", "l", "Лазурь"], ["R", "r", "Алый"]]) {
+          for (const [side, cls, label] of [["L", "l", "Синий"], ["R", "r", "Красный"]]) {
             const stones = COLORS.map(color =>
               `<i style="background:var(--${color === "yellow" ? "yellow-stone" : color === "green" ? "green-stone" : "purple-stone"})"></i><span>${inventory[side]?.[color] ?? 0}</span>`).join("");
             parts.push(`<span class="dgm-res ${cls}"><b>${label}</b>${stones}</span>`);
@@ -3313,7 +3363,9 @@
       // Cosmetics. Purchases are decided by the server; this only renders and applies the result.
       // ---------------------------------------------------------------------------------------
       const SHOP_META = {
-        stones: { pack1: "Гладкие", pack2: "Рунные", pack3: "Треснувшие", pack4: "Спираль", pack5: "Вихрь", pack6: "Огранка", pack7: "Кристалл", pack8: "Звёздные" },
+        stones: { pack1: "Классика", pack2: "Спираль", pack3: "Волны", pack4: "Треугольники",
+                  pack5: "Солнце", pack6: "Пирамида", pack7: "Линии", pack8: "Лотос",
+                  pack9: "Иератика", pack10: "Скарабей", pack11: "Пустыня", pack12: "Звёзды" },
         board: { sand: "Песок", granite: "Гранит", papyrus: "Папирус", nightsand: "Ночной песок", marble: "Мрамор" },
         avatar: Object.fromEntries(AVATARS.map(a => [a.id, a.id]))
       };
@@ -3323,8 +3375,10 @@
         marble: "linear-gradient(170deg,#eceae6,#d5d2cc)"
       };
       // Swatches are the real stone images now, so the shop preview matches what gets equipped.
-      const STONE_PACKS = ["pack1","pack2","pack3","pack4","pack5","pack6","pack7","pack8"];
-      const stoneSrc = (pack, color) => `assets/stones/${pack}-${color}.png`;
+      const STONE_PACKS = Array.from({ length: 12 }, (_, i) => `pack${i + 1}`);
+      // Shop swatches reuse the same strip, positioned per colour.
+      const stoneSwatch = (pack, color) =>
+        `<span class="sw-stone stone-${color}" style="background-image:url('assets/stones/${pack}.webp')"></span>`;
 
       // Ids we actually ship artwork for.
       const DRAWABLE = {
@@ -3333,6 +3387,17 @@
         board: new Set(["sand", "granite", "papyrus", "nightsand", "marble"])
       };
       let shop = { slot: "stones", catalogue: null, owned: [], equipped: {} };
+
+      // Which stone pack a given side plays with. Mine comes from my own equipment; the
+      // opponent's arrives with the match so their choice is visible on my board too.
+      function skinFor(side) {
+        if (isOnline() && state.online) {
+          const mine = side === state.online.side;
+          const theirs = state.online.opponentStones;
+          return mine ? (document.body.dataset.stones || "pack1") : (theirs || "pack1");
+        }
+        return document.body.dataset.stones || "pack1";
+      }
 
       function applyCosmetics(equipped) {
         const stones = equipped?.stones || storage.get("pyramide.skin.stones") || "pack1";
@@ -3394,7 +3459,7 @@
           node.type = "button";
           node.className = `shop-item${equipped ? " equipped" : ""}${owned ? "" : " locked"}`;
           const preview = shop.slot === "stones"
-            ? `<span class="sw">${COLORS.map(c => `<img src="${stoneSrc(item.id, c)}" alt="" width="26" height="26">`).join("")}</span>`
+            ? `<span class="sw">${COLORS.map(c => stoneSwatch(item.id, c)).join("")}</span>`
             : shop.slot === "board"
               ? `<span class="bar" style="background:${BOARD_SWATCH[item.id]}"></span>`
               : `<span class="sw"><img src="${AVATAR_SRC(item.id)}" alt="" width="46" height="46"></span>`;
@@ -3404,11 +3469,11 @@
           if (!affordable) node.classList.add("unaffordable");
           // State is spelled out rather than implied by styling alone: owned-but-not-worn was
           // previously indistinguishable from "buy me".
-          const state = equipped ? "Надето" : owned ? "Надеть" : affordable ? `${item.price} \u25CF` : `${item.price} \u25CF`;
+          const state = equipped ? "Надето" : owned ? "Надеть" : affordable ? `${item.price} <img src="assets/ui/coin.webp" alt="" width="14" height="14" style="vertical-align:-2px">` : `${item.price} <img src="assets/ui/coin.webp" alt="" width="14" height="14" style="vertical-align:-2px">`;
           node.innerHTML = `${preview}<span class="nm">${SHOP_META[shop.slot]?.[item.id] || item.id}</span>`
             + `<span class="pr ${equipped ? "on" : owned ? "own" : ""}">${state}</span>`;
           node.addEventListener("click", () => {
-            if (!affordable) { audio.blocked(); showToast(`Не хватает ${item.price - coins} монет — играйте и решайте задачи`); return; }
+            if (!affordable) { audio.blocked(); showToast(`Не хватает ${item.price - coins} монет - играйте и решайте задачи`); return; }
             buyOrEquip(item, owned);
           });
           fragment.append(node);
@@ -3420,20 +3485,31 @@
         const act = async () => {
           try {
             const result = await onlineClient.emit("shop:buy", { slot: shop.slot, itemId: item.id });
+            // Re-read ownership from the server rather than patching the local copy: the patch
+            // missed the avatar grid, so a bought avatar kept asking to be bought again until a
+            // full reload.
             shop.equipped[shop.slot] = item.id;
-            if (!shop.owned.includes(`${shop.slot}:${item.id}`)) shop.owned.push(`${shop.slot}:${item.id}`);
+            const key = `${shop.slot}:${item.id}`;
+            if (!shop.owned.includes(key)) shop.owned.push(key);
+            try {
+              const fresh = await onlineClient.emit("shop:list", {});
+              shop.owned = fresh.owned || shop.owned;
+              shop.equipped = fresh.equipped || shop.equipped;
+              if (Number.isFinite(fresh.coins)) progression.coins = fresh.coins;
+            } catch { /* keep the optimistic state */ }
+            renderAvatarGrid();
             progression.coins = result.coins;
             storage.set("pyramide.progress", JSON.stringify(progression));
             $("#shopCoins").textContent = result.coins;
             applyCosmetics(shop.equipped); renderShop(); updateProfile();
-            audio.turn();
+            audio.purchase();
             showToast(result.spent ? `Куплено за ${result.spent} монет` : "Применено");
           } catch (error) {
             audio.blocked();
             const messages = {
               NOT_ENOUGH_COINS: "Не хватает монет",
               NO_DB: "Мастерская недоступна: сервер без базы данных",
-              NO_PROFILE: "Профиль ещё не создан — сыграйте одну онлайн-партию"
+              NO_PROFILE: "Профиль ещё не создан - сыграйте одну онлайн-партию"
             };
             showToast(messages[error?.code] || "Не удалось выполнить, попробуйте позже");
           }
@@ -3468,14 +3544,14 @@
         const lives = puzzleLives();
         if (puzzle?.done) { button.textContent = "Следующая задача"; button.disabled = puzzleCapReached(); return; }
         if (lives.left <= 0) { button.textContent = "Жизни закончились"; button.disabled = true; return; }
-        button.textContent = "Пропустить (\u22121 \u2764)";
+        button.innerHTML = 'Пропустить (-1 <img src="assets/ui/life.webp" alt="" width="16" height="16" style="vertical-align:-3px">)';
         button.disabled = false;
       }
 
       function renderLives() {
         const state = puzzleLives();
         $("#puzLives").innerHTML = Array.from({ length: PUZZLE_LIVES }, (_, i) =>
-          `<span style="opacity:${i < state.left ? 1 : .25}">&#10084;</span>`).join("");
+          `<img src="assets/ui/life.webp" alt="" width="22" height="22" style="opacity:${i < state.left ? 1 : .25}">`).join("");
         const waitText = state.left < PUZZLE_LIVES && state.refillAt
           ? ` · восстановление через ${formatClock(Math.max(0, state.refillAt - Date.now()))}`
           : "";
@@ -3488,7 +3564,7 @@
         renderLives(); renderPuzzleAction();
         const lives = puzzleLives();
         if (puzzleCapReached()) {
-          $("#puzPrompt").textContent = `Дневной лимит — ${DAILY_CAP} задач. Возвращайтесь завтра за новой порцией.`;
+          $("#puzPrompt").textContent = `Дневной лимит - ${DAILY_CAP} задач. Возвращайтесь завтра за новой порцией.`;
           $("#puzBoard").innerHTML = ""; $("#puzColors").innerHTML = ""; $("#puzCtx").innerHTML = "";
           $("#puzResult").textContent = "";
           return;
@@ -3534,7 +3610,7 @@
         paintDiagram(puzzle.cells, puzzle.board, marks);
         diagramContext($("#puzCtx"), {
           roll: puzzle.roll, inventory: puzzle.inventory,
-          note: `ходят ${puzzle.side === "L" ? "Лазурные" : "Алые"}`
+          note: `ходят ${puzzle.side === "L" ? "Синие" : "Красные"}`
         });
       }
 
@@ -3562,6 +3638,7 @@
             audio.finish(true);
             paintDiagram(puzzle.cells, { ...puzzle.board, [cellId]: { color: puzzle.color, player: puzzle.side } }, { [cellId]: "played" });
             lives.solved++; savePuzzleLives(lives); renderLives(); renderPuzzleAction();
+            audio.puzzleSolved();
             $("#puzResult").textContent = result.reward ? `Верно! +${result.reward} монет` : "Верно!";
             if (result.reward) {
               progression.coins = (Number(progression.coins) || 0) + result.reward;
@@ -3640,11 +3717,12 @@
       function refreshLobby() {
         const mode = selectedOnlineMode || "classic";
         const rating = mode === "blitz" ? progression.ratingBlitz : progression.ratingClassic;
-        $("#lobbyRating").textContent = Number.isFinite(rating) ? rating : "—";
-        $("#lobbyLeague").textContent = Number.isFinite(rating) ? eloTierFor(rating) : "—";
-        $("#lobbyClock").textContent = mode === "blitz" ? "2 мин + 3 сек" : "5 мин + 10 сек";
+        $("#lobbyRating").textContent = Number.isFinite(rating) ? rating : "-";
+        $("#lobbyLeague").textContent = Number.isFinite(rating) ? eloTierFor(rating) : "-";
+        $("#lobbyClock").textContent = mode === "blitz" ? "2 мин + 2 сек" : "5 мин + 5 сек";
       }
 
+      let lastTickSecond = null;
       let clockTickerId = null;
       function startClockTicker() {
         clearInterval(clockTickerId);
@@ -3667,8 +3745,8 @@
         // only one was visible, so players could not tell which number meant what.
         $("#profileRank").textContent = RANKS[Math.min(RANKS.length - 1, Math.floor((level - 1) / 3))];
         $("#profileXp").textContent = `${progression.xp % 120} / 120 опыта`;
-        $("#statClassic").textContent = Number.isFinite(progression.ratingClassic) ? progression.ratingClassic : "—";
-        $("#statBlitz").textContent = Number.isFinite(progression.ratingBlitz) ? progression.ratingBlitz : "—";
+        $("#statClassic").textContent = Number.isFinite(progression.ratingClassic) ? progression.ratingClassic : "-";
+        $("#statBlitz").textContent = Number.isFinite(progression.ratingBlitz) ? progression.ratingBlitz : "-";
         $("#statWins").textContent = progression.wins;
 
         // The chip belongs to ranked online play only: in a bot or hot-seat game there is no
@@ -3707,6 +3785,7 @@
       // Coins were being credited with no visible signal, so players could not tell what earned
       // them or whether a purchase went through.
       function showCoinGain(amount) {
+        audio.coins();
         const node = document.createElement("div");
         node.textContent = `+${amount} \u25CF`;
         node.style.cssText = "position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:120;"
@@ -3756,90 +3835,100 @@
         syncMenuBackdrop();
       }
 
+      // ---------------------------------------------------------------------------------------
+      // Audio. Replaces the synthesised placeholder sounds with the studio's recordings.
+      // Every file was loudness-normalised to the same target, so nothing here adjusts levels
+      // beyond the user's own volume settings.
+      // ---------------------------------------------------------------------------------------
       class SoundEngine {
-        constructor() { this.ctx = null; this.master = null; this.ambience = null; }
-        ensure() {
-          if (!settings.sound && !settings.music) return false;
-          if (!this.ctx) {
-            const AC = window.AudioContext || window.webkitAudioContext;
-            if (!AC) return false;
-            this.ctx = new AC(); this.master = this.ctx.createGain(); this.master.gain.value = .32; this.master.connect(this.ctx.destination);
+        constructor() {
+          this.cache = new Map();
+          this.music = null;
+          this.musicName = null;
+          // One format for everything: MP3 decodes in every browser Yandex Games runs on,
+          // which halves the number of shipped files and removes a format-detection branch.
+          this.ext = "mp3";
+          this.unlocked = false;
+          const unlock = () => { this.unlocked = true; if (this.pendingMusic) this.playMusic(this.pendingMusic); };
+          document.addEventListener("pointerdown", unlock, { once: true });
+          document.addEventListener("keydown", unlock, { once: true });
+        }
+
+        clip(name) {
+          if (!this.cache.has(name)) {
+            const el = new Audio(`assets/audio/${name}.${this.ext}`);
+            el.preload = "auto";
+            this.cache.set(name, el);
           }
-          if (this.ctx.state === "suspended") this.ctx.resume();
-          return true;
+          return this.cache.get(name);
         }
-        tone(freq, duration, type = "sine", volume = .08, when = 0) {
-          if (!settings.sound || !this.ensure()) return;
-          const t = this.ctx.currentTime + when, osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
-          osc.type = type; osc.frequency.setValueAtTime(freq, t); gain.gain.setValueAtTime(.0001, t); gain.gain.exponentialRampToValueAtTime(volume, t + .018); gain.gain.exponentialRampToValueAtTime(.0001, t + duration);
-          osc.connect(gain); gain.connect(this.master); osc.start(t); osc.stop(t + duration + .03);
-        }
-        noise(duration, volume, filterFreq) {
-          if (!settings.sound || !this.ensure()) return;
-          const size = Math.floor(this.ctx.sampleRate * duration), buffer = this.ctx.createBuffer(1, size, this.ctx.sampleRate), data = buffer.getChannelData(0);
-          for (let i = 0; i < size; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / size);
-          const source = this.ctx.createBufferSource(), filter = this.ctx.createBiquadFilter(), gain = this.ctx.createGain();
-          source.buffer = buffer; filter.type = "lowpass"; filter.frequency.value = filterFreq; gain.gain.value = volume;
-          source.connect(filter); filter.connect(gain); gain.connect(this.master); source.start();
-        }
-        // The previous ambience was filtered noise at .028 gain - effectively silent on any device.
-        // This is a real drone: two detuned low tones plus a soft wind bed, with a slow fade-in so
-        // it never starts abruptly.
-        startAmbience() {
-          if (!settings.music || !this.ensure() || this.ambience) return;
-          const now = this.ctx.currentTime;
-          const bus = this.ctx.createGain();
-          bus.gain.setValueAtTime(0.0001, now);
-          bus.gain.exponentialRampToValueAtTime(0.5, now + 2.5);
-          bus.connect(this.master);
 
-          const voices = [];
-          for (const [freq, detune, level, type] of [[110, -5, .16, "sine"], [164.81, 6, .11, "sine"], [220, -9, .06, "triangle"]]) {
-            const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
-            osc.type = type; osc.frequency.value = freq; osc.detune.value = detune;
-            gain.gain.value = level;
-            // Slow amplitude drift keeps the pad from sounding like a stuck test tone.
-            const lfo = this.ctx.createOscillator(), lfoGain = this.ctx.createGain();
-            lfo.frequency.value = 0.05 + Math.random() * 0.06; lfoGain.gain.value = level * .5;
-            lfo.connect(lfoGain); lfoGain.connect(gain.gain); lfo.start();
-            osc.connect(gain); gain.connect(bus); osc.start();
-            voices.push(osc, lfo);
-          }
-
-          const buffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 4, this.ctx.sampleRate), data = buffer.getChannelData(0);
-          for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * .5;
-          const wind = this.ctx.createBufferSource(), windFilter = this.ctx.createBiquadFilter(), windGain = this.ctx.createGain();
-          wind.buffer = buffer; wind.loop = true;
-          windFilter.type = "bandpass"; windFilter.frequency.value = 620; windFilter.Q.value = .7;
-          windGain.gain.value = .05;
-          wind.connect(windFilter); windFilter.connect(windGain); windGain.connect(bus); wind.start();
-          voices.push(wind);
-
-          this.ambience = { bus, voices };
-        }
-        stopAmbience() {
-          if (!this.ambience) return;
-          const { bus, voices } = this.ambience;
-          this.ambience = null;
-          const now = this.ctx.currentTime;
+        // Effects can overlap (a stone landing while the clock ticks), so each play uses a clone.
+        play(name, volume = 1) {
+          if (!settings.sound) return;
           try {
-            bus.gain.cancelScheduledValues(now);
-            bus.gain.setValueAtTime(Math.max(bus.gain.value, 0.0001), now);
-            bus.gain.exponentialRampToValueAtTime(0.0001, now + .6);
-          } catch { /* context may already be closed */ }
-          setTimeout(() => voices.forEach(node => { try { node.stop(); } catch { /* already stopped */ } }), 700);
+            const node = this.clip(name).cloneNode();
+            node.volume = Math.min(1, volume);
+            node.play().catch(() => undefined);
+          } catch { /* autoplay blocked until the first gesture */ }
         }
-        // Distinct, short click for UI. Kept quieter than gameplay sounds so it never dominates.
-        click() { this.tone(680, .05, "sine", .028); }
-        clickSoft() { this.tone(430, .05, "sine", .02); }
-        tick() { this.tone(520, .08, "sine", .035); }
-        turn() { this.tone(294, .22, "triangle", .05); this.tone(440, .28, "sine", .025, .07); }
-        dice() { this.noise(.5, .13, 1200); this.tone(120, .18, "triangle", .05); }
-        reveal(value) { this.tone(250 + value * 35, .25, "sine", .06); }
-        blocked() { this.tone(155, .38, "triangle", .07); }
-        place(color) { this.noise(.14, .09, 700); this.tone({ yellow: 440, green: 370, purple: 554 }[color], .34, "sine", .055, .03); }
-        finish(win) { [220, 330, win ? 494 : 392].forEach((f, i) => this.tone(f, .8, "sine", .07, i * .13)); }
+
+        playMusic(name) {
+          if (!settings.music) return;
+          if (!this.unlocked) { this.pendingMusic = name; return; }
+          if (this.musicName === name && this.music && !this.music.paused) return;
+          this.stopMusic();
+          try {
+            const el = this.clip(`music-${name}`) || null;
+            const track = new Audio(`assets/audio/${name}.${this.ext}`);
+            track.loop = true;
+            track.volume = 0;
+            track.play().catch(() => undefined);
+            this.music = track; this.musicName = name;
+            // Fade in so a track never starts abruptly over whatever is on screen.
+            const target = 0.55;
+            const step = () => {
+              if (!this.music || this.music !== track) return;
+              track.volume = Math.min(target, track.volume + 0.04);
+              if (track.volume < target) setTimeout(step, 60);
+            };
+            step();
+          } catch { /* ignore */ }
+        }
+
+        stopMusic() {
+          const track = this.music;
+          this.music = null; this.musicName = null;
+          if (!track) return;
+          const fade = () => {
+            track.volume = Math.max(0, track.volume - 0.06);
+            if (track.volume > 0) setTimeout(fade, 50);
+            else { try { track.pause(); } catch { /* already stopped */ } }
+          };
+          fade();
+        }
+
+        // ---- named events used across the game -------------------------------------------------
+        dice() { this.play("dice", .9); }
+        place() { this.play("stone", .95); }
+        blocked() { this.play("error", .8); }
+        click() { this.play("click", .45); }
+        tick() { this.play("click", .3); }
+        turn() { this.play("game_start", .8); }
+        reveal() { /* the die result is covered by the roll sound */ }
+        finish(won) { this.play(won === null ? "draw" : won ? "win" : "lose", 1); }
+        draw() { this.play("draw", 1); }
+        lowTime() { this.play("clock", .7); }
+        puzzleSolved() { this.play("success", .9); }
+        coins() { this.play("coin", .8); }
+        purchase() { this.play("buy", .85); }
+        opponentFound() { this.play("find", .9); }
+
+        startAmbience() { this.playMusic(state.phase === "menu" ? "menu" : "battle"); }
+        stopAmbience() { this.stopMusic(); }
+        menuMusic() { this.playMusic("menu"); }
       }
+
       const audio = new SoundEngine();
 
       function applySettings() {
@@ -3942,7 +4031,7 @@
         // Always return to the top level of the menu, otherwise the player lands back on the
         // mode list they left from and the main entries are nowhere to be seen.
         resetScreens();
-        state.phase = "menu"; audio.stopAmbience(); render();
+        state.phase = "menu"; audio.menuMusic(); render();
       }
       $("#reviewContinue").addEventListener("click", () => { hideReview(); openModal("resultModal"); });
       // The outcome dialog is deliberately modal: it used to be dismissable by tapping around it,
@@ -3969,10 +4058,12 @@
       onEnterScreen.home = () => { $("#tileAvatar").src = AVATAR_SRC(currentAvatar()); };
       $("#openAbout").addEventListener("click", () => openModal("aboutModal"));
       $("#surrenderBtn").addEventListener("click", () => {
-        askConfirm("Сдаться? Партия завершится поражением и повлияет на рейтинг.", async () => {
+        askConfirm(state.online?.friendly
+          ? "Сдаться? Партия завершится поражением. Дружеские партии не влияют на рейтинг."
+          : "Сдаться? Партия завершится поражением и повлияет на рейтинг.", async () => {
           closeModal("settingsModal");
           try { await onlineClient?.forfeit(); showToast("Вы сдались"); }
-          catch { showToast("Не удалось отправить — партия будет завершена по времени"); }
+          catch { showToast("Не удалось отправить - партия будет завершена по времени"); }
         }, { title: "Сдаться", no: "Продолжить", yes: "Сдаться" });
       });
       $("#openShop").addEventListener("click", () => openShop());
@@ -4012,7 +4103,9 @@
         const live = state.phase !== "menu" && state.phase !== "gameover";
         if (!live) return leaveToMenu();
         askConfirm(isOnline()
-          ? "Партия ещё идёт. Выход засчитается как поражение и повлияет на рейтинг."
+          ? (state.online?.friendly
+              ? "Партия ещё идёт. Выход засчитается как поражение, но рейтинг не изменится."
+              : "Партия ещё идёт. Выход засчитается как поражение и повлияет на рейтинг.")
           : "Партия ещё идёт. Текущий прогресс будет потерян.", leaveToMenu,
           { title: "Выйти в меню?", no: "Остаться", yes: "Выйти" });
       }
@@ -4081,7 +4174,7 @@
           "mode.bot": "Play the Keeper", "mode.botSub": "Three difficulty levels",
           "mode.local": "Two players here", "mode.localSub": "Pass the device after each turn",
           "diff.easy": "Apprentice", "diff.medium": "Architect", "diff.hard": "Vizier",
-          "tc.classic": "Classic", "tc.blitz": "Blitz", "tc.classicSub": "5 min + 10 sec", "tc.blitzSub": "2 min + 3 sec", "stat.wins": "Wins", "review.continue": "Show result"
+          "tc.classic": "Classic", "tc.blitz": "Blitz", "tc.classicSub": "5 min + 5 sec", "tc.blitzSub": "2 min + 2 sec", "stat.wins": "Wins", "review.continue": "Show result"
         },
         tr: {
           "menu.tagline": "Tapinak cizimleri arasinda bulunan kadim bir oyun. Zari at, tas sec ve ucu yan yana getirme.", "menu.findOpponent": "Rakip bul", "menu.startMatch": "Maci baslat",
@@ -4136,6 +4229,8 @@
       document.addEventListener("dblclick", event => event.preventDefault());
 
       applyCosmetics(null);
+      // Menu music starts as soon as the player interacts; the engine queues it until then.
+      schedule(() => audio.menuMusic(), 1200);
       paintAvatars();
       renderBoardBase(); applySettings(); updateProfile(); render();
       // Splash stays for a beat so the studio mark is actually readable, then fades out.
